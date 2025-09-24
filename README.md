@@ -3,9 +3,12 @@
 [![Django](https://img.shields.io/badge/Django-4.2.7-green)](https://djangoproject.com/)
 [![Python](https://img.shields.io/badge/Python-3.11+-blue)](https://python.org/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Status](https://img.shields.io/badge/Status-Production%20Ready-brightgreen)](https://github.com/your-repo/didactia)
+[![Status](https://img.shields.io/badge/Status-Production%20Ready-brightgreen)](https://github.com/ramssurprise40-spec/DidactIA-)
 [![AI Status](https://img.shields.io/badge/AI-Fully%20Functional-success)](https://ai.google.com/)
-[![Completion](https://img.shields.io/badge/Completion-100%25-brightgreen)](https://github.com/your-repo/didactia)
+[![Completion](https://img.shields.io/badge/Completion-100%25-brightgreen)](https://github.com/ramssurprise40-spec/DidactIA-)
+[![Windows](https://img.shields.io/badge/Windows-Supported-0078d4?logo=windows)](https://github.com/ramssurprise40-spec/DidactIA-)
+[![macOS](https://img.shields.io/badge/macOS-Supported-000000?logo=apple)](https://github.com/ramssurprise40-spec/DidactIA-)
+[![Linux](https://img.shields.io/badge/Linux-Supported-FCC624?logo=linux)](https://github.com/ramssurprise40-spec/DidactIA-)
 
 **🎉 STATUS: FULLY FUNCTIONAL & PRODUCTION READY! 🎉**
 
@@ -87,16 +90,18 @@ Storage (Supabase Storage / AWS S3)
 
 ### Installation
 
+#### 🪟 **Windows Setup**
+
 1. **Clone the repository**
 ```bash
-git clone https://github.com/your-repo/didactia.git
-cd didactia
+git clone https://github.com/ramssurprise40-spec/DidactIA-.git
+cd DidactIA-
 ```
 
 2. **Create virtual environment**
 ```bash
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\\Scripts\\activate
+venv\Scripts\activate
 ```
 
 3. **Install dependencies**
@@ -106,13 +111,13 @@ pip install -r requirements.txt
 
 4. **Environment setup**
 ```bash
-cp .env.example .env
-# Edit .env with your configuration
+copy .env.example .env
+# Edit .env with your API keys using notepad or VS Code
+notepad .env
 ```
 
 5. **Database setup**
 ```bash
-python manage.py makemigrations
 python manage.py migrate
 python manage.py createsuperuser
 ```
@@ -120,6 +125,93 @@ python manage.py createsuperuser
 6. **Run the development server**
 ```bash
 python manage.py runserver
+```
+
+#### 🍎 **macOS Setup**
+
+**Prerequisites:**
+```bash
+# Install Homebrew (if not installed)
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# Install Python (if needed)
+brew install python
+
+# Verify Python installation
+python3 --version
+```
+
+**Setup Steps:**
+1. **Clone the repository**
+```bash
+git clone https://github.com/ramssurprise40-spec/DidactIA-.git
+cd DidactIA-
+```
+
+2. **Create virtual environment**
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+
+3. **Install dependencies**
+```bash
+# Upgrade pip first
+pip install --upgrade pip
+
+# Install project dependencies
+pip install -r requirements.txt
+```
+
+4. **Environment setup**
+```bash
+cp .env.example .env
+
+# Edit with your preferred editor
+nano .env
+# OR
+code .env  # if using VS Code
+# OR
+vim .env   # if using vim
+```
+
+5. **Database setup**
+```bash
+python3 manage.py migrate
+python3 manage.py createsuperuser
+```
+
+6. **Run the development server**
+```bash
+python3 manage.py runserver
+```
+
+**🚀 Quick macOS Setup Script:**
+```bash
+#!/bin/bash
+# save as setup_mac.sh
+echo "🍎 Setting up DidactIA on macOS..."
+
+# Create and activate virtual environment
+python3 -m venv venv
+source venv/bin/activate
+
+# Install dependencies
+pip install --upgrade pip
+pip install -r requirements.txt
+
+# Copy environment file
+cp .env.example .env
+
+echo "✅ Setup complete!"
+echo "📝 Next steps:"
+echo "1. Edit .env with your API keys: nano .env"
+echo "2. Run migrations: python3 manage.py migrate"
+echo "3. Create superuser: python3 manage.py createsuperuser"
+echo "4. Start server: python3 manage.py runserver"
+
+# Make executable: chmod +x setup_mac.sh
+# Run: ./setup_mac.sh
 ```
 
 7. **🎉 ACCESS YOUR FULLY FUNCTIONAL APPLICATION**
@@ -152,6 +244,70 @@ AWS_SECRET_ACCESS_KEY=your-aws-secret
 # Redis for background tasks
 REDIS_URL=redis://localhost:6379/0
 ```
+
+## 🖥️ Cross-Platform Compatibility
+
+### 🌍 **Fully Compatible Across All Platforms**
+
+| Platform | Status | Python Command | Virtual Env Activation | Notes |
+|----------|--------|----------------|------------------------|-------|
+| 🪟 **Windows** | ✅ Fully Supported | `python` | `venv\Scripts\activate` | PowerShell/CMD |
+| 🍎 **macOS** | ✅ Fully Supported | `python3` | `source venv/bin/activate` | Terminal/Bash/Zsh |
+| 🐧 **Linux** | ✅ Fully Supported | `python3` | `source venv/bin/activate` | Bash/Shell |
+
+### 🔧 **Platform-Specific Commands**
+
+#### Environment File Setup:
+```bash
+# Windows
+copy .env.example .env
+
+# macOS/Linux  
+cp .env.example .env
+```
+
+#### Text Editing:
+```bash
+# Windows
+notepad .env
+# OR
+code .env
+
+# macOS
+nano .env
+# OR
+code .env
+# OR
+vim .env
+
+# Linux
+nano .env
+# OR
+gedit .env
+# OR
+vim .env
+```
+
+### 🚀 **Universal Django Commands**
+These work identically on all platforms (just use the correct Python command):
+
+```bash
+# Database operations
+python manage.py migrate
+python manage.py createsuperuser
+python manage.py runserver
+
+# Development
+python manage.py shell
+python manage.py test
+python manage.py collectstatic
+```
+
+### 🎯 **Key Differences Summary**
+- **Python Command**: `python` (Windows) vs `python3` (macOS/Linux)
+- **Virtual Environment**: Different activation paths
+- **File Operations**: `copy` vs `cp`, `notepad` vs `nano`
+- **Everything Else**: Identical functionality!
 
 ## 📖 User Guide
 
