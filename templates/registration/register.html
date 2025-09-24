@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} - DidactIA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="min-h-screen flex flex-col justify-center items-center px-4">
+        <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+            <div class="text-center mb-8">
+                <i class="fas fa-graduation-cap text-4xl text-blue-600 mb-4"></i>
+                <h1 class="text-2xl font-bold text-gray-900">Create Your Account</h1>
+                <p class="text-gray-600 mt-2">Join DidactIA and start creating educational content</p>
+            </div>
+            
+            {% if form.errors %}
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                    <ul class="list-disc list-inside">
+                        {% for field, errors in form.errors.items %}
+                            {% for error in errors %}
+                                <li>{{ field|capfirst }}: {{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+            
+            <form method="post" class="space-y-4">
+                {% csrf_token %}
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="{{ form.first_name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            First Name
+                        </label>
+                        {{ form.first_name }}
+                    </div>
+                    <div>
+                        <label for="{{ form.last_name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Last Name
+                        </label>
+                        {{ form.last_name }}
+                    </div>
+                </div>
+                
+                <div>
+                    <label for="{{ form.email.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        Email Address
+                    </label>
+                    {{ form.email }}
+                </div>
+                
+                <div>
+                    <label for="{{ form.username.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        Username
+                    </label>
+                    {{ form.username }}
+                </div>
+                
+                <div>
+                    <label for="{{ form.password1.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        Password
+                    </label>
+                    {{ form.password1 }}
+                </div>
+                
+                <div>
+                    <label for="{{ form.password2.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        Confirm Password
+                    </label>
+                    {{ form.password2 }}
+                </div>
+                
+                <button type="submit" 
+                        class="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-blue-700 transition duration-300">
+                    <i class="fas fa-user-plus mr-2"></i>
+                    Create Account
+                </button>
+            </form>
+            
+            <div class="mt-6 text-center space-y-2">
+                <p class="text-gray-600">Already have an account?</p>
+                <a href="{% url 'accounts:login' %}" class="text-blue-600 hover:text-blue-800 font-semibold">
+                    Sign in here
+                </a>
+            </div>
+            
+            <div class="mt-4 text-center">
+                <a href="{% url 'core:home' %}" class="text-gray-500 hover:text-gray-700 text-sm">
+                    ← Back to Home
+                </a>
+            </div>
+        </div>
+        
+        <!-- Features Overview -->
+        <div class="mt-8 max-w-4xl w-full">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-lg shadow-sm text-center">
+                    <i class="fas fa-robot text-2xl text-blue-600 mb-3"></i>
+                    <h3 class="font-semibold text-gray-800">AI-Powered Content</h3>
+                    <p class="text-sm text-gray-600 mt-1">Generate quizzes and educational materials automatically</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-sm text-center">
+                    <i class="fas fa-chart-line text-2xl text-green-600 mb-3"></i>
+                    <h3 class="font-semibold text-gray-800">Advanced Analytics</h3>
+                    <p class="text-sm text-gray-600 mt-1">Track performance and engagement metrics</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-sm text-center">
+                    <i class="fas fa-globe text-2xl text-purple-600 mb-3"></i>
+                    <h3 class="font-semibold text-gray-800">Multi-language Support</h3>
+                    <p class="text-sm text-gray-600 mt-1">Create content in 11 different languages</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

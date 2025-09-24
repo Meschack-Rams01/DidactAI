@@ -1,0 +1,454 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .version-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 15px;
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .version-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        transform: rotate(45deg);
+    }
+    
+    .version-badge {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        backdrop-filter: blur(10px);
+    }
+    
+    .content-section {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+    }
+    
+    .question-item {
+        background: #f9fafb;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        border-left: 4px solid #3b82f6;
+        position: relative;
+        transition: all 0.2s ease;
+    }
+    
+    .question-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    .question-number {
+        position: absolute;
+        top: -10px;
+        left: 15px;
+        background: #1f2937;
+        color: white;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+    
+    .question-type {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: #3b82f6;
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 15px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+    
+    .question-text {
+        margin: 1rem 0 1.5rem 0;
+        font-weight: 500;
+        line-height: 1.6;
+        padding-right: 120px;
+        font-size: 1.05rem;
+    }
+    
+    .question-options {
+        display: grid;
+        gap: 0.75rem;
+        margin-top: 1rem;
+    }
+    
+    .option-item {
+        background: white;
+        border: 2px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        display: flex;
+        align-items: center;
+        transition: all 0.2s ease;
+    }
+    
+    .option-item:hover {
+        border-color: #3b82f6;
+        background: #eff6ff;
+    }
+    
+    .option-letter {
+        background: #1f2937;
+        color: white;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 0.8rem;
+        margin-right: 0.75rem;
+        flex-shrink: 0;
+    }
+    
+    .correct-answer {
+        border-color: #10b981 !important;
+        background: #ecfdf5 !important;
+    }
+    
+    .correct-answer .option-letter {
+        background: #10b981;
+    }
+    
+    .answer-space {
+        background: white;
+        border: 2px dashed #d1d5db;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-top: 1rem;
+        min-height: 60px;
+        display: flex;
+        align-items: center;
+        color: #6b7280;
+        font-style: italic;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+        flex-wrap: wrap;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #3b82f6, #1e40af);
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        color: white;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.2s ease;
+    }
+    
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #1e40af, #1e3a8a);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        color: white;
+        text-decoration: none;
+    }
+    
+    .btn-secondary {
+        background: #6b7280;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        color: white;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.2s ease;
+    }
+    
+    .btn-secondary:hover {
+        background: #4b5563;
+        color: white;
+        text-decoration: none;
+    }
+    
+    .btn-danger {
+        background: #ef4444;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        color: white;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.2s ease;
+    }
+    
+    .btn-danger:hover {
+        background: #dc2626;
+        color: white;
+        text-decoration: none;
+    }
+    
+    .version-info {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .info-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        text-align: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        border: 1px solid #e5e7eb;
+    }
+    
+    .info-value {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: #1f2937;
+        margin-bottom: 0.25rem;
+    }
+    
+    .info-label {
+        font-size: 0.875rem;
+        color: #6b7280;
+        text-transform: uppercase;
+        font-weight: 600;
+    }
+    
+    /* Question type specific styling */
+    .question-item.multiple-choice {
+        border-left-color: #10b981;
+    }
+    
+    .question-item.multiple-choice .question-type {
+        background: #10b981;
+    }
+    
+    .question-item.true-false {
+        border-left-color: #f59e0b;
+    }
+    
+    .question-item.true-false .question-type {
+        background: #f59e0b;
+    }
+    
+    .question-item.short-answer {
+        border-left-color: #ef4444;
+    }
+    
+    .question-item.short-answer .question-type {
+        background: #ef4444;
+    }
+    
+    .question-item.essay {
+        border-left-color: #06b6d4;
+    }
+    
+    .question-item.essay .question-type {
+        background: #06b6d4;
+    }
+    
+    .question-item.fill-blank {
+        border-left-color: #8b5cf6;
+    }
+    
+    .question-item.fill-blank .question-type {
+        background: #8b5cf6;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'ai_generator:history' %}">Generations</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'ai_generator:view_generation' generation.id %}">{{ generation.title }}</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Version {{ version.version_letter }}</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    
+    <div class="version-header">
+        <div class="version-badge">Version {{ version.version_letter }}</div>
+        <div style="position: relative; z-index: 1;">
+            <h1 class="h2 mb-2">{{ generation.title }}</h1>
+            <p class="mb-0">{{ generation.content_type|title }} - Alternative Version</p>
+        </div>
+    </div>
+    
+    <div class="version-info">
+        <div class="info-card">
+            <div class="info-value">{{ questions|length }}</div>
+            <div class="info-label">Questions</div>
+        </div>
+        <div class="info-card">
+            <div class="info-value">{{ version.created_at|date:"M d" }}</div>
+            <div class="info-label">Created</div>
+        </div>
+        <div class="info-card">
+            <div class="info-value">{{ generation.input_parameters.difficulty|title|default:"Medium" }}</div>
+            <div class="info-label">Difficulty</div>
+        </div>
+        <div class="info-card">
+            <div class="info-value">{{ generation.input_parameters.language|default:"EN"|upper }}</div>
+            <div class="info-label">Language</div>
+        </div>
+    </div>
+    
+    <div class="content-section">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3><i class="fas fa-list-ol"></i> Questions</h3>
+            <span class="badge badge-primary">{{ questions|length }} Total</span>
+        </div>
+        
+        {% for question in questions %}
+        <div class="question-item {{ question.type|default:'multiple-choice' }}">
+            <div class="question-number">{{ forloop.counter }}</div>
+            <div class="question-type">
+                {% if question.type == 'multiple_choice' %}
+                    Multiple Choice
+                {% elif question.type == 'true_false' %}
+                    True/False
+                {% elif question.type == 'short_answer' %}
+                    Short Answer
+                {% elif question.type == 'essay' %}
+                    Essay
+                {% elif question.type == 'fill_blank' %}
+                    Fill in the Blank
+                {% else %}
+                    Question
+                {% endif %}
+            </div>
+            
+            <div class="question-text">
+                {{ question.question|default:question.question_text }}
+                {% if question.points %}
+                <span class="text-muted">({{ question.points }} points)</span>
+                {% endif %}
+            </div>
+            
+            {% if question.type == 'multiple_choice' and question.options %}
+            <div class="question-options">
+                {% for option in question.options %}
+                <div class="option-item {% if question.correct_answer == forloop.counter0|add:65|stringformat:"c" %}correct-answer{% endif %}">
+                    <div class="option-letter">{{ forloop.counter0|add:65|stringformat:"c" }}</div>
+                    <div>{{ option }}</div>
+                    {% if question.correct_answer == forloop.counter0|add:65|stringformat:"c" %}
+                    <div class="ms-auto">
+                        <i class="fas fa-check-circle text-success"></i>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% elif question.type == 'true_false' %}
+            <div class="question-options">
+                <div class="option-item {% if question.correct_answer == 'true' %}correct-answer{% endif %}">
+                    <div class="option-letter">T</div>
+                    <div>True</div>
+                    {% if question.correct_answer == 'true' %}
+                    <div class="ms-auto">
+                        <i class="fas fa-check-circle text-success"></i>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="option-item {% if question.correct_answer == 'false' %}correct-answer{% endif %}">
+                    <div class="option-letter">F</div>
+                    <div>False</div>
+                    {% if question.correct_answer == 'false' %}
+                    <div class="ms-auto">
+                        <i class="fas fa-check-circle text-success"></i>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% else %}
+            <div class="answer-space">
+                <i class="fas fa-pencil-alt me-2"></i>
+                Answer space for student response
+                {% if question.correct_answer %}
+                <div class="mt-2 p-2 bg-light rounded">
+                    <strong>Expected Answer:</strong> {{ question.correct_answer }}
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+            
+            {% if question.explanation %}
+            <div class="mt-2 p-2 bg-info bg-opacity-10 rounded">
+                <strong><i class="fas fa-info-circle text-info"></i> Explanation:</strong>
+                {{ question.explanation }}
+            </div>
+            {% endif %}
+        </div>
+        {% empty %}
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i>
+            No questions available for this version.
+        </div>
+        {% endfor %}
+        
+        <div class="action-buttons">
+            <a href="{% url 'exports:export_generation' generation.id %}?version={{ version.version_letter }}" class="btn-primary">
+                <i class="fas fa-download"></i>
+                Export This Version
+            </a>
+            
+            <a href="{% url 'ai_generator:view_generation' generation.id %}" class="btn-secondary">
+                <i class="fas fa-arrow-left"></i>
+                Back to Original
+            </a>
+            
+            <a href="{% url 'ai_generator:delete_version' generation.id version.version_letter %}" class="btn-danger">
+                <i class="fas fa-trash-alt"></i>
+                Delete Version
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

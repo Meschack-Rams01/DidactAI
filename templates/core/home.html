@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="min-h-screen flex flex-col justify-center items-center">
+        <div class="text-center">
+            <div class="mb-8">
+                <i class="fas fa-graduation-cap text-6xl text-blue-600 mb-4"></i>
+                <h1 class="text-5xl font-bold text-gray-900 mb-4">DidactIA</h1>
+                <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                    {{ description }}
+                </p>
+            </div>
+            
+            <div class="space-y-4">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'core:dashboard' %}" 
+                       class="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-300">
+                        Go to Dashboard
+                    </a>
+                    <p class="text-gray-600">Welcome back, {{ user.get_full_name|default:user.username }}!</p>
+                {% else %}
+                    <div class="space-x-4">
+                        <a href="{% url 'accounts:register' %}" 
+                           class="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-300">
+                            <i class="fas fa-user-plus mr-2"></i>Get Started
+                        </a>
+                        <a href="{% url 'accounts:login' %}" 
+                           class="inline-block border-2 border-blue-600 text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-blue-600 hover:text-white transition duration-300">
+                            <i class="fas fa-sign-in-alt mr-2"></i>Login
+                        </a>
+                    </div>
+                    <div class="mt-4">
+                        <a href="/admin/" class="text-sm text-gray-500 hover:text-gray-700">
+                            Admin Panel
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <i class="fas fa-robot text-3xl text-blue-600 mb-4"></i>
+                    <h3 class="text-lg font-semibold mb-2">AI-Powered Generation</h3>
+                    <p class="text-gray-600">Generate quizzes, exams, and educational content using advanced AI</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <i class="fas fa-chart-line text-3xl text-green-600 mb-4"></i>
+                    <h3 class="text-lg font-semibold mb-2">Advanced Analytics</h3>
+                    <p class="text-gray-600">Track usage, performance, and engagement with comprehensive analytics</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <i class="fas fa-globe text-3xl text-purple-600 mb-4"></i>
+                    <h3 class="text-lg font-semibold mb-2">Multilingual Support</h3>
+                    <p class="text-gray-600">Support for 11 languages with automatic translation capabilities</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

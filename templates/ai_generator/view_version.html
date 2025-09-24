@@ -1,0 +1,334 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ generation.title }} - Version {{ version.version_label }} - DidactIA{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Page Header -->
+    <div class="mb-8">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <svg class="h-8 w-8 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <h1 class="text-3xl font-bold text-gray-900">{{ generation.title }}</h1>
+                    <p class="mt-1 text-gray-600">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800 mr-2">
+                            Version {{ version.version_label }}
+                        </span>
+                        {{ generation.generation_type|title }} • {{ generation.difficulty|title }} Difficulty
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="flex space-x-3">
+                <a href="{% url 'ai_generator:view_generation' generation.id %}" 
+                   class="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                    <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                    Back to Original
+                </a>
+                
+                <div class="relative" x-data="{ open: false }">
+                    <button @click="open = !open" 
+                            class="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700">
+                        <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
+                        </svg>
+                        Actions
+                    </button>
+                    
+                    <div x-show="open" @click.outside="open = false" x-transition
+                         class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
+                        <div class="py-1">
+                            <button onclick="showExportModal()" 
+                                    class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <svg class="inline mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V13"></path>
+                                </svg>
+                                Export Version
+                            </button>
+                            <a href="{% url 'ai_generator:create_version' generation.id %}" 
+                               class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <svg class="inline mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                Create Another Version
+                            </a>
+                            <button onclick="confirmDeleteVersion()" 
+                                    class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+                                <svg class="inline mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                </svg>
+                                Delete Version
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="mb-4 p-4 rounded-md {% if message.tags == 'error' %}bg-red-50 border border-red-200{% elif message.tags == 'success' %}bg-green-50 border border-green-200{% else %}bg-blue-50 border border-blue-200{% endif %}">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        {% if message.tags == 'error' %}
+                            <svg class="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                            </svg>
+                        {% elif message.tags == 'success' %}
+                            <svg class="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                        {% endif %}
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm {% if message.tags == 'error' %}text-red-700{% elif message.tags == 'success' %}text-green-700{% else %}text-blue-700{% endif %}">
+                            {{ message }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Version Info -->
+    <div class="bg-white shadow rounded-lg mb-8">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h3 class="text-lg font-medium text-gray-900">Version Details</h3>
+        </div>
+        <div class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">Version Type</dt>
+                    <dd class="mt-1 text-sm text-gray-900">{{ version.version_type|title }}</dd>
+                </div>
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">Created</dt>
+                    <dd class="mt-1 text-sm text-gray-900">{{ version.created_at|date:"M d, Y at g:i A" }}</dd>
+                </div>
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">Questions Count</dt>
+                    <dd class="mt-1 text-sm text-gray-900">{{ version.questions.count }}</dd>
+                </div>
+            </div>
+            
+            {% if version.version_type != 'shuffle' %}
+                <div class="mt-4">
+                    <dt class="text-sm font-medium text-gray-500">Generation Notes</dt>
+                    <dd class="mt-1 text-sm text-gray-900">
+                        {% if version.version_type == 'regenerate' %}
+                            Questions regenerated using the same parameters as the original generation.
+                        {% elif version.version_type == 'custom' %}
+                            Questions generated with custom parameters.
+                        {% endif %}
+                    </dd>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Questions Display -->
+    <div class="space-y-6">
+        {% for question in version.questions.all %}
+            <div class="bg-white shadow rounded-lg">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-lg font-medium text-gray-900">Question {{ forloop.counter }}</h3>
+                        <div class="flex items-center space-x-2">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
+                                       {% if question.difficulty == 'easy' %}bg-green-100 text-green-800
+                                       {% elif question.difficulty == 'medium' %}bg-yellow-100 text-yellow-800
+                                       {% else %}bg-red-100 text-red-800{% endif %}">
+                                {{ question.difficulty|title }}
+                            </span>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                {{ question.question_type|title|replace:'_',' ' }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="p-6">
+                    <!-- Question Text -->
+                    <div class="mb-4">
+                        <h4 class="text-base font-medium text-gray-900 mb-2">Question:</h4>
+                        <p class="text-gray-700">{{ question.question_text|linebreaks }}</p>
+                    </div>
+
+                    <!-- Answers (for multiple choice and true/false) -->
+                    {% if question.question_type == 'multiple_choice' or question.question_type == 'true_false' %}
+                        <div class="mb-4">
+                            <h4 class="text-base font-medium text-gray-900 mb-2">Options:</h4>
+                            <div class="space-y-2">
+                                {% for answer in question.answers.all %}
+                                    <div class="flex items-start">
+                                        <div class="flex-shrink-0 mt-1">
+                                            {% if answer.is_correct %}
+                                                <svg class="h-5 w-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                                </svg>
+                                            {% else %}
+                                                <div class="h-5 w-5 rounded-full border-2 border-gray-300"></div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="ml-3">
+                                            <p class="text-gray-700 {% if answer.is_correct %}font-medium{% endif %}">
+                                                {{ forloop.counter0|add:97|stringformat:"c"|upper }}. {{ answer.answer_text }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <!-- Correct Answer (for short answer, fill in the blank) -->
+                    {% if question.question_type == 'short_answer' or question.question_type == 'fill_blank' %}
+                        <div class="mb-4">
+                            <h4 class="text-base font-medium text-gray-900 mb-2">Correct Answer:</h4>
+                            <div class="bg-green-50 border border-green-200 rounded-md p-3">
+                                {% for answer in question.answers.all %}
+                                    {% if answer.is_correct %}
+                                        <p class="text-green-800">{{ answer.answer_text }}</p>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <!-- Explanation -->
+                    {% if question.explanation %}
+                        <div class="mb-4">
+                            <h4 class="text-base font-medium text-gray-900 mb-2">Explanation:</h4>
+                            <div class="bg-blue-50 border border-blue-200 rounded-md p-3">
+                                <p class="text-blue-800">{{ question.explanation|linebreaks }}</p>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <!-- Source Files -->
+                    {% if question.source_files.exists %}
+                        <div class="mt-4 pt-4 border-t border-gray-200">
+                            <h4 class="text-sm font-medium text-gray-500 mb-2">Source Materials:</h4>
+                            <div class="flex flex-wrap gap-2">
+                                {% for file in question.source_files.all %}
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                        {{ file.original_filename }}
+                                    </span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% empty %}
+            <div class="bg-white shadow rounded-lg">
+                <div class="p-6 text-center">
+                    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    <h3 class="mt-2 text-sm font-medium text-gray-900">No questions available</h3>
+                    <p class="mt-1 text-sm text-gray-500">This version doesn't contain any questions yet.</p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Export Modal -->
+<div id="exportModal" class="hidden fixed inset-0 z-50 overflow-y-auto">
+    <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+        <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Export Version {{ version.version_label }}</h3>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Export Format:</label>
+                        <select id="exportFormat" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                            <option value="pdf">PDF Document</option>
+                            <option value="docx">Word Document</option>
+                            <option value="html">HTML Page</option>
+                            <option value="json">JSON Data</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="flex items-center">
+                            <input type="checkbox" id="includeAnswers" checked class="rounded border-gray-300">
+                            <span class="ml-2 text-sm text-gray-700">Include answer key</span>
+                        </label>
+                    </div>
+                    <div>
+                        <label class="flex items-center">
+                            <input type="checkbox" id="includeExplanations" checked class="rounded border-gray-300">
+                            <span class="ml-2 text-sm text-gray-700">Include explanations</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                <button type="button" onclick="exportVersion()" 
+                        class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-600 text-base font-medium text-white hover:bg-primary-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm">
+                    Export
+                </button>
+                <button type="button" onclick="closeExportModal()" 
+                        class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function showExportModal() {
+    document.getElementById('exportModal').classList.remove('hidden');
+}
+
+function closeExportModal() {
+    document.getElementById('exportModal').classList.add('hidden');
+}
+
+function exportVersion() {
+    const format = document.getElementById('exportFormat').value;
+    const includeAnswers = document.getElementById('includeAnswers').checked;
+    const includeExplanations = document.getElementById('includeExplanations').checked;
+    
+    const params = new URLSearchParams({
+        format: format,
+        include_answers: includeAnswers,
+        include_explanations: includeExplanations,
+        version_id: '{{ version.id }}'
+    });
+    
+    window.location.href = `{% url 'exports:export_generation' generation.id %}?${params}`;
+    closeExportModal();
+}
+
+function confirmDeleteVersion() {
+    if (confirm('Are you sure you want to delete this version? This action cannot be undone.')) {
+        window.location.href = '{% url "ai_generator:delete_version" generation.id version.version_label %}';
+    }
+}
+
+// Close dropdowns when clicking outside
+document.addEventListener('click', function(event) {
+    const dropdowns = document.querySelectorAll('[x-data]');
+    dropdowns.forEach(dropdown => {
+        if (!dropdown.contains(event.target)) {
+            dropdown.__x.$data.open = false;
+        }
+    });
+});
+</script>
+{% endblock %}

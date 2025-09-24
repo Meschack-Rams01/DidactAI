@@ -1,0 +1,263 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .version-form {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin: 2rem 0;
+    }
+    
+    .version-info {
+        background: #f8fafc;
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        border-left: 4px solid #3b82f6;
+    }
+    
+    .existing-versions {
+        background: #fef7f0;
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        border-left: 4px solid #f59e0b;
+    }
+    
+    .version-letters {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 1rem;
+    }
+    
+    .version-letter {
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+        text-align: center;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 18px;
+    }
+    
+    .version-letter.available {
+        background: #dcfce7;
+        color: #16a34a;
+        border: 2px solid #22c55e;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    .version-letter.available:hover {
+        background: #22c55e;
+        color: white;
+        transform: scale(1.05);
+    }
+    
+    .version-letter.taken {
+        background: #fee2e2;
+        color: #dc2626;
+        border: 2px solid #ef4444;
+    }
+    
+    .btn-create {
+        background: linear-gradient(135deg, #3b82f6, #1e40af);
+        color: white;
+        border: none;
+        padding: 0.75rem 2rem;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    .btn-create:hover {
+        background: linear-gradient(135deg, #1e40af, #1e3a8a);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+    
+    .btn-cancel {
+        background: #6b7280;
+        color: white;
+        border: none;
+        padding: 0.75rem 2rem;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        margin-right: 1rem;
+    }
+    
+    .btn-cancel:hover {
+        background: #4b5563;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h3 mb-0">{{ title }}</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'ai_generator:history' %}">Generations</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'ai_generator:view_generation' generation.id %}">{{ generation.title }}</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Create Version</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="version-form">
+                <div class="version-info">
+                    <h4><i class="fas fa-info-circle text-primary"></i> Creating New Version</h4>
+                    <p class="mb-0">
+                        You are creating a new version of "<strong>{{ generation.title }}</strong>". 
+                        This will generate a similar {{ generation.content_type }} with varied questions to prevent cheating.
+                    </p>
+                </div>
+                
+                {% if existing_versions %}
+                <div class="existing-versions">
+                    <h5><i class="fas fa-list text-warning"></i> Existing Versions</h5>
+                    <p class="mb-2">The following versions already exist:</p>
+                    <div class="version-letters">
+                        {% for version in existing_versions %}
+                        <span class="version-letter taken">{{ version }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="form-group mb-4">
+                        <label for="version_letter" class="form-label">
+                            <strong>Select Version Letter</strong>
+                        </label>
+                        <div class="version-letters mt-2">
+                            {% for letter in available_letters %}
+                            <label class="version-letter available" for="version_{{ letter }}">
+                                <input type="radio" name="version_letter" value="{{ letter }}" id="version_{{ letter }}" style="display: none;" required>
+                                {{ letter }}
+                            </label>
+                            {% empty %}
+                            <p class="text-muted">No more version letters available. Maximum 5 versions allowed.</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <i class="fas fa-lightbulb"></i>
+                        <strong>Note:</strong> The new version will use the same content and parameters as the original but will generate different variations of questions to ensure academic integrity.
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn-cancel" onclick="history.back()">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                        {% if available_letters %}
+                        <button type="submit" class="btn-create">
+                            <i class="fas fa-plus"></i> Create Version
+                        </button>
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0"><i class="fas fa-chart-bar"></i> Generation Details</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="stat-item">
+                                <div class="stat-value">{{ generation.content_type|title }}</div>
+                                <div class="stat-label">Type</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="stat-item">
+                                <div class="stat-value">{{ generation.input_parameters.num_questions|default:"N/A" }}</div>
+                                <div class="stat-label">Questions</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="generation-info">
+                        <p><strong>Language:</strong> {{ generation.input_parameters.language|default:"English" }}</p>
+                        <p><strong>Difficulty:</strong> {{ generation.input_parameters.difficulty|title|default:"Medium" }}</p>
+                        <p><strong>Created:</strong> {{ generation.created_at|date:"M d, Y" }}</p>
+                        <p class="mb-0"><strong>Status:</strong> 
+                            <span class="badge badge-success">{{ generation.status|title }}</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle version letter selection
+    const versionLetters = document.querySelectorAll('.version-letter.available');
+    versionLetters.forEach(letter => {
+        letter.addEventListener('click', function() {
+            // Remove selection from all letters
+            versionLetters.forEach(l => l.classList.remove('selected'));
+            // Add selection to clicked letter
+            this.classList.add('selected');
+        });
+    });
+});
+</script>
+
+<style>
+.version-letter.available.selected {
+    background: #22c55e !important;
+    color: white !important;
+}
+
+.stat-item {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: #6b7280;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.generation-info p {
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+</style>
+{% endblock %}

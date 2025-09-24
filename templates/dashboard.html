@@ -1,0 +1,325 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - DidactIA{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Welcome Section -->
+    <div class="bg-gradient-to-r from-primary-600 to-primary-700 rounded-lg shadow-lg">
+        <div class="px-6 py-8 sm:px-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-2xl font-bold text-white">
+                        Welcome back, {{ user.get_full_name }}!
+                    </h1>
+                    <p class="mt-2 text-primary-100">
+                        {% if user.institution %}{{ user.institution }}{% else %}DidactIA Platform{% endif %}
+                    </p>
+                    <p class="mt-1 text-sm text-primary-200">
+                        Last login: {{ user.last_login|date:"M d, Y at g:i A"|default:"First time login" }}
+                    </p>
+                </div>
+                <div class="hidden sm:block">
+                    <div class="flex space-x-3">
+                        <a href="{% url 'courses:create' %}" 
+                           class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-primary-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors">
+                            <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                            </svg>
+                            New Course
+                        </a>
+                        <a href="{% url 'ai_generator:quiz_generator' %}"
+                           class="inline-flex items-center px-4 py-2 border border-primary-500 text-sm font-medium rounded-md text-white hover:bg-primary-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors">
+                            <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                            </svg>
+                            Generate Quiz
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <!-- Total Courses -->
+        <div class="relative bg-white pt-5 px-4 pb-12 sm:pt-6 sm:px-6 shadow rounded-lg overflow-hidden">
+            <div>
+                <div class="absolute bg-primary-500 rounded-md p-3">
+                    <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                    </svg>
+                </div>
+                <p class="ml-16 text-sm font-medium text-gray-500 truncate">Total Courses</p>
+            </div>
+            <div class="ml-16 pb-6 flex items-baseline">
+                <p class="text-2xl font-semibold text-gray-900">{{ stats.total_courses|default:0 }}</p>
+                <p class="ml-2 flex items-baseline text-sm font-semibold text-green-600">
+                    <svg class="self-center flex-shrink-0 h-3 w-3 text-green-500" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L10 6.414 6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                    </svg>
+                    <span class="sr-only">Increased by</span>
+                    {{ stats.courses_growth|default:0 }}%
+                </p>
+            </div>
+            <div class="absolute bottom-0 inset-x-0 bg-gray-50 px-4 py-4 sm:px-6">
+                <div class="text-sm">
+                    <a href="{% url 'courses:list' %}" class="font-medium text-primary-600 hover:text-primary-500">
+                        View all courses<span class="sr-only"> Total Courses</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Files Uploaded -->
+        <div class="relative bg-white pt-5 px-4 pb-12 sm:pt-6 sm:px-6 shadow rounded-lg overflow-hidden">
+            <div>
+                <div class="absolute bg-success-500 rounded-md p-3">
+                    <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                    </svg>
+                </div>
+                <p class="ml-16 text-sm font-medium text-gray-500 truncate">Files Uploaded</p>
+            </div>
+            <div class="ml-16 pb-6 flex items-baseline">
+                <p class="text-2xl font-semibold text-gray-900">{{ stats.total_files|default:0 }}</p>
+                <p class="ml-2 flex items-baseline text-sm font-semibold text-green-600">
+                    <svg class="self-center flex-shrink-0 h-3 w-3 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L10 6.414 6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                    </svg>
+                    <span class="sr-only">Increased by</span>
+                    {{ stats.files_growth|default:0 }}%
+                </p>
+            </div>
+            <div class="absolute bottom-0 inset-x-0 bg-gray-50 px-4 py-4 sm:px-6">
+                <div class="text-sm">
+                    <a href="{% url 'uploads:list' %}" class="font-medium text-success-600 hover:text-success-500">
+                        View all files<span class="sr-only"> Files Uploaded</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Generations -->
+        <div class="relative bg-white pt-5 px-4 pb-12 sm:pt-6 sm:px-6 shadow rounded-lg overflow-hidden">
+            <div>
+                <div class="absolute bg-warning-500 rounded-md p-3">
+                    <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                    </svg>
+                </div>
+                <p class="ml-16 text-sm font-medium text-gray-500 truncate">AI Generations</p>
+            </div>
+            <div class="ml-16 pb-6 flex items-baseline">
+                <p class="text-2xl font-semibold text-gray-900">{{ stats.total_generations|default:0 }}</p>
+                <p class="ml-2 flex items-baseline text-sm font-semibold text-green-600">
+                    <svg class="self-center flex-shrink-0 h-3 w-3 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L10 6.414 6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                    </svg>
+                    <span class="sr-only">Increased by</span>
+                    {{ stats.generations_growth|default:0 }}%
+                </p>
+            </div>
+            <div class="absolute bottom-0 inset-x-0 bg-gray-50 px-4 py-4 sm:px-6">
+                <div class="text-sm">
+                    <a href="{% url 'ai_generator:history' %}" class="font-medium text-warning-600 hover:text-warning-500">
+                        View history<span class="sr-only"> AI Generations</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Exports Created -->
+        <div class="relative bg-white pt-5 px-4 pb-12 sm:pt-6 sm:px-6 shadow rounded-lg overflow-hidden">
+            <div>
+                <div class="absolute bg-purple-500 rounded-md p-3">
+                    <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                </div>
+                <p class="ml-16 text-sm font-medium text-gray-500 truncate">Exports Created</p>
+            </div>
+            <div class="ml-16 pb-6 flex items-baseline">
+                <p class="text-2xl font-semibold text-gray-900">{{ stats.total_exports|default:0 }}</p>
+                <p class="ml-2 flex items-baseline text-sm font-semibold text-green-600">
+                    <svg class="self-center flex-shrink-0 h-3 w-3 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L10 6.414 6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                    </svg>
+                    <span class="sr-only">Increased by</span>
+                    {{ stats.exports_growth|default:0 }}%
+                </p>
+            </div>
+            <div class="absolute bottom-0 inset-x-0 bg-gray-50 px-4 py-4 sm:px-6">
+                <div class="text-sm">
+                    <a href="{% url 'exports:list' %}" class="font-medium text-purple-600 hover:text-purple-500">
+                        View exports<span class="sr-only"> Exports Created</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity & Quick Actions -->
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <!-- Recent Activity -->
+        <div class="bg-white shadow rounded-lg">
+            <div class="px-4 py-5 sm:p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900">Recent Activity</h3>
+                    <a href="{% url 'core:activity' %}" class="text-sm text-primary-600 hover:text-primary-500">View all</a>
+                </div>
+                
+                <div class="flow-root">
+                    <ul class="-mb-8">
+                        {% for activity in recent_activities|slice:":5" %}
+                        <li>
+                            <div class="relative pb-8">
+                                {% if not forloop.last %}
+                                <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true"></span>
+                                {% endif %}
+                                <div class="relative flex space-x-3">
+                                    <div>
+                                        <span class="h-8 w-8 rounded-full bg-primary-500 flex items-center justify-center ring-8 ring-white">
+                                            {% if activity.action == 'course_created' %}
+                                                <svg class="h-4 w-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                </svg>
+                                            {% elif activity.action == 'file_uploaded' %}
+                                                <svg class="h-4 w-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                                                </svg>
+                                            {% else %}
+                                                <svg class="h-4 w-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                                </svg>
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                    <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
+                                        <div>
+                                            <p class="text-sm text-gray-500">{{ activity.description|default:activity.get_action_display }}</p>
+                                        </div>
+                                        <div class="text-right text-sm whitespace-nowrap text-gray-500">
+                                            <time datetime="{{ activity.created_at|date:'c' }}">{{ activity.created_at|timesince }} ago</time>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        {% empty %}
+                        <li class="text-center py-8 text-gray-500">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                            </svg>
+                            <p class="mt-2">No recent activity</p>
+                            <p class="text-sm">Start by creating a course or uploading files</p>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="bg-white shadow rounded-lg">
+            <div class="px-4 py-5 sm:p-6">
+                <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Quick Actions</h3>
+                
+                <div class="space-y-3">
+                    <!-- Create Course -->
+                    <a href="{% url 'courses:create' %}" 
+                       class="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm flex items-center space-x-3 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors">
+                        <div class="flex-shrink-0">
+                            <div class="h-10 w-10 rounded-lg bg-primary-500 flex items-center justify-center">
+                                <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <span class="absolute inset-0" aria-hidden="true"></span>
+                            <p class="text-sm font-medium text-gray-900">Create New Course</p>
+                            <p class="text-sm text-gray-500 truncate">Start organizing your educational content</p>
+                        </div>
+                    </a>
+
+                    <!-- Upload Files -->
+                    <a href="{% url 'uploads:upload' %}" 
+                       class="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm flex items-center space-x-3 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors">
+                        <div class="flex-shrink-0">
+                            <div class="h-10 w-10 rounded-lg bg-success-500 flex items-center justify-center">
+                                <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <span class="absolute inset-0" aria-hidden="true"></span>
+                            <p class="text-sm font-medium text-gray-900">Upload Files</p>
+                            <p class="text-sm text-gray-500 truncate">Add PDFs, Word docs, or presentations</p>
+                        </div>
+                    </a>
+
+                    <!-- Generate Quiz -->
+                    <a href="{% url 'ai_generator:quiz_generator' %}"
+                       class="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm flex items-center space-x-3 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors">
+                        <div class="flex-shrink-0">
+                            <div class="h-10 w-10 rounded-lg bg-warning-500 flex items-center justify-center">
+                                <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <span class="absolute inset-0" aria-hidden="true"></span>
+                            <p class="text-sm font-medium text-gray-900">Generate AI Quiz</p>
+                            <p class="text-sm text-gray-500 truncate">Create quizzes from your content using AI</p>
+                        </div>
+                    </a>
+
+                    <!-- Create Exam -->
+                    <a href="{% url 'ai_generator:exam_generator' %}"
+                       class="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm flex items-center space-x-3 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors">
+                        <div class="flex-shrink-0">
+                            <div class="h-10 w-10 rounded-lg bg-purple-500 flex items-center justify-center">
+                                <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <span class="absolute inset-0" aria-hidden="true"></span>
+                            <p class="text-sm font-medium text-gray-900">Create Exam</p>
+                            <p class="text-sm text-gray-500 truncate">Generate comprehensive exams with multiple versions</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Demo notification button for testing -->
+    <div class="bg-white shadow rounded-lg p-4">
+        <h3 class="text-lg font-medium text-gray-900 mb-4">Test Features</h3>
+        <div class="space-x-3">
+            <button @click="DidactIA.notify('Welcome to DidactIA! Your AI-powered education platform is ready.', 'success')" 
+                    class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-success-600 hover:bg-success-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-success-500">
+                Test Success Notification
+            </button>
+            <button @click="DidactIA.notify('Your quiz has been generated and is ready for export.', 'info')" 
+                    class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                Test Info Notification
+            </button>
+            <button @click="DidactIA.notify('Please check your API configuration.', 'warning')" 
+                    class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-warning-600 hover:bg-warning-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-warning-500">
+                Test Warning Notification
+            </button>
+            <button @click="DidactIA.notify('There was an error processing your request.', 'error')" 
+                    class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                Test Error Notification
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}

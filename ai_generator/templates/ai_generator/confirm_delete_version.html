@@ -1,0 +1,246 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .delete-confirmation {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin: 2rem 0;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .warning-icon {
+        background: #fef7f0;
+        color: #f59e0b;
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        margin: 0 auto 1.5rem;
+        border: 3px solid #f59e0b;
+    }
+    
+    .version-info {
+        background: #f8fafc;
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+        border-left: 4px solid #ef4444;
+    }
+    
+    .btn-delete {
+        background: #ef4444;
+        color: white;
+        border: none;
+        padding: 0.75rem 2rem;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        margin-right: 1rem;
+    }
+    
+    .btn-delete:hover {
+        background: #dc2626;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    }
+    
+    .btn-cancel {
+        background: #6b7280;
+        color: white;
+        border: none;
+        padding: 0.75rem 2rem;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+    
+    .btn-cancel:hover {
+        background: #4b5563;
+        color: white;
+        text-decoration: none;
+    }
+    
+    .consequences-list {
+        background: #fef2f2;
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+        border-left: 4px solid #ef4444;
+    }
+    
+    .consequences-list h5 {
+        color: #991b1b;
+        margin-bottom: 1rem;
+    }
+    
+    .consequences-list ul {
+        list-style: none;
+        padding: 0;
+    }
+    
+    .consequences-list li {
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #fecaca;
+        color: #7f1d1d;
+    }
+    
+    .consequences-list li:last-child {
+        border-bottom: none;
+    }
+    
+    .consequences-list li i {
+        margin-right: 0.5rem;
+        color: #dc2626;
+    }
+    
+    .form-actions {
+        text-align: center;
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid #e5e7eb;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'ai_generator:history' %}">Generations</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'ai_generator:view_generation' generation.id %}">{{ generation.title }}</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'ai_generator:view_version' generation.id version.version_letter %}">Version {{ version.version_letter }}</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Delete</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    
+    <div class="delete-confirmation">
+        <div class="warning-icon">
+            <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        
+        <h2 class="text-center mb-3">Delete Version {{ version.version_letter }}?</h2>
+        <p class="text-center text-muted mb-4">
+            This action cannot be undone. Please review the details before proceeding.
+        </p>
+        
+        <div class="version-info">
+            <h5><i class="fas fa-file-alt text-primary"></i> Version Details</h5>
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Title:</strong> {{ generation.title }}</p>
+                    <p><strong>Version:</strong> {{ version.version_letter }}</p>
+                    <p><strong>Type:</strong> {{ generation.content_type|title }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Created:</strong> {{ version.created_at|date:"M d, Y g:i A" }}</p>
+                    <p><strong>Questions:</strong> {{ version.generated_content.questions|length|default:"N/A" }}</p>
+                    <p><strong>Language:</strong> {{ generation.input_parameters.language|default:"English" }}</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="consequences-list">
+            <h5><i class="fas fa-exclamation-circle"></i> What will be deleted:</h5>
+            <ul>
+                <li>
+                    <i class="fas fa-file-alt"></i>
+                    Version {{ version.version_letter }} content and all associated questions
+                </li>
+                <li>
+                    <i class="fas fa-chart-line"></i>
+                    All version-specific metadata and variations
+                </li>
+                <li>
+                    <i class="fas fa-download"></i>
+                    Any exported files linked to this version will become inaccessible
+                </li>
+                <li>
+                    <i class="fas fa-history"></i>
+                    Version history and creation records
+                </li>
+            </ul>
+        </div>
+        
+        <div class="alert alert-warning">
+            <i class="fas fa-info-circle"></i>
+            <strong>Note:</strong> The original generation (main version) will remain intact. Only Version {{ version.version_letter }} will be deleted.
+        </div>
+        
+        <form method="post" class="form-actions">
+            {% csrf_token %}
+            
+            <div class="mb-3">
+                <label class="form-check-label d-block mb-3">
+                    <input type="checkbox" class="form-check-input me-2" id="confirm-delete" required>
+                    I understand that this action is permanent and cannot be undone
+                </label>
+            </div>
+            
+            <button type="submit" class="btn-delete" id="delete-btn" disabled>
+                <i class="fas fa-trash-alt"></i>
+                Delete Version {{ version.version_letter }}
+            </button>
+            
+            <a href="{% url 'ai_generator:view_version' generation.id version.version_letter %}" class="btn-cancel">
+                <i class="fas fa-times"></i>
+                Cancel
+            </a>
+        </form>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const checkbox = document.getElementById('confirm-delete');
+    const deleteBtn = document.getElementById('delete-btn');
+    
+    checkbox.addEventListener('change', function() {
+        deleteBtn.disabled = !this.checked;
+        if (this.checked) {
+            deleteBtn.style.opacity = '1';
+        } else {
+            deleteBtn.style.opacity = '0.5';
+        }
+    });
+    
+    // Add confirmation on form submit
+    deleteBtn.addEventListener('click', function(e) {
+        if (!confirm('Are you absolutely sure you want to delete Version {{ version.version_letter }}? This action cannot be undone.')) {
+            e.preventDefault();
+        }
+    });
+});
+</script>
+
+<style>
+#delete-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+#delete-btn:disabled:hover {
+    background: #ef4444;
+    transform: none;
+    box-shadow: none;
+}
+</style>
+{% endblock %}

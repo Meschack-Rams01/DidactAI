@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - DidactIA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50">
+    <!-- Simple Navbar -->
+    <nav class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <i class="fas fa-graduation-cap text-2xl text-blue-600 mr-2"></i>
+                    <h1 class="text-xl font-bold text-gray-900">DidactIA</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-gray-700">Hello, {{ user.get_full_name|default:user.username }}!</span>
+                    <a href="{% url 'accounts:profile' %}" class="text-blue-600 hover:text-blue-800">
+                        <i class="fas fa-user"></i>
+                    </a>
+                    <a href="{% url 'accounts:logout' %}" class="text-red-600 hover:text-red-800">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <!-- Welcome Section -->
+        <div class="bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg shadow-lg mb-6">
+            <div class="px-6 py-8">
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold text-white mb-2">
+                        Welcome to DidactIA!
+                    </h2>
+                    <p class="text-blue-100 text-lg">
+                        Your AI-powered educational content management platform
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white p-6 rounded-lg shadow">
+                <div class="flex items-center">
+                    <div class="p-3 bg-blue-500 rounded-full">
+                        <i class="fas fa-graduation-cap text-white text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="text-sm font-medium text-gray-500">Total Courses</h3>
+                        <p class="text-2xl font-bold text-gray-900">{{ dashboard_data.content_stats.courses_created|default:0 }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg shadow">
+                <div class="flex items-center">
+                    <div class="p-3 bg-green-500 rounded-full">
+                        <i class="fas fa-file-upload text-white text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="text-sm font-medium text-gray-500">Files Uploaded</h3>
+                        <p class="text-2xl font-bold text-gray-900">{{ dashboard_data.content_stats.files_uploaded|default:0 }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg shadow">
+                <div class="flex items-center">
+                    <div class="p-3 bg-purple-500 rounded-full">
+                        <i class="fas fa-robot text-white text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="text-sm font-medium text-gray-500">AI Generations</h3>
+                        <p class="text-2xl font-bold text-gray-900">{{ dashboard_data.content_stats.ai_generations|default:0 }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg shadow">
+                <div class="flex items-center">
+                    <div class="p-3 bg-orange-500 rounded-full">
+                        <i class="fas fa-download text-white text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="text-sm font-medium text-gray-500">Exports Created</h3>
+                        <p class="text-2xl font-bold text-gray-900">{{ dashboard_data.content_stats.exports_created|default:0 }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="bg-white rounded-lg shadow">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-900">Quick Actions</h3>
+            </div>
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <a href="{% url 'courses:create' %}" class="bg-blue-50 hover:bg-blue-100 p-4 rounded-lg border border-blue-200 transition-colors">
+                        <div class="flex items-center">
+                            <i class="fas fa-plus text-blue-600 text-xl mr-3"></i>
+                            <div>
+                                <h4 class="font-medium text-gray-900">Create Course</h4>
+                                <p class="text-sm text-gray-600">Start a new course</p>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="{% url 'uploads:upload' %}" class="bg-green-50 hover:bg-green-100 p-4 rounded-lg border border-green-200 transition-colors">
+                        <div class="flex items-center">
+                            <i class="fas fa-upload text-green-600 text-xl mr-3"></i>
+                            <div>
+                                <h4 class="font-medium text-gray-900">Upload Files</h4>
+                                <p class="text-sm text-gray-600">Add documents</p>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="{% url 'ai_generator:quiz_generator' %}" class="bg-purple-50 hover:bg-purple-100 p-4 rounded-lg border border-purple-200 transition-colors">
+                        <div class="flex items-center">
+                            <i class="fas fa-brain text-purple-600 text-xl mr-3"></i>
+                            <div>
+                                <h4 class="font-medium text-gray-900">Generate Quiz</h4>
+                                <p class="text-sm text-gray-600">AI-powered quiz</p>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="{% url 'exports:list' %}" class="bg-orange-50 hover:bg-orange-100 p-4 rounded-lg border border-orange-200 transition-colors">
+                        <div class="flex items-center">
+                            <i class="fas fa-file-export text-orange-600 text-xl mr-3"></i>
+                            <div>
+                                <h4 class="font-medium text-gray-900">Export Content</h4>
+                                <p class="text-sm text-gray-600">Download materials</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Features -->
+        <div class="mt-8 bg-white rounded-lg shadow">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-900">Available Features</h3>
+            </div>
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="text-center">
+                        <i class="fas fa-robot text-3xl text-blue-600 mb-3"></i>
+                        <h4 class="font-semibold text-gray-900">AI-Powered Generation</h4>
+                        <p class="text-sm text-gray-600 mt-1">Generate quizzes, exams, and educational content using advanced AI</p>
+                    </div>
+                    
+                    <div class="text-center">
+                        <i class="fas fa-chart-line text-3xl text-green-600 mb-3"></i>
+                        <h4 class="font-semibold text-gray-900">Advanced Analytics</h4>
+                        <p class="text-sm text-gray-600 mt-1">Track usage, performance, and engagement with comprehensive analytics</p>
+                    </div>
+                    
+                    <div class="text-center">
+                        <i class="fas fa-globe text-3xl text-purple-600 mb-3"></i>
+                        <h4 class="font-semibold text-gray-900">Multilingual Support</h4>
+                        <p class="text-sm text-gray-600 mt-1">Support for 11 languages with automatic translation capabilities</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

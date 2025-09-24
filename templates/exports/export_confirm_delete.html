@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Delete Export" %} - {{ export.title }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .delete-warning {
+        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+        border: 1px solid #f87171;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 20px 0;
+    }
+    
+    .delete-icon {
+        color: #dc2626;
+        width: 48px;
+        height: 48px;
+    }
+    
+    .export-info {
+        background: #f9fafb;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 16px;
+        margin: 16px 0;
+    }
+    
+    .btn-danger {
+        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 6px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+    
+    .btn-danger:hover {
+        background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(220, 38, 38, 0.3);
+    }
+    
+    .btn-secondary {
+        background: #f3f4f6;
+        color: #374151;
+        border: 1px solid #d1d5db;
+        padding: 12px 24px;
+        border-radius: 6px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        display: inline-block;
+    }
+    
+    .btn-secondary:hover {
+        background: #e5e7eb;
+        color: #374151;
+        text-decoration: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Page Header -->
+    <div class="mb-8">
+        <div class="flex items-center">
+            <div class="flex-shrink-0">
+                <svg class="delete-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            </div>
+            <div class="ml-4">
+                <h1 class="text-3xl font-bold text-gray-900">{% trans "Delete Export" %}</h1>
+                <p class="mt-1 text-gray-600">{% trans "Permanently remove this export from your account" %}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Warning Message -->
+    <div class="delete-warning">
+        <div class="flex items-center">
+            <div class="flex-shrink-0">
+                <svg class="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 18.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                </svg>
+            </div>
+            <div class="ml-3">
+                <h3 class="text-lg font-semibold text-red-800">{% trans "Warning: This action cannot be undone" %}</h3>
+                <p class="text-red-700">{% trans "Deleting this export will permanently remove all associated files and data." %}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export Information -->
+    <div class="export-info">
+        <h3 class="text-lg font-medium text-gray-900 mb-3">{% trans "Export Details" %}</h3>
+        <dl class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <dt class="text-sm font-medium text-gray-500">{% trans "Title" %}</dt>
+                <dd class="text-sm text-gray-900">{{ export.title }}</dd>
+            </div>
+            <div>
+                <dt class="text-sm font-medium text-gray-500">{% trans "Type" %}</dt>
+                <dd class="text-sm text-gray-900">{{ export.get_export_type_display }}</dd>
+            </div>
+            <div>
+                <dt class="text-sm font-medium text-gray-500">{% trans "Format" %}</dt>
+                <dd class="text-sm text-gray-900">{{ export.export_format|upper }}</dd>
+            </div>
+            <div>
+                <dt class="text-sm font-medium text-gray-500">{% trans "Created" %}</dt>
+                <dd class="text-sm text-gray-900">{{ export.created_at|date:"F d, Y H:i" }}</dd>
+            </div>
+            <div>
+                <dt class="text-sm font-medium text-gray-500">{% trans "Status" %}</dt>
+                <dd class="text-sm">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                        {% if export.status == 'completed' %}
+                            bg-green-100 text-green-800
+                        {% elif export.status == 'processing' %}
+                            bg-yellow-100 text-yellow-800
+                        {% elif export.status == 'failed' %}
+                            bg-red-100 text-red-800
+                        {% else %}
+                            bg-gray-100 text-gray-800
+                        {% endif %}">
+                        {{ export.get_status_display }}
+                    </span>
+                </dd>
+            </div>
+            {% if export.file_size %}
+            <div>
+                <dt class="text-sm font-medium text-gray-500">{% trans "File Size" %}</dt>
+                <dd class="text-sm text-gray-900">{{ export.file_size|filesizeformat }}</dd>
+            </div>
+            {% endif %}
+        </dl>
+    </div>
+
+    <!-- Confirmation Form -->
+    <form method="post" class="mt-8">
+        {% csrf_token %}
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm text-gray-600">
+                    {% trans "Please confirm that you want to delete this export. This action cannot be undone." %}
+                </p>
+            </div>
+        </div>
+        
+        <div class="mt-6 flex items-center justify-end space-x-4">
+            <a href="{% url 'exports:detail' object.pk %}" class="btn-secondary">
+                {% trans "Cancel" %}
+            </a>
+            <button type="submit" class="btn-danger">
+                <svg class="inline h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                </svg>
+                {% trans "Delete Export" %}
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

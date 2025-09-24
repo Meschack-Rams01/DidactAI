@@ -1,0 +1,227 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{% if form.instance.pk %}Edit Template{% else %}Create Template{% endif %} - DidactIA{% endblock %}
+
+{% block page_header %}
+<div class="bg-white shadow">
+    <div class="px-4 sm:px-6 lg:px-8 py-6">
+        <div class="md:flex md:items-center md:justify-between">
+            <div class="flex-1 min-w-0">
+                <nav class="flex mb-3" aria-label="Breadcrumb">
+                    <ol class="flex items-center space-x-4">
+                        <li>
+                            <div>
+                                <a href="{% url 'exports:template_list' %}" class="text-gray-400 hover:text-gray-500">
+                                    Export Templates
+                                </a>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="flex items-center">
+                                <svg class="flex-shrink-0 h-5 w-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 111.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                                </svg>
+                                <span class="ml-4 text-sm font-medium text-gray-900">
+                                    {% if form.instance.pk %}Edit Template{% else %}Create Template{% endif %}
+                                </span>
+                            </div>
+                        </li>
+                    </ol>
+                </nav>
+                <h1 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
+                    {% if form.instance.pk %}Edit Template{% else %}Create Export Template{% endif %}
+                </h1>
+                <p class="mt-1 max-w-2xl text-sm text-gray-500">
+                    {% if form.instance.pk %}
+                        Update the template settings and content.
+                    {% else %}
+                        Create a custom template for exporting quizzes, exams, and other content.
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <form method="post" class="space-y-8">
+        {% csrf_token %}
+        
+        <!-- Basic Information -->
+        <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+            <div class="px-4 py-5 sm:px-6">
+                <h3 class="text-lg leading-6 font-medium text-gray-900">Basic Information</h3>
+                <p class="mt-1 max-w-2xl text-sm text-gray-500">
+                    Basic details about your template.
+                </p>
+            </div>
+            <div class="border-t border-gray-200 px-4 py-5 sm:px-6">
+                <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
+                    <!-- Template Name -->
+                    <div class="sm:col-span-2">
+                        <label for="{{ form.name.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                            Template Name
+                        </label>
+                        <div class="mt-1">
+                            {{ form.name }}
+                        </div>
+                        {% if form.name.errors %}
+                        <p class="mt-2 text-sm text-red-600">{{ form.name.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Template Type -->
+                    <div>
+                        <label for="{{ form.template_type.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                            Template Type
+                        </label>
+                        <div class="mt-1">
+                            {{ form.template_type }}
+                        </div>
+                        {% if form.template_type.errors %}
+                        <p class="mt-2 text-sm text-red-600">{{ form.template_type.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Content Type -->
+                    <div>
+                        <label for="{{ form.content_type.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                            Content Type
+                        </label>
+                        <div class="mt-1">
+                            {{ form.content_type }}
+                        </div>
+                        {% if form.content_type.errors %}
+                        <p class="mt-2 text-sm text-red-600">{{ form.content_type.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Description -->
+                    <div class="sm:col-span-2">
+                        <label for="{{ form.description.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                            Description
+                        </label>
+                        <div class="mt-1">
+                            {{ form.description }}
+                        </div>
+                        {% if form.description.errors %}
+                        <p class="mt-2 text-sm text-red-600">{{ form.description.errors.0 }}</p>
+                        {% endif %}
+                        <p class="mt-2 text-sm text-gray-500">
+                            Describe what this template is for and when to use it.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Template Content -->
+        <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+            <div class="px-4 py-5 sm:px-6">
+                <h3 class="text-lg leading-6 font-medium text-gray-900">Template Content</h3>
+                <p class="mt-1 max-w-2xl text-sm text-gray-500">
+                    HTML template code with Django template variables.
+                </p>
+            </div>
+            <div class="border-t border-gray-200 px-4 py-5 sm:px-6">
+                <div class="space-y-6">
+                    <!-- Template Content -->
+                    <div>
+                        <label for="{{ form.template_content.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                            HTML Template
+                        </label>
+                        <div class="mt-1">
+                            {{ form.template_content }}
+                        </div>
+                        {% if form.template_content.errors %}
+                        <p class="mt-2 text-sm text-red-600">{{ form.template_content.errors.0 }}</p>
+                        {% endif %}
+                        <p class="mt-2 text-sm text-gray-500">
+                            Use Django template syntax. Available variables: {{ '{' }}{{ '{ quiz.title }' }}{{ '}' }}, {{ '{' }}{{ '{ quiz.questions }' }}{{ '}' }}, etc.
+                        </p>
+                    </div>
+
+                    <!-- CSS Styles -->
+                    <div>
+                        <label for="{{ form.css_styles.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                            Custom CSS (Optional)
+                        </label>
+                        <div class="mt-1">
+                            {{ form.css_styles }}
+                        </div>
+                        {% if form.css_styles.errors %}
+                        <p class="mt-2 text-sm text-red-600">{{ form.css_styles.errors.0 }}</p>
+                        {% endif %}
+                        <p class="mt-2 text-sm text-gray-500">
+                            Additional CSS styles for your template.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Template Variables Reference -->
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <svg class="h-5 w-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                    </svg>
+                </div>
+                <div class="ml-3">
+                    <h3 class="text-sm font-medium text-blue-800">Available Template Variables</h3>
+                    <div class="mt-2 text-sm text-blue-700">
+                        <p><strong>For Quizzes:</strong></p>
+                        <ul class="list-disc list-inside mt-1 space-y-1">
+                            <li><code>{{ '{' }}{{ '{ quiz.title }' }}{{ '}' }}</code> - Quiz title</li>
+                            <li><code>{{ '{' }}{{ '{ quiz.questions }' }}{{ '}' }}</code> - List of questions</li>
+                            <li><code>{{ '{' }}{{ '{ quiz.total_points }' }}{{ '}' }}</code> - Total points</li>
+                            <li><code>{{ '{' }}{{ '{ question.question_text }' }}{{ '}' }}</code> - Question text</li>
+                            <li><code>{{ '{' }}{{ '{ question.options }' }}{{ '}' }}</code> - Multiple choice options</li>
+                            <li><code>{{ '{' }}{{ '{ institution_name }' }}{{ '}' }}</code> - Institution name</li>
+                            <li><code>{{ '{' }}{{ '{ department }' }}{{ '}' }}</code> - Department</li>
+                            <li><code>{{ '{' }}{{ '{ include_answer_key }' }}{{ '}' }}</code> - Boolean for answer key</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="flex justify-end space-x-3">
+            <a href="{% url 'exports:template_list' %}" 
+               class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                Cancel
+            </a>
+            <button type="submit" 
+                    class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                {% if form.instance.pk %}Update Template{% else %}Create Template{% endif %}
+            </button>
+        </div>
+    </form>
+</div>
+
+<style>
+/* Form styling */
+input[type="text"], select, textarea {
+    @apply mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md;
+}
+
+textarea {
+    @apply min-h-32;
+}
+
+#id_template_content {
+    min-height: 300px;
+    font-family: 'Courier New', monospace;
+}
+
+#id_css_styles {
+    min-height: 200px;
+    font-family: 'Courier New', monospace;
+}
+</style>
+{% endblock %}

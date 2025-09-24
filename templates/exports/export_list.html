@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block title %}My Exports{% endblock %}
+
+{% block page_title %}My Exports{% endblock %}
+{% block page_description %}Download and manage your exported content{% endblock %}
+
+{% block content %}
+<div class="px-4 sm:px-6 lg:px-8 py-8">
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="sm:flex sm:items-center sm:justify-between mb-6">
+            <div class="flex-1 min-w-0">
+                <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:truncate">My Exports</h2>
+                <p class="mt-1 text-sm text-gray-500">
+                    Total: {{ total_exports }}, Completed: {{ completed_exports }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Exports Grid -->
+        {% if exports %}
+            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {% for export in exports %}
+                    <div class="bg-white overflow-hidden shadow rounded-lg hover:shadow-lg transition-shadow">
+                        <div class="p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-medium text-gray-900 truncate">
+                                    {{ export.title }}
+                                </h3>
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
+                                           {% if export.status == 'completed' %}bg-green-100 text-green-800
+                                           {% elif export.status == 'processing' %}bg-yellow-100 text-yellow-800
+                                           {% elif export.status == 'error' %}bg-red-100 text-red-800
+                                           {% else %}bg-gray-100 text-gray-800{% endif %}">
+                                    {{ export.get_status_display }}
+                                </span>
+                            </div>
+                            
+                            {% if export.description %}
+                                <p class="text-gray-600 text-sm mb-4">{{ export.description|truncatechars:100 }}</p>
+                            {% endif %}
+                            
+                            <div class="flex items-center justify-between text-sm text-gray-500 mb-4">
+                                <span>{{ export.get_export_format_display }}</span>
+                                {% if export.download_count > 0 %}
+                                    <span>{{ export.download_count }} download{{ export.download_count|pluralize }}</span>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="flex space-x-2">
+                                <a href="{% url 'exports:detail' export.pk %}"
+                                   class="flex-1 inline-flex justify-center items-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                                    View
+                                </a>
+                                {% if export.status == 'completed' and export.generated_file %}
+                                    <a href="{% url 'exports:download' export.pk %}"
+                                       class="flex-1 inline-flex justify-center items-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                                        Download
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gray-50 px-6 py-3">
+                            <div class="text-xs text-gray-500">
+                                Created {{ export.created_at|timesince }} ago
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- Pagination -->
+            {% if is_paginated %}
+                <nav class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6 mt-6" aria-label="Pagination">
+                    <div class="hidden sm:block">
+                        <p class="text-sm text-gray-700">
+                            Showing {{ page_obj.start_index }} to {{ page_obj.end_index }} of {{ page_obj.paginator.count }} results
+                        </p>
+                    </div>
+                    <div class="flex-1 flex justify-between sm:justify-end">
+                        {% if page_obj.has_previous %}
+                            <a href="?page={{ page_obj.previous_page_number }}"
+                               class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                                Previous
+                            </a>
+                        {% endif %}
+                        {% if page_obj.has_next %}
+                            <a href="?page={{ page_obj.next_page_number }}"
+                               class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                                Next
+                            </a>
+                        {% endif %}
+                    </div>
+                </nav>
+            {% endif %}
+
+        {% else %}
+            <!-- Empty State -->
+            <div class="text-center py-12">
+                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                <h3 class="mt-2 text-sm font-medium text-gray-900">No exports</h3>
+                <p class="mt-1 text-sm text-gray-500">
+                    Start by generating some content with AI, then export it to different formats.
+                </p>
+                <div class="mt-6">
+                    <a href="{% url 'ai_generator:quiz_generator' %}"
+                       class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700">
+                        Generate Content
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,40 @@
+Introduction to Computer Science
+
+Chapter 1: What is Computer Science?
+Computer science is the study of computational systems, algorithms, and the design of computer systems and their applications. It encompasses both the mathematical and engineering aspects of computing.
+
+Key Topics:
+- Programming fundamentals (variables, loops, functions)
+- Data structures (arrays, linked lists, trees, graphs)
+- Algorithms (sorting, searching, dynamic programming)
+- Computer architecture (CPU, memory, I/O systems)
+- Software engineering (design patterns, testing, debugging)
+- Database systems (SQL, NoSQL, data modeling)
+- Operating systems (processes, threads, memory management)
+- Computer networks (protocols, TCP/IP, internet)
+
+Programming Languages:
+Computer science involves learning various programming languages such as Python, Java, C++, JavaScript, and many others. Each language has its strengths and is suited for different types of applications.
+
+Python: Great for beginners, data science, web development
+Java: Enterprise applications, Android development
+C++: System programming, game development
+JavaScript: Web development, both frontend and backend
+
+Problem Solving:
+At its core, computer science is about solving problems efficiently using computational thinking and algorithmic approaches.
+
+Basic Programming Concepts:
+1. Variables and Data Types
+2. Control Structures (if-else, loops)
+3. Functions and Procedures
+4. Object-Oriented Programming
+5. Error Handling
+6. File I/O Operations
+
+Sample Questions:
+1. What is the difference between a compiler and an interpreter?
+2. Explain the concept of Big O notation.
+3. What are the advantages of object-oriented programming?
+4. How does a hash table work?
+5. What is the difference between a stack and a queue?

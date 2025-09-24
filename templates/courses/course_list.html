@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+
+{% block title %}My Courses{% endblock %}
+
+{% block page_title %}My Courses{% endblock %}
+{% block page_description %}Manage and organize your educational content{% endblock %}
+
+{% block content %}
+<div class="px-4 sm:px-6 lg:px-8 py-8">
+    <div class="max-w-7xl mx-auto">
+        <!-- Header with create button -->
+        <div class="sm:flex sm:items-center sm:justify-between mb-6">
+            <div class="flex-1 min-w-0">
+                <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:truncate">My Courses</h2>
+            </div>
+            <div class="mt-4 flex sm:mt-0 sm:ml-4">
+                <a href="{% url 'courses:create' %}"
+                   class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                    <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    New Course
+                </a>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="bg-white shadow rounded-lg mb-6">
+            <div class="px-6 py-4">
+                <form method="get" class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                    <!-- Search -->
+                    <div class="sm:col-span-2">
+                        <input type="text" name="search" value="{{ search_query }}"
+                               placeholder="Search courses by title, code, or department..."
+                               class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
+                    </div>
+                    
+                    <!-- Status Filter -->
+                    <div class="sm:col-span-1">
+                        <select name="status" 
+                                class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
+                            <option value="">All Statuses</option>
+                            {% for value, label in status_choices %}
+                                <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <!-- Submit button -->
+                    <div class="sm:col-span-3">
+                        <button type="submit" 
+                                class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                            <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                            Search
+                        </button>
+                        {% if search_query or status_filter %}
+                            <a href="{% url 'courses:list' %}"
+                               class="ml-3 inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                                Clear
+                            </a>
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Course Grid -->
+        {% if courses %}
+            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {% for course in courses %}
+                    <div class="bg-white overflow-hidden shadow rounded-lg hover:shadow-lg transition-shadow">
+                        <div class="p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex-1 min-w-0">
+                                    <h3 class="text-lg font-medium text-gray-900 truncate">
+                                        <a href="{% url 'courses:detail' course.pk %}" class="hover:text-primary-600">
+                                            {{ course.title }}
+                                        </a>
+                                    </h3>
+                                    {% if course.course_code %}
+                                        <p class="text-sm text-gray-500">{{ course.course_code }}</p>
+                                    {% endif %}
+                                </div>
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
+                                           {% if course.status == 'active' %}bg-green-100 text-green-800
+                                           {% elif course.status == 'draft' %}bg-yellow-100 text-yellow-800
+                                           {% else %}bg-gray-100 text-gray-800{% endif %}">
+                                    {{ course.get_status_display }}
+                                </span>
+                            </div>
+                            
+                            {% if course.description %}
+                                <p class="text-gray-600 text-sm mb-4 line-clamp-3">{{ course.description|truncatechars:120 }}</p>
+                            {% endif %}
+                            
+                            <div class="flex items-center justify-between text-sm text-gray-500 mb-4">
+                                {% if course.department %}
+                                    <span>{{ course.department }}</span>
+                                {% endif %}
+                                {% if course.semester and course.year %}
+                                    <span>{{ course.get_semester_display }} {{ course.year }}</span>
+                                {% endif %}
+                                {% if course.credits %}
+                                    <span>{{ course.credits }} credit{{ course.credits|pluralize }}</span>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="flex space-x-2">
+                                <a href="{% url 'courses:detail' course.pk %}"
+                                   class="flex-1 inline-flex justify-center items-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                                    View
+                                </a>
+                                <a href="{% url 'courses:edit' course.pk %}"
+                                   class="flex-1 inline-flex justify-center items-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                                    Edit
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gray-50 px-6 py-3">
+                            <div class="text-xs text-gray-500">
+                                Updated {{ course.updated_at|timesince }} ago
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- Pagination -->
+            {% if is_paginated %}
+                <nav class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6 mt-6" aria-label="Pagination">
+                    <div class="hidden sm:block">
+                        <p class="text-sm text-gray-700">
+                            Showing
+                            <span class="font-medium">{{ page_obj.start_index }}</span>
+                            to
+                            <span class="font-medium">{{ page_obj.end_index }}</span>
+                            of
+                            <span class="font-medium">{{ page_obj.paginator.count }}</span>
+                            results
+                        </p>
+                    </div>
+                    <div class="flex-1 flex justify-between sm:justify-end">
+                        {% if page_obj.has_previous %}
+                            <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}"
+                               class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                                Previous
+                            </a>
+                        {% endif %}
+                        {% if page_obj.has_next %}
+                            <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}"
+                               class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                                Next
+                            </a>
+                        {% endif %}
+                    </div>
+                </nav>
+            {% endif %}
+
+        {% else %}
+            <!-- Empty State -->
+            <div class="text-center py-12">
+                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                </svg>
+                <h3 class="mt-2 text-sm font-medium text-gray-900">No courses</h3>
+                <p class="mt-1 text-sm text-gray-500">
+                    {% if search_query or status_filter %}
+                        No courses match your search criteria.
+                    {% else %}
+                        Get started by creating your first course.
+                    {% endif %}
+                </p>
+                <div class="mt-6">
+                    {% if search_query or status_filter %}
+                        <a href="{% url 'courses:list' %}"
+                           class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700">
+                            Clear filters
+                        </a>
+                    {% else %}
+                        <a href="{% url 'courses:create' %}"
+                           class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700">
+                            <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                            </svg>
+                            Create your first course
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

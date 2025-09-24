@@ -1,0 +1,440 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Generate Quiz - DidactIA{% endblock %}
+
+{% block extra_css %}
+<style>
+    .file-preview {
+        background: #f8fafc;
+        border: 2px dashed #cbd5e1;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+    .file-preview.has-files {
+        background: #f0f9ff;
+        border-color: #0ea5e9;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Page Header -->
+    <div class="mb-8">
+        <div class="flex items-center">
+            <div class="flex-shrink-0">
+                <svg class="h-8 w-8 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                </svg>
+            </div>
+            <div class="ml-4">
+                <h1 class="text-3xl font-bold text-gray-900">AI Quiz Generator</h1>
+                <p class="mt-1 text-gray-600">Generate quizzes from your uploaded materials using advanced AI</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="mb-4 p-4 rounded-md {% if message.tags == 'error' %}bg-red-50 border border-red-200{% elif message.tags == 'success' %}bg-green-50 border border-green-200{% else %}bg-blue-50 border border-blue-200{% endif %}">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        {% if message.tags == 'error' %}
+                            <svg class="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                            </svg>
+                        {% elif message.tags == 'success' %}
+                            <svg class="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                        {% endif %}
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm {% if message.tags == 'error' %}text-red-700{% elif message.tags == 'success' %}text-green-700{% else %}text-blue-700{% endif %}">
+                            {{ message }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="post" class="space-y-8" x-data="{ 
+        selectedCourse: '', 
+        selectedFiles: [],
+        loading: false,
+        showAdvanced: false 
+    }">
+        {% csrf_token %}
+        
+        <div class="bg-white shadow rounded-lg">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-medium text-gray-900">Quiz Configuration</h3>
+                <p class="mt-1 text-sm text-gray-600">Configure your quiz settings and select source materials</p>
+            </div>
+            
+            <div class="p-6 space-y-6">
+                <!-- Course Selection -->
+                <div>
+                    <label for="course" class="block text-sm font-medium text-gray-700 mb-2">
+                        Course <span class="text-red-500">*</span>
+                    </label>
+                    <select name="course" id="course" required 
+                            x-model="selectedCourse"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                        <option value="">Select a course</option>
+                        {% for course in courses %}
+                            <option value="{{ course.id }}">{{ course.title }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Source Files Selection -->
+                <div x-show="selectedCourse" x-transition>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Source Files <span class="text-red-500">*</span>
+                    </label>
+                    <div class="file-preview p-6 text-center" :class="{'has-files': selectedFiles.length > 0}">
+                        <div x-show="selectedFiles.length === 0">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                            <h3 class="mt-2 text-sm font-medium text-gray-900">Select source files</h3>
+                            <p class="mt-1 text-sm text-gray-500">Choose PDF, DOCX, PPTX, or image files to generate quiz from</p>
+                            <div class="mt-4">
+                                <button type="button" onclick="loadCourseFiles()" 
+                                        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                                    <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                    </svg>
+                                    Browse Course Files
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div x-show="selectedFiles.length > 0">
+                            <div class="text-left">
+                                <h4 class="text-sm font-medium text-gray-900 mb-2">Selected Files:</h4>
+                                <div id="selected-files-list" class="space-y-2">
+                                    <!-- Files will be populated by JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Hidden checkboxes for selected files -->
+                    <div id="file-checkboxes" style="display: none;"></div>
+                </div>
+
+                <!-- Basic Settings -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="num_questions" class="block text-sm font-medium text-gray-700 mb-2">
+                            Number of Questions
+                        </label>
+                        <input type="number" name="num_questions" id="num_questions" 
+                               min="1" max="50" value="10"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                    </div>
+
+                    <div>
+                        <label for="difficulty" class="block text-sm font-medium text-gray-700 mb-2">
+                            Difficulty Level
+                        </label>
+                        <select name="difficulty" id="difficulty"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                            <option value="easy">Easy</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="hard">Hard</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label for="language" class="block text-sm font-medium text-gray-700 mb-2">
+                        Language
+                    </label>
+                    <select name="language" id="language"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                        <option value="en">English</option>
+                        <option value="fr">French</option>
+                        <option value="es">Spanish</option>
+                        <option value="de">German</option>
+                        <option value="it">Italian</option>
+                        <option value="tr">Turkish</option>
+                    </select>
+                </div>
+
+                <!-- Advanced Settings -->
+                <div>
+                    <button type="button" @click="showAdvanced = !showAdvanced"
+                            class="flex items-center text-sm font-medium text-primary-600 hover:text-primary-500">
+                        <svg class="mr-1 h-4 w-4 transition-transform" :class="{'rotate-90': showAdvanced}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                        Advanced Settings
+                    </button>
+                    
+                    <div x-show="showAdvanced" x-transition class="mt-4 space-y-4 bg-gray-50 p-4 rounded-md">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Question Types
+                            </label>
+                            <div class="space-y-2">
+                                <label class="flex items-center">
+                                    <input type="checkbox" name="question_types" value="multiple_choice" checked 
+                                           class="rounded border-gray-300 text-primary-600 focus:ring-primary-500">
+                                    <span class="ml-2 text-sm text-gray-700">Multiple Choice</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" name="question_types" value="true_false" 
+                                           class="rounded border-gray-300 text-primary-600 focus:ring-primary-500">
+                                    <span class="ml-2 text-sm text-gray-700">True/False</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" name="question_types" value="short_answer" 
+                                           class="rounded border-gray-300 text-primary-600 focus:ring-primary-500">
+                                    <span class="ml-2 text-sm text-gray-700">Short Answer</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" name="question_types" value="fill_blank" 
+                                           class="rounded border-gray-300 text-primary-600 focus:ring-primary-500">
+                                    <span class="ml-2 text-sm text-gray-700">Fill in the Blank</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="topic" class="block text-sm font-medium text-gray-700 mb-2">
+                                Topic Focus (Optional)
+                            </label>
+                            <input type="text" name="topic" id="topic" 
+                                   placeholder="e.g., Machine Learning, History of France"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex justify-end space-x-4">
+            <a href="{% url 'ai_generator:history' %}" 
+               class="px-6 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                Cancel
+            </a>
+            <button type="submit" 
+                    x-bind:disabled="loading || selectedFiles.length === 0"
+                    x-bind:class="loading || selectedFiles.length === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-primary-700'"
+                    class="px-6 py-2 bg-primary-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                <span x-show="!loading">Generate Quiz</span>
+                <span x-show="loading" class="flex items-center">
+                    <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Generating...
+                </span>
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+async function loadCourseFiles() {
+    const courseId = document.getElementById('course').value;
+    if (!courseId) {
+        alert('Please select a course first');
+        return;
+    }
+    
+    try {
+        const response = await fetch(`/uploads/api/course/${courseId}/files/`);
+        const files = await response.json();
+        
+        if (files.length === 0) {
+            alert('No processed files found for this course. Please upload some files first.');
+            return;
+        }
+        
+        showFileSelector(files);
+    } catch (error) {
+        console.error('Error loading files:', error);
+        alert('Error loading course files. Please try again.');
+    }
+}
+
+function showFileSelector(files) {
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 z-50 overflow-y-auto';
+    modal.innerHTML = `
+        <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Select Source Files</h3>
+                    <div class="max-h-64 overflow-y-auto space-y-2">
+                        ${files.map(file => `
+                            <label class="flex items-center p-2 rounded hover:bg-gray-50">
+                                <input type="checkbox" value="${file.id}" class="file-checkbox rounded border-gray-300 text-primary-600">
+                                <div class="ml-3 flex-1">
+                                    <div class="text-sm font-medium text-gray-900">${file.original_filename}</div>
+                                    <div class="text-xs text-gray-500">${file.file_type.toUpperCase()} • ${file.file_size_human}</div>
+                                </div>
+                            </label>
+                        `).join('')}
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button type="button" onclick="confirmFileSelection()" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-600 text-base font-medium text-white hover:bg-primary-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm">
+                        Select Files
+                    </button>
+                    <button type="button" onclick="closeModal()" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    window.currentModal = modal;
+}
+
+function confirmFileSelection() {
+    const checkboxes = document.querySelectorAll('.file-checkbox:checked');
+    console.log('Found checked checkboxes:', checkboxes.length);
+    
+    const selectedFiles = Array.from(checkboxes).map(cb => ({
+        id: cb.value,
+        name: cb.closest('label').querySelector('.text-sm').textContent
+    }));
+    
+    console.log('Selected files:', selectedFiles);
+    
+    if (selectedFiles.length === 0) {
+        alert('Please select at least one file');
+        return;
+    }
+    
+    // Update the UI
+    updateSelectedFiles(selectedFiles);
+    closeModal();
+}
+
+function updateSelectedFiles(files) {
+    console.log('updateSelectedFiles called with:', files);
+    
+    // Store files globally for removeFile function
+    window.__selectedFiles = files.slice();
+    
+    // Get the Alpine.js component and update its data
+    const form = document.querySelector('form[x-data]');
+    if (form && form._x_dataStack && form._x_dataStack[0]) {
+        // Alpine.js 3.x way
+        form._x_dataStack[0].selectedFiles = files;
+        console.log('Alpine selectedFiles updated via _x_dataStack:', files);
+    } else {
+        // Fallback for older Alpine.js versions
+        const alpineRoot = document.querySelector('[x-data]');
+        if (alpineRoot && alpineRoot.__x) {
+            alpineRoot.__x.$data.selectedFiles = files;
+            console.log('Alpine selectedFiles updated via __x.$data:', files);
+        }
+    }
+    
+    // Update the files list display
+    const filesList = document.getElementById('selected-files-list');
+    if (filesList) {
+        filesList.innerHTML = files.map(file => `
+            <div class="flex items-center justify-between p-2 bg-white rounded border">
+                <span class="text-sm text-gray-900">${file.name}</span>
+                <button type="button" onclick="removeFile('${file.id}')" class="text-red-500 hover:text-red-700">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+        `).join('');
+        console.log('Files list HTML updated');
+    }
+    
+    // Create hidden inputs for form submission
+    const checkboxesContainer = document.getElementById('file-checkboxes');
+    if (checkboxesContainer) {
+        checkboxesContainer.innerHTML = files.map(file => 
+            `<input type="hidden" name="source_files" value="${file.id}" />`
+        ).join('');
+        console.log('Hidden inputs created');
+    }
+    
+    // Update CSS class on file preview for styling
+    const filePreview = document.querySelector('.file-preview');
+    if (filePreview) {
+        if (files.length > 0) {
+            filePreview.classList.add('has-files');
+        } else {
+            filePreview.classList.remove('has-files');
+        }
+    }
+    
+    // Force re-evaluation of Alpine.js expressions by triggering a custom event
+    window.dispatchEvent(new CustomEvent('alpine-refresh'));
+    
+    // Manual button state update as backup
+    const submitButton = document.querySelector('button[type="submit"]');
+    if (submitButton) {
+        if (files.length > 0) {
+            submitButton.disabled = false;
+            submitButton.classList.remove('opacity-50', 'cursor-not-allowed');
+            submitButton.classList.add('hover:bg-primary-700');
+            console.log('Submit button enabled manually');
+        } else {
+            submitButton.disabled = true;
+            submitButton.classList.add('opacity-50', 'cursor-not-allowed');
+            submitButton.classList.remove('hover:bg-primary-700');
+        }
+    }
+    
+    console.log('updateSelectedFiles completed');
+}
+
+function removeFile(fileId) {
+    const current = Array.isArray(window.__selectedFiles) ? window.__selectedFiles : [];
+    const remainingFiles = current.filter(f => String(f.id) !== String(fileId));
+    updateSelectedFiles(remainingFiles);
+}
+
+function closeModal() {
+    if (window.currentModal) {
+        document.body.removeChild(window.currentModal);
+        window.currentModal = null;
+    }
+}
+
+// Test function to verify file selection works
+function testFileSelection() {
+    const testFiles = [{ id: '1', name: 'Test File.pdf' }];
+    updateSelectedFiles(testFiles);
+    console.log('Test file selection executed');
+}
+
+// Initialize form submission handling
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    if (form) {
+        form.addEventListener('submit', function() {
+            const alpineData = document.querySelector('[x-data]');
+            if (alpineData && alpineData._x_dataStack && alpineData._x_dataStack[0]) {
+                alpineData._x_dataStack[0].loading = true;
+            }
+        });
+    }
+    
+    // Add test button for debugging (remove in production)
+    console.log('Quiz form initialized. Run testFileSelection() in console to test.');
+});
+</script>
+{% endblock %}

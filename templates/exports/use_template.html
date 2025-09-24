@@ -1,0 +1,249 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Use Template: {{ template.name }} - DidactIA{% endblock %}
+
+{% block page_header %}
+<div class="bg-white shadow">
+    <div class="px-4 sm:px-6 lg:px-8 py-6">
+        <div class="md:flex md:items-center md:justify-between">
+            <div class="flex-1 min-w-0">
+                <nav class="flex mb-3" aria-label="Breadcrumb">
+                    <ol class="flex items-center space-x-4">
+                        <li>
+                            <div>
+                                <a href="{% url 'exports:template_list' %}" class="text-gray-400 hover:text-gray-500">
+                                    Export Templates
+                                </a>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="flex items-center">
+                                <svg class="flex-shrink-0 h-5 w-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 111.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                                </svg>
+                                <a href="{% url 'exports:template_detail' template.id %}" class="ml-4 text-gray-400 hover:text-gray-500">
+                                    {{ template.name }}
+                                </a>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="flex items-center">
+                                <svg class="flex-shrink-0 h-5 w-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 111.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                                </svg>
+                                <span class="ml-4 text-sm font-medium text-gray-900">Use Template</span>
+                            </div>
+                        </li>
+                    </ol>
+                </nav>
+                <h1 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
+                    Use Template: {{ template.name }}
+                </h1>
+                <p class="mt-1 max-w-2xl text-sm text-gray-500">
+                    Select an AI generation to export using this template.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    {% if recent_generations %}
+    <form method="post" class="space-y-8">
+        {% csrf_token %}
+        
+        <!-- Template Information -->
+        <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+            <div class="px-4 py-5 sm:px-6">
+                <h3 class="text-lg leading-6 font-medium text-gray-900">Selected Template</h3>
+                <p class="mt-1 max-w-2xl text-sm text-gray-500">{{ template.description }}</p>
+            </div>
+            <div class="border-t border-gray-200 px-4 py-5 sm:px-6">
+                <div class="flex items-center space-x-4">
+                    <div class="flex-shrink-0">
+                        <div class="flex items-center justify-center h-10 w-10 rounded-lg {% if template.is_system_template %}bg-warning-100{% else %}bg-primary-100{% endif %}">
+                            <svg class="h-6 w-6 {% if template.is_system_template %}text-warning-600{% else %}text-primary-600{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="text-base font-medium text-gray-900">{{ template.name }}</h4>
+                        <p class="text-sm text-gray-500">{{ template.get_template_type_display }} - {{ template.get_content_type_display }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Select AI Generation -->
+        <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+            <div class="px-4 py-5 sm:px-6">
+                <h3 class="text-lg leading-6 font-medium text-gray-900">Select Content to Export</h3>
+                <p class="mt-1 max-w-2xl text-sm text-gray-500">Choose an AI-generated quiz or exam to export with this template.</p>
+            </div>
+            <div class="border-t border-gray-200">
+                <div class="px-4 py-5 sm:px-6">
+                    <fieldset class="space-y-4">
+                        <legend class="sr-only">AI Generations</legend>
+                        {% for generation in recent_generations %}
+                        <div class="relative flex items-start">
+                            <div class="flex items-center h-5">
+                                <input id="generation_{{ generation.id }}" name="generation_id" type="radio" value="{{ generation.id }}" 
+                                       class="focus:ring-primary-500 h-4 w-4 text-primary-600 border-gray-300" 
+                                       {% if forloop.first %}checked{% endif %}>
+                            </div>
+                            <div class="ml-3 text-sm">
+                                <label for="generation_{{ generation.id }}" class="font-medium text-gray-700 cursor-pointer">
+                                    {{ generation.title }}
+                                </label>
+                                <div class="text-gray-500">
+                                    <p>{{ generation.course.title }} - {{ generation.created_at|date:"M j, Y" }}</p>
+                                    {% if generation.generated_content.questions %}
+                                    <p>{{ generation.generated_content.questions|length }} questions</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </fieldset>
+                </div>
+            </div>
+        </div>
+
+        <!-- Export Settings -->
+        <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+            <div class="px-4 py-5 sm:px-6">
+                <h3 class="text-lg leading-6 font-medium text-gray-900">Export Settings</h3>
+                <p class="mt-1 max-w-2xl text-sm text-gray-500">Customize your export options.</p>
+            </div>
+            <div class="border-t border-gray-200 px-4 py-5 sm:px-6">
+                <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
+                    <!-- Export Title -->
+                    <div class="sm:col-span-2">
+                        <label for="title" class="block text-sm font-medium text-gray-700">Export Title</label>
+                        <div class="mt-1">
+                            <input type="text" name="title" id="title" 
+                                   placeholder="Export using {{ template.name }}"
+                                   class="shadow-sm focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-gray-300 rounded-md">
+                        </div>
+                    </div>
+
+                    <!-- Format -->
+                    <div>
+                        <label for="format" class="block text-sm font-medium text-gray-700">Export Format</label>
+                        <div class="mt-1">
+                            <select id="format" name="format" class="shadow-sm focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-gray-300 rounded-md">
+                                {% for value, label in format_choices %}
+                                <option value="{{ value }}" {% if value == 'html' %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Options -->
+                    <div class="sm:col-span-2">
+                        <fieldset>
+                            <legend class="text-base font-medium text-gray-900">Export Options</legend>
+                            <div class="mt-4 space-y-4">
+                                <div class="flex items-start">
+                                    <div class="flex items-center h-5">
+                                        <input id="include_answer_key" name="include_answer_key" type="checkbox" checked
+                                               class="focus:ring-primary-500 h-4 w-4 text-primary-600 border-gray-300 rounded">
+                                    </div>
+                                    <div class="ml-3 text-sm">
+                                        <label for="include_answer_key" class="font-medium text-gray-700">Include Answer Key</label>
+                                        <p class="text-gray-500">Show correct answers and explanations</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start">
+                                    <div class="flex items-center h-5">
+                                        <input id="include_instructions" name="include_instructions" type="checkbox" checked
+                                               class="focus:ring-primary-500 h-4 w-4 text-primary-600 border-gray-300 rounded">
+                                    </div>
+                                    <div class="ml-3 text-sm">
+                                        <label for="include_instructions" class="font-medium text-gray-700">Include Instructions</label>
+                                        <p class="text-gray-500">Add exam instructions and guidelines</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+
+                    <!-- Institution Settings -->
+                    <div>
+                        <label for="institution_name" class="block text-sm font-medium text-gray-700">Institution Name</label>
+                        <div class="mt-1">
+                            <input type="text" name="institution_name" id="institution_name" 
+                                   placeholder="University Name"
+                                   class="shadow-sm focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-gray-300 rounded-md">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="department" class="block text-sm font-medium text-gray-700">Department</label>
+                        <div class="mt-1">
+                            <input type="text" name="department" id="department" 
+                                   placeholder="Department Name"
+                                   class="shadow-sm focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-gray-300 rounded-md">
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="sm:col-span-2">
+                        <label for="description" class="block text-sm font-medium text-gray-700">Description (Optional)</label>
+                        <div class="mt-1">
+                            <textarea name="description" id="description" rows="3" 
+                                      placeholder="Additional notes about this export..."
+                                      class="shadow-sm focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-gray-300 rounded-md"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="flex justify-end space-x-3">
+            <a href="{% url 'exports:template_detail' template.id %}" 
+               class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                Cancel
+            </a>
+            <button type="submit" 
+                    class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+                Create Export
+            </button>
+        </div>
+    </form>
+
+    {% else %}
+    <!-- No AI Generations Available -->
+    <div class="text-center py-12">
+        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+        </svg>
+        <h3 class="mt-2 text-sm font-medium text-gray-900">No AI Generations Available</h3>
+        <p class="mt-1 text-sm text-gray-500">
+            You need to create some content with the AI generator first.
+        </p>
+        <div class="mt-6 space-x-3">
+            <a href="{% url 'ai_generator:quiz_generator' %}" 
+               class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                </svg>
+                Generate Quiz
+            </a>
+            <a href="{% url 'exports:template_detail' template.id %}" 
+               class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                Back to Template
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

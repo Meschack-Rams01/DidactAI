@@ -1,0 +1,218 @@
+# Turkish translations for DidactIA Educational Platform
+# Copyright (C) 2024 DidactIA
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: DidactIA Educational Platform\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-09-24 10:12+0000\n"
+"PO-Revision-Date: 2024-09-24 10:12+0000\n"
+"Last-Translator: \n"
+"Language-Team: Turkish\n"
+"Language: tr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+# Common interface translations
+msgid "Dashboard"
+msgstr "Panel"
+
+msgid "Courses"
+msgstr "Kurslar"
+
+msgid "Upload Files"
+msgstr "Dosya Yükle"
+
+msgid "AI Generator"
+msgstr "AI Üretici"
+
+msgid "Exam Generator"
+msgstr "Sınav Üreticisi"
+
+msgid "Quiz Generator"
+msgstr "Quiz Üreticisi"
+
+msgid "Export"
+msgstr "Dışa Aktar"
+
+msgid "Analytics"
+msgstr "Analitik"
+
+msgid "Settings"
+msgstr "Ayarlar"
+
+msgid "Language"
+msgstr "Dil"
+
+msgid "English"
+msgstr "İngilizce"
+
+msgid "Turkish"
+msgstr "Türkçe"
+
+msgid "French"
+msgstr "Fransızca"
+
+msgid "Spanish"
+msgstr "İspanyolca"
+
+msgid "German"
+msgstr "Almanca"
+
+msgid "Italian"
+msgstr "İtalyanca"
+
+# Form labels
+msgid "Course"
+msgstr "Kurs"
+
+msgid "Select a course"
+msgstr "Bir kurs seçin"
+
+msgid "Source Files"
+msgstr "Kaynak Dosyalar"
+
+msgid "Number of Questions"
+msgstr "Soru Sayısı"
+
+msgid "Duration (minutes)"
+msgstr "Süre (dakika)"
+
+msgid "Difficulty Level"
+msgstr "Zorluk Seviyesi"
+
+msgid "Easy"
+msgstr "Kolay"
+
+msgid "Medium"
+msgstr "Orta"
+
+msgid "Hard"
+msgstr "Zor"
+
+msgid "Question Types"
+msgstr "Soru Türleri"
+
+msgid "Multiple Choice"
+msgstr "Çoktan Seçmeli"
+
+msgid "True/False"
+msgstr "Doğru/Yanlış"
+
+msgid "Short Answer"
+msgstr "Kısa Cevap"
+
+msgid "Essay Questions"
+msgstr "Kompozisyon Soruları"
+
+msgid "Fill in the Blank"
+msgstr "Boşluk Doldurma"
+
+msgid "Generate Quiz"
+msgstr "Quiz Oluştur"
+
+msgid "Generate Exam"
+msgstr "Sınav Oluştur"
+
+msgid "Advanced Settings"
+msgstr "Gelişmiş Ayarlar"
+
+msgid "Topic Focus (Optional)"
+msgstr "Konu Odağı (İsteğe Bağlı)"
+
+msgid "Instructions"
+msgstr "Talimatlar"
+
+msgid "Read each question carefully"
+msgstr "Her soruyu dikkatli bir şekilde okuyun"
+
+msgid "Choose the best answer for multiple choice questions"
+msgstr "Çoktan seçmeli sorular için en iyi cevabı seçin"
+
+msgid "Select source files"
+msgstr "Kaynak dosyaları seçin"
+
+msgid "Choose PDF, DOCX, PPTX, or image files to generate quiz from"
+msgstr "Quiz oluşturmak için PDF, DOCX, PPTX veya resim dosyalarını seçin"
+
+msgid "Choose PDF, DOCX, PPTX, or image files to generate exam from"
+msgstr "Sınav oluşturmak için PDF, DOCX, PPTX veya resim dosyalarını seçin"
+
+msgid "Browse Course Files"
+msgstr "Kurs Dosyalarına Gözat"
+
+msgid "Cancel"
+msgstr "İptal"
+
+msgid "Save"
+msgstr "Kaydet"
+
+msgid "Upload"
+msgstr "Yükle"
+
+msgid "Download"
+msgstr "İndir"
+
+msgid "Delete"
+msgstr "Sil"
+
+msgid "Edit"
+msgstr "Düzenle"
+
+msgid "View"
+msgstr "Görüntüle"
+
+# Messages
+msgid "File uploaded successfully"
+msgstr "Dosya başarıyla yüklendi"
+
+msgid "Quiz generated successfully"
+msgstr "Quiz başarıyla oluşturuldu"
+
+msgid "Exam generated successfully"
+msgstr "Sınav başarıyla oluşturuldu"
+
+msgid "Error generating content"
+msgstr "İçerik oluşturulurken hata"
+
+msgid "Please select a course first"
+msgstr "Lütfen önce bir kurs seçin"
+
+msgid "No processed files found for this course"
+msgstr "Bu kurs için işlenmiş dosya bulunamadı"
+
+msgid "Please upload some files first"
+msgstr "Lütfen önce bazı dosyalar yükleyin"
+
+# Status messages
+msgid "Processing"
+msgstr "İşleniyor"
+
+msgid "Completed"
+msgstr "Tamamlandı"
+
+msgid "Failed"
+msgstr "Başarısız"
+
+msgid "Pending"
+msgstr "Bekliyor"
+
+# File types
+msgid "PDF Document"
+msgstr "PDF Belgesi"
+
+msgid "Word Document"
+msgstr "Word Belgesi"
+
+msgid "PowerPoint Presentation"
+msgstr "PowerPoint Sunumu"
+
+msgid "Text File"
+msgstr "Metin Dosyası"
+
+msgid "Image File"
+msgstr "Resim Dosyası"

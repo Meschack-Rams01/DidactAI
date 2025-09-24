@@ -1,0 +1,54 @@
+<!-- Mobile menu backdrop -->
+<div class="fixed inset-0 flex z-40 lg:hidden" 
+     x-show="sidebarOpen" 
+     x-transition:enter="transition-opacity ease-linear duration-300"
+     x-transition:enter-start="opacity-0"
+     x-transition:enter-end="opacity-100"
+     x-transition:leave="transition-opacity ease-linear duration-300"
+     x-transition:leave-start="opacity-100"
+     x-transition:leave-end="opacity-0"
+     style="display: none;">
+    
+    <!-- Backdrop -->
+    <div class="fixed inset-0 bg-gray-600 bg-opacity-75" @click="sidebarOpen = false"></div>
+    
+    <!-- Mobile sidebar -->
+    <div class="relative flex-1 flex flex-col max-w-xs w-full pt-5 pb-4 bg-white border-r border-gray-200"
+         x-transition:enter="transition ease-in-out duration-300 transform"
+         x-transition:enter-start="-translate-x-full"
+         x-transition:enter-end="translate-x-0"
+         x-transition:leave="transition ease-in-out duration-300 transform"
+         x-transition:leave-start="translate-x-0"
+         x-transition:leave-end="-translate-x-full">
+        
+        <!-- Close button -->
+        <div class="absolute top-0 right-0 -mr-12 pt-2">
+            <button type="button" 
+                    @click="sidebarOpen = false"
+                    class="ml-1 flex items-center justify-center h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
+                <span class="sr-only">Close sidebar</span>
+                <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        
+        {% include 'components/sidebar_content.html' %}
+    </div>
+    
+    <!-- Spacer for mobile -->
+    <div class="flex-shrink-0 w-14"></div>
+</div>
+
+<!-- Desktop sidebar -->
+<div class="hidden lg:flex lg:flex-shrink-0">
+    <div class="flex flex-col w-64 border-r border-gray-200 bg-white pt-5 pb-4">
+        {% include 'components/sidebar_content.html' %}
+    </div>
+</div>
+
+<!-- Sidebar Content -->
+{% comment %}
+The sidebar content is separated into its own template for reuse
+between mobile and desktop versions
+{% endcomment %}

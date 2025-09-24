@@ -1,0 +1,365 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ export.title }} - Export Details - DidactIA{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Page Header -->
+    <div class="mb-8">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <svg class="h-8 w-8 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <h1 class="text-3xl font-bold text-gray-900">{{ export.title }}</h1>
+                    <div class="mt-1 flex items-center space-x-4 text-sm text-gray-600">
+                        <span class="capitalize">{{ export.get_export_format_display }}</span>
+                        <span>•</span>
+                        <span>{{ export.created_at|date:"M d, Y H:i" }}</span>
+                        <span>•</span>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                            {% if export.status == 'completed' %}bg-green-100 text-green-800
+                            {% elif export.status == 'processing' %}bg-yellow-100 text-yellow-800
+                            {% elif export.status == 'error' %}bg-red-100 text-red-800
+                            {% elif export.status == 'pending' %}bg-blue-100 text-blue-800
+                            {% else %}bg-gray-100 text-gray-800{% endif %}">
+                            {{ export.get_status_display }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="flex space-x-3">
+                {% if export.status == 'completed' and export.generated_file %}
+                    <a href="{% url 'exports:download' export.pk %}" 
+                       class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                        <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        Download
+                    </a>
+                {% endif %}
+                
+                <a href="{% url 'exports:list' %}" 
+                   class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                    <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                    Back to Exports
+                </a>
+                
+                <a href="{% url 'exports:delete' export.pk %}" 
+                   class="inline-flex items-center px-4 py-2 border border-red-300 text-sm font-medium rounded-md text-red-700 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                    <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                    </svg>
+                    Delete
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="mb-4 p-4 rounded-md {% if message.tags == 'error' %}bg-red-50 border border-red-200{% elif message.tags == 'success' %}bg-green-50 border border-green-200{% else %}bg-blue-50 border border-blue-200{% endif %}">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        {% if message.tags == 'error' %}
+                            <svg class="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                            </svg>
+                        {% elif message.tags == 'success' %}
+                            <svg class="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                        {% endif %}
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm {% if message.tags == 'error' %}text-red-700{% elif message.tags == 'success' %}text-green-700{% else %}text-blue-700{% endif %}">
+                            {{ message }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Main Content -->
+        <div class="lg:col-span-2">
+            <!-- Export Information -->
+            <div class="bg-white shadow rounded-lg mb-6">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-medium text-gray-900">Export Information</h3>
+                </div>
+                <div class="p-6">
+                    {% if export.description %}
+                        <div class="mb-4">
+                            <h4 class="text-sm font-medium text-gray-700 mb-2">Description</h4>
+                            <p class="text-gray-600">{{ export.description }}</p>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-700 mb-2">Export Details</h4>
+                            <dl class="space-y-2">
+                                <div class="flex justify-between">
+                                    <dt class="text-sm text-gray-500">Format:</dt>
+                                    <dd class="text-sm text-gray-900">{{ export.get_export_format_display }}</dd>
+                                </div>
+                                <div class="flex justify-between">
+                                    <dt class="text-sm text-gray-500">File Size:</dt>
+                                    <dd class="text-sm text-gray-900">{{ export.file_size_human }}</dd>
+                                </div>
+                                <div class="flex justify-between">
+                                    <dt class="text-sm text-gray-500">Downloads:</dt>
+                                    <dd class="text-sm text-gray-900">{{ export.download_count }}</dd>
+                                </div>
+                                {% if export.processing_time_seconds %}
+                                    <div class="flex justify-between">
+                                        <dt class="text-sm text-gray-500">Processing Time:</dt>
+                                        <dd class="text-sm text-gray-900">{{ export.processing_time_seconds|floatformat:2 }}s</dd>
+                                    </div>
+                                {% endif %}
+                            </dl>
+                        </div>
+                        
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-700 mb-2">Options</h4>
+                            <dl class="space-y-2">
+                                <div class="flex justify-between">
+                                    <dt class="text-sm text-gray-500">Answer Key:</dt>
+                                    <dd class="text-sm text-gray-900">
+                                        {% if export.include_answer_key %}
+                                            <span class="text-green-600">✓ Included</span>
+                                        {% else %}
+                                            <span class="text-red-600">✗ Not included</span>
+                                        {% endif %}
+                                    </dd>
+                                </div>
+                                <div class="flex justify-between">
+                                    <dt class="text-sm text-gray-500">Instructions:</dt>
+                                    <dd class="text-sm text-gray-900">
+                                        {% if export.include_instructions %}
+                                            <span class="text-green-600">✓ Included</span>
+                                        {% else %}
+                                            <span class="text-red-600">✗ Not included</span>
+                                        {% endif %}
+                                    </dd>
+                                </div>
+                                {% if export.watermark %}
+                                    <div class="flex justify-between">
+                                        <dt class="text-sm text-gray-500">Watermark:</dt>
+                                        <dd class="text-sm text-gray-900">{{ export.watermark }}</dd>
+                                    </div>
+                                {% endif %}
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Error Message -->
+            {% if export.status == 'error' and export.error_message %}
+                <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <svg class="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                        <div class="ml-3">
+                            <h3 class="text-sm font-medium text-red-800">Export Error</h3>
+                            <p class="mt-1 text-sm text-red-700">{{ export.error_message }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            <!-- Export Versions -->
+            {% if versions %}
+                <div class="bg-white shadow rounded-lg mb-6">
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <h3 class="text-lg font-medium text-gray-900">Export Versions ({{ versions.count }})</h3>
+                        <p class="mt-1 text-sm text-gray-600">Multiple versions of this export with variations</p>
+                    </div>
+                    <div class="p-6">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {% for version in versions %}
+                                <div class="border border-gray-200 rounded-lg p-4">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-lg font-semibold text-gray-900">Version {{ version.version_letter }}</span>
+                                        <span class="text-sm text-gray-500">{{ version.file_size|filesizeformat }}</span>
+                                    </div>
+                                    <p class="text-sm text-gray-600 mb-3">Downloads: {{ version.download_count }}</p>
+                                    {% if version.generated_file %}
+                                        <a href="#" class="inline-flex items-center text-sm text-primary-600 hover:text-primary-500">
+                                            <svg class="mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                            </svg>
+                                            Download Version {{ version.version_letter }}
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            <!-- Processing Logs -->
+            {% if logs %}
+                <div class="bg-white shadow rounded-lg">
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <h3 class="text-lg font-medium text-gray-900">Processing Logs</h3>
+                        <p class="mt-1 text-sm text-gray-600">Recent export processing activity</p>
+                    </div>
+                    <div class="p-6">
+                        <div class="flow-root">
+                            <ul class="-mb-8">
+                                {% for log in logs %}
+                                    <li>
+                                        <div class="relative pb-8">
+                                            {% if not forloop.last %}
+                                                <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200"></span>
+                                            {% endif %}
+                                            <div class="relative flex space-x-3">
+                                                <div>
+                                                    <span class="h-8 w-8 rounded-full flex items-center justify-center ring-8 ring-white
+                                                        {% if log.level == 'error' %}bg-red-500
+                                                        {% elif log.level == 'success' %}bg-green-500
+                                                        {% elif log.level == 'warning' %}bg-yellow-500
+                                                        {% else %}bg-blue-500{% endif %}">
+                                                        <svg class="h-4 w-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                                            {% if log.level == 'error' %}
+                                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                                                            {% elif log.level == 'success' %}
+                                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                                            {% else %}
+                                                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                                                            {% endif %}
+                                                        </svg>
+                                                    </span>
+                                                </div>
+                                                <div class="min-w-0 flex-1">
+                                                    <div>
+                                                        <div class="text-sm">
+                                                            <span class="font-medium text-gray-900 capitalize">{{ log.get_level_display }}</span>
+                                                        </div>
+                                                        <p class="mt-0.5 text-sm text-gray-500">
+                                                            {{ log.created_at|date:"M d, Y H:i" }}
+                                                        </p>
+                                                    </div>
+                                                    <div class="mt-2 text-sm text-gray-700">
+                                                        <p>{{ log.message }}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Sidebar -->
+        <div class="lg:col-span-1">
+            <!-- Source Information -->
+            <div class="bg-white shadow rounded-lg p-6 mb-6">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Source Information</h3>
+                <dl class="space-y-3">
+                    <div>
+                        <dt class="text-sm font-medium text-gray-500">Course</dt>
+                        <dd class="text-sm text-gray-900">{{ export.course.title }}</dd>
+                    </div>
+                    {% if export.generation %}
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">AI Generation</dt>
+                            <dd class="text-sm text-gray-900">
+                                <a href="{% url 'ai_generator:view_generation' export.generation.id %}" class="text-primary-600 hover:text-primary-500">
+                                    {{ export.generation.title }}
+                                </a>
+                            </dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Content Type</dt>
+                            <dd class="text-sm text-gray-900">{{ export.generation.get_content_type_display }}</dd>
+                        </div>
+                    {% endif %}
+                    {% if export.template %}
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Template</dt>
+                            <dd class="text-sm text-gray-900">{{ export.template.name }}</dd>
+                        </div>
+                    {% endif %}
+                </dl>
+            </div>
+
+            <!-- Branding Information -->
+            {% if export.branding_settings %}
+                <div class="bg-white shadow rounded-lg p-6 mb-6">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Branding</h3>
+                    <dl class="space-y-3">
+                        {% if export.branding_settings.institution_name %}
+                            <div>
+                                <dt class="text-sm font-medium text-gray-500">Institution</dt>
+                                <dd class="text-sm text-gray-900">{{ export.branding_settings.institution_name }}</dd>
+                            </div>
+                        {% endif %}
+                        {% if export.branding_settings.department %}
+                            <div>
+                                <dt class="text-sm font-medium text-gray-500">Department</dt>
+                                <dd class="text-sm text-gray-900">{{ export.branding_settings.department }}</dd>
+                            </div>
+                        {% endif %}
+                    </dl>
+                </div>
+            {% endif %}
+
+            <!-- Export Statistics -->
+            <div class="bg-white shadow rounded-lg p-6">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Statistics</h3>
+                <dl class="space-y-3">
+                    <div>
+                        <dt class="text-sm font-medium text-gray-500">Created</dt>
+                        <dd class="text-sm text-gray-900">{{ export.created_at|date:"M d, Y H:i" }}</dd>
+                    </div>
+                    {% if export.completed_at %}
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Completed</dt>
+                            <dd class="text-sm text-gray-900">{{ export.completed_at|date:"M d, Y H:i" }}</dd>
+                        </div>
+                    {% endif %}
+                    {% if export.last_downloaded %}
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Last Downloaded</dt>
+                            <dd class="text-sm text-gray-900">{{ export.last_downloaded|date:"M d, Y H:i" }}</dd>
+                        </div>
+                    {% endif %}
+                    {% if export.expires_at %}
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Expires</dt>
+                            <dd class="text-sm text-gray-900 {% if export.is_expired %}text-red-600{% endif %}">
+                                {{ export.expires_at|date:"M d, Y H:i" }}
+                                {% if export.is_expired %}
+                                    <span class="text-red-600 text-xs">(Expired)</span>
+                                {% endif %}
+                            </dd>
+                        </div>
+                    {% endif %}
+                </dl>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

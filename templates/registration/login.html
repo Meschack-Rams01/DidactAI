@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - DidactIA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="min-h-screen flex flex-col justify-center items-center">
+        <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+            <div class="text-center mb-8">
+                <i class="fas fa-graduation-cap text-4xl text-blue-600 mb-4"></i>
+                <h1 class="text-2xl font-bold text-gray-900">Login to DidactIA</h1>
+            </div>
+            
+            {% if form.errors %}
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                    {{ form.errors }}
+                </div>
+            {% endif %}
+            
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-4">
+                    <label for="{{ form.username.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        {{ form.username.label }}
+                    </label>
+                    {{ form.username }}
+                </div>
+                
+                <div class="mb-6">
+                    <label for="{{ form.password.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        {{ form.password.label }}
+                    </label>
+                    {{ form.password }}
+                </div>
+                
+                <button type="submit" 
+                        class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-blue-700 transition duration-300">
+                    Login
+                </button>
+            </form>
+            
+            <div class="mt-6 text-center space-y-2">
+                <p class="text-gray-600">Don't have an account?</p>
+                <a href="{% url 'accounts:register' %}" class="text-blue-600 hover:text-blue-800 font-semibold">
+                    Create one here
+                </a>
+            </div>
+            
+            <div class="mt-4 text-center">
+                <a href="{% url 'core:home' %}" class="text-gray-500 hover:text-gray-700 text-sm">
+                    ← Back to Home
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            outline: none;
+        }
+        input[type="text"]:focus, input[type="password"]:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+    </style>
+</body>
+</html>

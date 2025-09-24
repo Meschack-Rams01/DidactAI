@@ -1,0 +1,243 @@
+{% extends "base.html" %}
+
+{% block title %}My Files{% endblock %}
+
+{% block page_title %}My Files{% endblock %}
+{% block page_description %}Manage your uploaded documents and files{% endblock %}
+
+{% block content %}
+<div class="px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Header with Actions -->
+    <div class="sm:flex sm:items-center sm:justify-between mb-6">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900">My Files</h1>
+            <p class="mt-1 text-sm text-gray-500">{{ total_files }} files • {{ total_size }} total</p>
+        </div>
+        <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+            <a href="{% url 'uploads:upload' %}" 
+               class="inline-flex items-center justify-center rounded-md border border-transparent bg-primary-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                Upload File
+            </a>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="bg-white shadow rounded-lg mb-6">
+        <div class="px-6 py-4">
+            <form method="get" class="grid grid-cols-1 gap-4 sm:grid-cols-4">
+                <!-- Search -->
+                <div>
+                    <label for="search" class="sr-only">Search files</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                        <input type="text" name="search" value="{{ search }}" placeholder="Search files..." 
+                               class="pl-10 block w-full rounded-md border-gray-300 focus:border-primary-500 focus:ring-primary-500 sm:text-sm">
+                    </div>
+                </div>
+
+                <!-- Course Filter -->
+                <div>
+                    <select name="course" class="block w-full rounded-md border-gray-300 focus:border-primary-500 focus:ring-primary-500 sm:text-sm">
+                        <option value="">All courses</option>
+                        {% for course in courses %}
+                            <option value="{{ course.id }}" {% if selected_course == course.id|stringformat:"s" %}selected{% endif %}>
+                                {{ course.title }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- File Type Filter -->
+                <div>
+                    <select name="type" class="block w-full rounded-md border-gray-300 focus:border-primary-500 focus:ring-primary-500 sm:text-sm">
+                        <option value="">All types</option>
+                        {% for type_value, type_label in file_types %}
+                            <option value="{{ type_value }}" {% if selected_type == type_value %}selected{% endif %}>
+                                {{ type_label }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Submit -->
+                <div>
+                    <button type="submit" 
+                            class="w-full inline-flex justify-center items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                        Filter
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Files Grid -->
+    {% if files %}
+        <div class="bg-white shadow overflow-hidden sm:rounded-md">
+            <ul class="divide-y divide-gray-200">
+                {% for file in files %}
+                    <li>
+                        <div class="px-4 py-4 flex items-center justify-between">
+                            <div class="flex items-center">
+                                <!-- File Type Icon -->
+                                <div class="flex-shrink-0 mr-4">
+                                    {% if file.file_type == 'pdf' %}
+                                        <div class="h-10 w-10 bg-red-100 rounded-lg flex items-center justify-center">
+                                            <svg class="h-6 w-6 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"></path>
+                                            </svg>
+                                        </div>
+                                    {% elif file.file_type == 'docx' %}
+                                        <div class="h-10 w-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                            <svg class="h-6 w-6 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"></path>
+                                            </svg>
+                                        </div>
+                                    {% elif file.file_type == 'image' %}
+                                        <div class="h-10 w-10 bg-green-100 rounded-lg flex items-center justify-center">
+                                            <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                            </svg>
+                                        </div>
+                                    {% else %}
+                                        <div class="h-10 w-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                                            <svg class="h-6 w-6 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"></path>
+                                            </svg>
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- File Info -->
+                                <div class="min-w-0 flex-1">
+                                    <p class="text-sm font-medium text-gray-900 truncate">
+                                        <a href="{% url 'uploads:detail' file.id %}" class="hover:text-primary-600">
+                                            {{ file.original_filename }}
+                                        </a>
+                                    </p>
+                                    <div class="mt-1 flex items-center text-xs text-gray-500 space-x-4">
+                                        <span>{{ file.course.title }}</span>
+                                        <span>{{ file.file_size_human }}</span>
+                                        <span>{{ file.created_at|date:"M j, Y" }}</span>
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium 
+                                                     {% if file.status == 'ready' %}bg-green-100 text-green-800
+                                                     {% elif file.status == 'processing' %}bg-yellow-100 text-yellow-800
+                                                     {% elif file.status == 'error' %}bg-red-100 text-red-800
+                                                     {% else %}bg-gray-100 text-gray-800{% endif %}">
+                                            {{ file.get_status_display }}
+                                        </span>
+                                    </div>
+                                    {% if file.description %}
+                                        <p class="mt-1 text-xs text-gray-500 truncate">{{ file.description }}</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <!-- Actions -->
+                            <div class="flex-shrink-0 flex items-center space-x-2">
+                                <a href="{% url 'uploads:download' file.id %}" 
+                                   class="inline-flex items-center px-2.5 py-1.5 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                    </svg>
+                                    Download
+                                </a>
+                                
+                                <div class="relative inline-block text-left">
+                                    <button type="button" class="inline-flex items-center px-2.5 py-1.5 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500" 
+                                            onclick="toggleDropdown('dropdown-{{ file.id }}')">
+                                        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path>
+                                        </svg>
+                                    </button>
+                                    
+                                    <div id="dropdown-{{ file.id }}" class="hidden absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                        <a href="{% url 'uploads:detail' file.id %}" class="block px-4 py-2 text-xs text-gray-700 hover:bg-gray-100">
+                                            View Details
+                                        </a>
+                                        <a href="{% url 'uploads:delete' file.id %}" class="block px-4 py-2 text-xs text-red-600 hover:bg-gray-100">
+                                            Delete
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Pagination -->
+        {% if files.has_other_pages %}
+            <nav class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6 mt-6" aria-label="Pagination">
+                <div class="hidden sm:block">
+                    <p class="text-sm text-gray-700">
+                        Showing <span class="font-medium">{{ files.start_index }}</span> to 
+                        <span class="font-medium">{{ files.end_index }}</span> of 
+                        <span class="font-medium">{{ files.paginator.count }}</span> files
+                    </p>
+                </div>
+                <div class="flex-1 flex justify-between sm:justify-end">
+                    {% if files.has_previous %}
+                        <a href="?page={{ files.previous_page_number }}{% if search %}&search={{ search }}{% endif %}{% if selected_course %}&course={{ selected_course }}{% endif %}{% if selected_type %}&type={{ selected_type }}{% endif %}" 
+                           class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                            Previous
+                        </a>
+                    {% endif %}
+                    {% if files.has_next %}
+                        <a href="?page={{ files.next_page_number }}{% if search %}&search={{ search }}{% endif %}{% if selected_course %}&course={{ selected_course }}{% endif %}{% if selected_type %}&type={{ selected_type }}{% endif %}" 
+                           class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                            Next
+                        </a>
+                    {% endif %}
+                </div>
+            </nav>
+        {% endif %}
+    {% else %}
+        <!-- Empty State -->
+        <div class="text-center py-12">
+            <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <h3 class="mt-2 text-sm font-medium text-gray-900">No files</h3>
+            <p class="mt-1 text-sm text-gray-500">Get started by uploading your first file.</p>
+            <div class="mt-6">
+                <a href="{% url 'uploads:upload' %}" 
+                   class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                    <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    Upload File
+                </a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+function toggleDropdown(dropdownId) {
+    const dropdown = document.getElementById(dropdownId);
+    // Close all other dropdowns
+    document.querySelectorAll('[id^="dropdown-"]').forEach(d => {
+        if (d.id !== dropdownId) d.classList.add('hidden');
+    });
+    // Toggle current dropdown
+    dropdown.classList.toggle('hidden');
+}
+
+// Close dropdowns when clicking outside
+document.addEventListener('click', function(event) {
+    if (!event.target.closest('[onclick*="toggleDropdown"]')) {
+        document.querySelectorAll('[id^="dropdown-"]').forEach(d => {
+            d.classList.add('hidden');
+        });
+    }
+});
+</script>
+{% endblock %}

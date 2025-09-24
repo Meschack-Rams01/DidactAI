@@ -1,0 +1,483 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .edit-form {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+    }
+    
+    .question-editor {
+        background: #f8fafc;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        position: relative;
+        transition: all 0.2s ease;
+    }
+    
+    .question-editor:hover {
+        border-color: #3b82f6;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+    }
+    
+    .question-number {
+        position: absolute;
+        top: -10px;
+        left: 15px;
+        background: #1f2937;
+        color: white;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+    
+    .question-type-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        padding: 0.25rem 0.75rem;
+        border-radius: 15px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-label {
+        display: block;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 0.5rem;
+    }
+    
+    .form-input, .form-textarea {
+        width: 100%;
+        padding: 0.75rem;
+        border: 2px solid #d1d5db;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        transition: border-color 0.2s ease;
+    }
+    
+    .form-input:focus, .form-textarea:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    
+    .form-textarea {
+        min-height: 100px;
+        resize: vertical;
+    }
+    
+    .option-input {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 0.75rem;
+        padding: 0.75rem;
+        background: white;
+        border-radius: 8px;
+        border: 1px solid #e5e7eb;
+    }
+    
+    .option-letter {
+        background: #6b7280;
+        color: white;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 0.8rem;
+        flex-shrink: 0;
+    }
+    
+    .btn-save {
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+        border: none;
+        padding: 0.75rem 2rem;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        margin-right: 1rem;
+    }
+    
+    .btn-save:hover {
+        background: linear-gradient(135deg, #059669, #047857);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+    
+    .btn-cancel {
+        background: #6b7280;
+        color: white;
+        border: none;
+        padding: 0.75rem 2rem;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+    
+    .btn-cancel:hover {
+        background: #4b5563;
+        color: white;
+        text-decoration: none;
+    }
+    
+    .collapsible-section {
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        overflow: hidden;
+    }
+    
+    .collapsible-header {
+        background: #f9fafb;
+        padding: 1rem 1.5rem;
+        cursor: pointer;
+        display: flex;
+        justify-content: between;
+        align-items: center;
+        transition: background-color 0.2s ease;
+    }
+    
+    .collapsible-header:hover {
+        background: #f3f4f6;
+    }
+    
+    .collapsible-content {
+        padding: 1.5rem;
+        display: none;
+    }
+    
+    .collapsible-content.active {
+        display: block;
+    }
+    
+    /* Question type colors */
+    .multiple-choice { background: #ecfdf5; }
+    .multiple-choice .question-type-badge { background: #10b981; color: white; }
+    
+    .true-false { background: #fef7f0; }
+    .true-false .question-type-badge { background: #f59e0b; color: white; }
+    
+    .short-answer { background: #fef2f2; }
+    .short-answer .question-type-badge { background: #ef4444; color: white; }
+    
+    .essay { background: #eff6ff; }
+    .essay .question-type-badge { background: #3b82f6; color: white; }
+    
+    .fill-blank { background: #f5f3ff; }
+    .fill-blank .question-type-badge { background: #8b5cf6; color: white; }
+    
+    .points-input {
+        width: 80px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'ai_generator:history' %}">Generations</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'ai_generator:view_generation' generation.id %}">{{ generation.title }}</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Edit</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0">{{ title }}</h1>
+        <div>
+            <small class="text-muted">
+                <i class="fas fa-info-circle"></i>
+                Changes are saved automatically as you edit
+            </small>
+        </div>
+    </div>
+    
+    <form method="post" id="edit-form">
+        {% csrf_token %}
+        
+        <!-- Basic Information -->
+        <div class="edit-form">
+            <h4 class="mb-4"><i class="fas fa-edit text-primary"></i> Basic Information</h4>
+            
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label for="title" class="form-label">Title *</label>
+                        <input type="text" 
+                               id="title" 
+                               name="title" 
+                               class="form-input" 
+                               value="{{ generation.title }}" 
+                               required>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="content_type" class="form-label">Type</label>
+                        <input type="text" 
+                               id="content_type" 
+                               class="form-input" 
+                               value="{{ generation.content_type|title }}" 
+                               disabled>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="description" class="form-label">Description</label>
+                <textarea id="description" 
+                          name="description" 
+                          class="form-textarea" 
+                          placeholder="Add a description for this {{ generation.content_type }}...">{{ generation.generated_content.description }}</textarea>
+            </div>
+        </div>
+        
+        <!-- Questions -->
+        <div class="edit-form">
+            <h4 class="mb-4">
+                <i class="fas fa-list-ol text-primary"></i> 
+                Questions 
+                <span class="badge badge-secondary">{{ questions.count }} total</span>
+            </h4>
+            
+            {% for question in questions %}
+            <div class="question-editor {{ question.question_type|default:'multiple-choice' }}">
+                <div class="question-number">{{ forloop.counter }}</div>
+                <div class="question-type-badge">
+                    {% if question.question_type == 'multiple_choice' %}
+                        Multiple Choice
+                    {% elif question.question_type == 'true_false' %}
+                        True/False
+                    {% elif question.question_type == 'short_answer' %}
+                        Short Answer
+                    {% elif question.question_type == 'essay' %}
+                        Essay
+                    {% elif question.question_type == 'fill_blank' %}
+                        Fill in the Blank
+                    {% else %}
+                        Question
+                    {% endif %}
+                </div>
+                
+                <div class="form-group mt-3">
+                    <label for="question_{{ question.id }}_text" class="form-label">Question Text *</label>
+                    <textarea name="question_{{ question.id }}_text" 
+                              id="question_{{ question.id }}_text" 
+                              class="form-textarea" 
+                              required>{{ question.question_text }}</textarea>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="question_{{ question.id }}_points" class="form-label">Points</label>
+                            <input type="number" 
+                                   name="question_{{ question.id }}_points" 
+                                   id="question_{{ question.id }}_points" 
+                                   class="form-input points-input" 
+                                   value="{{ question.points }}" 
+                                   min="1" 
+                                   max="100">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="question_{{ question.id }}_correct_answer" class="form-label">
+                                {% if question.question_type == 'multiple_choice' %}
+                                    Correct Answer (A, B, C, D...)
+                                {% elif question.question_type == 'true_false' %}
+                                    Correct Answer (True/False)
+                                {% else %}
+                                    Expected Answer
+                                {% endif %}
+                            </label>
+                            <input type="text" 
+                                   name="question_{{ question.id }}_correct_answer" 
+                                   id="question_{{ question.id }}_correct_answer" 
+                                   class="form-input" 
+                                   value="{{ question.correct_answer }}">
+                        </div>
+                    </div>
+                </div>
+                
+                {% if question.question_type == 'multiple_choice' %}
+                <div class="form-group">
+                    <label class="form-label">Answer Options</label>
+                    {% for option in question.options %}
+                    <div class="option-input">
+                        <div class="option-letter">{{ forloop.counter0|add:65|stringformat:"c" }}</div>
+                        <input type="text" 
+                               name="question_{{ question.id }}_option_{{ forloop.counter0 }}" 
+                               class="form-input" 
+                               value="{{ option }}" 
+                               placeholder="Option {{ forloop.counter0|add:65|stringformat:"c" }}">
+                    </div>
+                    {% empty %}
+                    <!-- Default options if none exist -->
+                    {% for i in "ABCD" %}
+                    <div class="option-input">
+                        <div class="option-letter">{{ i }}</div>
+                        <input type="text" 
+                               name="question_{{ question.id }}_option_{{ forloop.counter0 }}" 
+                               class="form-input" 
+                               placeholder="Option {{ i }}">
+                    </div>
+                    {% endfor %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                <div class="collapsible-section">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <span><i class="fas fa-info-circle"></i> Additional Settings</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="collapsible-content">
+                        <div class="form-group">
+                            <label for="question_{{ question.id }}_explanation" class="form-label">Explanation (Optional)</label>
+                            <textarea name="question_{{ question.id }}_explanation" 
+                                      id="question_{{ question.id }}_explanation" 
+                                      class="form-textarea" 
+                                      placeholder="Provide an explanation for the correct answer...">{{ question.explanation }}</textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i>
+                No questions available to edit. This might be because questions are stored in the generated content rather than as separate database records.
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Form Actions -->
+        <div class="edit-form">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <button type="submit" class="btn-save">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                    <a href="{% url 'ai_generator:view_generation' generation.id %}" class="btn-cancel">
+                        <i class="fas fa-times"></i> Cancel
+                    </a>
+                </div>
+                
+                <div class="text-muted">
+                    <small>
+                        <i class="fas fa-clock"></i>
+                        Last updated: {{ generation.updated_at|date:"M d, Y g:i A" }}
+                    </small>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+function toggleCollapsible(header) {
+    const content = header.nextElementSibling;
+    const icon = header.querySelector('i:last-child');
+    
+    if (content.classList.contains('active')) {
+        content.classList.remove('active');
+        icon.classList.remove('fa-chevron-up');
+        icon.classList.add('fa-chevron-down');
+    } else {
+        content.classList.add('active');
+        icon.classList.remove('fa-chevron-down');
+        icon.classList.add('fa-chevron-up');
+    }
+}
+
+// Auto-save functionality
+let saveTimeout;
+function autoSave() {
+    clearTimeout(saveTimeout);
+    saveTimeout = setTimeout(() => {
+        // Show saving indicator
+        const saveBtn = document.querySelector('.btn-save');
+        const originalText = saveBtn.innerHTML;
+        saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+        saveBtn.disabled = true;
+        
+        // Submit form
+        fetch(window.location.href, {
+            method: 'POST',
+            body: new FormData(document.getElementById('edit-form')),
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                saveBtn.innerHTML = '<i class="fas fa-check"></i> Saved!';
+                saveBtn.style.background = '#10b981';
+                setTimeout(() => {
+                    saveBtn.innerHTML = originalText;
+                    saveBtn.style.background = '';
+                    saveBtn.disabled = false;
+                }, 2000);
+            } else {
+                throw new Error('Save failed');
+            }
+        })
+        .catch(error => {
+            saveBtn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Save Failed';
+            saveBtn.style.background = '#ef4444';
+            setTimeout(() => {
+                saveBtn.innerHTML = originalText;
+                saveBtn.style.background = '';
+                saveBtn.disabled = false;
+            }, 3000);
+        });
+    }, 2000);
+}
+
+// Add auto-save listeners
+document.querySelectorAll('input, textarea').forEach(input => {
+    input.addEventListener('input', autoSave);
+});
+
+// Prevent form submission on enter in input fields
+document.querySelectorAll('input').forEach(input => {
+    input.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+        }
+    });
+});
+</script>
+{% endblock %}

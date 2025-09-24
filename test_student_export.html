@@ -1,0 +1,522 @@
+
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Generated Quiz</title>
+            <style>
+                @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+                
+                * {
+                    margin: 0;
+                    padding: 0;
+                    box-sizing: border-box;
+                }
+                
+                body {
+                    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                    line-height: 1.6;
+                    color: #1f2937;
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    min-height: 100vh;
+                    padding: 20px;
+                }
+                
+                .container {
+                    max-width: 900px;
+                    margin: 0 auto;
+                    background: white;
+                    border-radius: 20px;
+                    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+                    overflow: hidden;
+                }
+                
+                .header {
+                    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+                    color: white;
+                    padding: 40px 30px;
+                    text-align: center;
+                    position: relative;
+                    overflow: hidden;
+                }
+                
+                .header::before {
+                    content: '';
+                    position: absolute;
+                    top: -50%;
+                    left: -50%;
+                    width: 200%;
+                    height: 200%;
+                    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+                    transform: rotate(45deg);
+                }
+                
+                .institution {
+                    font-size: 28px;
+                    font-weight: 700;
+                    margin-bottom: 8px;
+                    position: relative;
+                    z-index: 1;
+                    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                }
+                
+                .department {
+                    font-size: 16px;
+                    opacity: 0.9;
+                    font-weight: 500;
+                    position: relative;
+                    z-index: 1;
+                }
+                
+                .content {
+                    padding: 40px;
+                }
+                
+                .title {
+                    font-size: 32px;
+                    font-weight: 700;
+                    text-align: center;
+                    margin-bottom: 20px;
+                    background: linear-gradient(135deg, #1e40af, #3b82f6);
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                    background-clip: text;
+                }
+                
+                .description {
+                    text-align: center;
+                    font-size: 16px;
+                    color: #6b7280;
+                    margin-bottom: 30px;
+                }
+                
+                .instructions {
+                    background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+                    border: 1px solid #d1d5db;
+                    border-radius: 15px;
+                    padding: 25px;
+                    margin: 30px 0;
+                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+                }
+                
+                .instructions h3 {
+                    color: #1f2937;
+                    font-size: 18px;
+                    font-weight: 600;
+                    margin-bottom: 15px;
+                    display: flex;
+                    align-items: center;
+                }
+                
+                .instructions h3::before {
+                    content: '📋';
+                    margin-right: 10px;
+                    font-size: 20px;
+                }
+                
+                .instructions ul {
+                    list-style: none;
+                    padding-left: 0;
+                }
+                
+                .instructions li {
+                    padding: 8px 0;
+                    padding-left: 25px;
+                    position: relative;
+                }
+                
+                .instructions li::before {
+                    content: '✓';
+                    position: absolute;
+                    left: 0;
+                    color: #10b981;
+                    font-weight: bold;
+                }
+                
+                .question {
+                    margin: 30px 0;
+                    padding: 25px;
+                    border-radius: 15px;
+                    position: relative;
+                    background: #ffffff;
+                    border: 1px solid #e5e7eb;
+                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+                    transition: transform 0.2s ease, box-shadow 0.2s ease;
+                }
+                
+                .question:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+                }
+                
+                .question-number {
+                    position: absolute;
+                    top: -15px;
+                    left: 20px;
+                    background: #1f2937;
+                    color: white;
+                    width: 35px;
+                    height: 35px;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-weight: 600;
+                    font-size: 14px;
+                }
+                
+                .question-type {
+                    position: absolute;
+                    top: 15px;
+                    right: 20px;
+                    padding: 6px 12px;
+                    border-radius: 20px;
+                    font-size: 11px;
+                    font-weight: 600;
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+                }
+                
+                .question-text {
+                    font-size: 16px;
+                    font-weight: 500;
+                    line-height: 1.6;
+                    margin: 20px 0 20px 0;
+                    padding-right: 120px;
+                }
+                
+                .points {
+                    color: #6b7280;
+                    font-size: 14px;
+                    font-weight: 500;
+                }
+                
+                .options {
+                    margin: 20px 0;
+                    padding-left: 10px;
+                }
+                
+                .option {
+                    margin: 12px 0;
+                    padding: 12px 15px;
+                    background: #f9fafb;
+                    border: 2px solid #e5e7eb;
+                    border-radius: 10px;
+                    display: flex;
+                    align-items: center;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                }
+                
+                .option:hover {
+                    background: #f3f4f6;
+                    border-color: #d1d5db;
+                }
+                
+                .option input {
+                    margin-right: 12px;
+                    transform: scale(1.2);
+                }
+                
+                .answer-space {
+                    border: none;
+                    border-bottom: 3px solid #3b82f6;
+                    width: 100%;
+                    height: 40px;
+                    margin: 20px 0;
+                    display: block;
+                    background: linear-gradient(to right, transparent 0%, transparent 98%, #3b82f6 98%, #3b82f6 100%);
+                }
+                
+                .answer-lines {
+                    margin: 20px 0;
+                }
+                
+                .answer-line {
+                    border: none;
+                    border-bottom: 2px solid #d1d5db;
+                    width: 100%;
+                    height: 35px;
+                    margin: 15px 0;
+                    background: linear-gradient(to right, transparent 0%, transparent 98%, #d1d5db 98%, #d1d5db 100%);
+                }
+                
+                .true-false {
+                    display: flex;
+                    gap: 20px;
+                    margin: 20px 0;
+                    justify-content: center;
+                }
+                
+                .true-false label {
+                    display: flex;
+                    align-items: center;
+                    padding: 15px 25px;
+                    background: #f9fafb;
+                    border: 2px solid #e5e7eb;
+                    border-radius: 50px;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                    font-weight: 500;
+                }
+                
+                .true-false label:hover {
+                    background: #f3f4f6;
+                    border-color: #d1d5db;
+                }
+                
+                .true-false input {
+                    margin-right: 10px;
+                    transform: scale(1.2);
+                }
+                
+                .footer {
+                    background: #f9fafb;
+                    padding: 20px;
+                    text-align: center;
+                    color: #6b7280;
+                    font-size: 14px;
+                    border-top: 1px solid #e5e7eb;
+                }
+                
+                /* Question type specific styling */
+                .question.multiple-choice {
+                    border-left: 5px solid #10b981;
+                }
+                
+                .question.multiple-choice .question-type {
+                    background: linear-gradient(135deg, #10b981, #059669);
+                    color: white;
+                }
+                
+                .question.true-false {
+                    border-left: 5px solid #f59e0b;
+                }
+                
+                .question.true-false .question-type {
+                    background: linear-gradient(135deg, #f59e0b, #d97706);
+                    color: white;
+                }
+                
+                .question.short-answer {
+                    border-left: 5px solid #ef4444;
+                }
+                
+                .question.short-answer .question-type {
+                    background: linear-gradient(135deg, #ef4444, #dc2626);
+                    color: white;
+                }
+                
+                .question.fill-blank {
+                    border-left: 5px solid #8b5cf6;
+                }
+                
+                .question.fill-blank .question-type {
+                    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+                    color: white;
+                }
+                
+                .question.essay {
+                    border-left: 5px solid #06b6d4;
+                }
+                
+                .question.essay .question-type {
+                    background: linear-gradient(135deg, #06b6d4, #0891b2);
+                    color: white;
+                }
+                
+                /* Print styles */
+                @media print {
+                    body {
+                        background: white;
+                        padding: 0;
+                    }
+                    
+                    .container {
+                        box-shadow: none;
+                        border-radius: 0;
+                    }
+                    
+                    .question {
+                        break-inside: avoid;
+                        page-break-inside: avoid;
+                    }
+                }
+                
+                /* Answer container styles */
+                .answer-container, .blank-answer, .essay-container {
+                    margin: 20px 0;
+                    padding: 15px;
+                    background: #f9fafb;
+                    border: 1px dashed #d1d5db;
+                    border-radius: 8px;
+                    font-weight: 500;
+                }
+                
+                .essay-label {
+                    font-weight: 600;
+                    margin-bottom: 15px;
+                    color: #374151;
+                }
+                
+                .answer-spaces {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 15px;
+                }
+                
+                .option-letter {
+                    font-weight: 600;
+                    color: #374151;
+                    margin-right: 8px;
+                }
+                
+                
+                /* Enhanced language support */
+                body {
+                    direction: ltr;
+                    text-align: left;
+                }
+                
+                .question-text {
+                    line-height: 1.6;
+                    word-wrap: break-word;
+                    hyphens: auto;
+                }
+                
+                /* Responsive design */
+                @media (max-width: 768px) {
+                    body {
+                        padding: 10px;
+                    }
+                    
+                    .content {
+                        padding: 20px;
+                    }
+                    
+                    .title {
+                        font-size: 24px;
+                    }
+                    
+                    .question-text {
+                        padding-right: 60px;
+                    }
+                    
+                    .true-false {
+                        flex-direction: column;
+                        gap: 10px;
+                    }
+                    
+                    .answer-container, .blank-answer, .essay-container {
+                        padding: 10px;
+                    }
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                    
+                    
+                </div>
+                
+                <div class="content">
+                    <h1 class="title">Generated Quiz</h1>
+                    
+                    {% if quiz_data.description %}
+                    <p class="description">AI-generated quiz from course materials</p>
+                    {% endif %}
+                    
+                    <div class="instructions">
+                        <h3>Instructions</h3>
+                        <ul>
+                            <li>Read each question carefully</li>
+                            <li>Choose the best answer for multiple choice questions</li>
+                            <li>Duration: 15 minutes</li>
+                            <li>Total Points: 9</li>
+                        </ul>
+                    </div>
+            
+            
+            <div class="question multiple-choice">
+                <div class="question-number">1</div>
+                <div class="question-type">Multiple Choice</div>
+                <div class="question-text">
+                    &quot;questions&quot;: [
+                    <div class="points">(1 puan)</div>
+                </div>
+            <div class="options"><div class="option"><input type="radio" name="q1" value="A" disabled> <span class="option-letter">A.</span> Option A</div><div class="option"><input type="radio" name="q1" value="B" disabled> <span class="option-letter">B.</span> Option B</div><div class="option"><input type="radio" name="q1" value="C" disabled> <span class="option-letter">C.</span> Option C</div><div class="option"><input type="radio" name="q1" value="D" disabled> <span class="option-letter">D.</span> Option D</div></div></div>
+            <div class="question multiple-choice">
+                <div class="question-number">2</div>
+                <div class="question-type">Multiple Choice</div>
+                <div class="question-text">
+                    &quot;question&quot;: &quot;Which of the following is NOT typically considered an activity that computers with artificial intelligence are designed for?&quot;,
+                    <div class="points">(1 puan)</div>
+                </div>
+            <div class="options"><div class="option"><input type="radio" name="q2" value="A" disabled> <span class="option-letter">A.</span> Option A</div><div class="option"><input type="radio" name="q2" value="B" disabled> <span class="option-letter">B.</span> Option B</div><div class="option"><input type="radio" name="q2" value="C" disabled> <span class="option-letter">C.</span> Option C</div><div class="option"><input type="radio" name="q2" value="D" disabled> <span class="option-letter">D.</span> Option D</div></div></div>
+            <div class="question multiple-choice">
+                <div class="question-number">3</div>
+                <div class="question-type">Multiple Choice</div>
+                <div class="question-text">
+                    &quot;question&quot;: &quot;Machine learning requires explicit programming to teach the system how to learn from data.&quot;,
+                    <div class="points">(1 puan)</div>
+                </div>
+            <div class="options"><div class="option"><input type="radio" name="q3" value="A" disabled> <span class="option-letter">A.</span> Option A</div><div class="option"><input type="radio" name="q3" value="B" disabled> <span class="option-letter">B.</span> Option B</div><div class="option"><input type="radio" name="q3" value="C" disabled> <span class="option-letter">C.</span> Option C</div><div class="option"><input type="radio" name="q3" value="D" disabled> <span class="option-letter">D.</span> Option D</div></div></div>
+            <div class="question multiple-choice">
+                <div class="question-number">4</div>
+                <div class="question-type">Multiple Choice</div>
+                <div class="question-text">
+                    &quot;question&quot;: &quot;Explain the relationship between Artificial Intelligence (AI), Machine Learning (ML), and Deep Learning (DL).&quot;,
+                    <div class="points">(1 puan)</div>
+                </div>
+            <div class="options"><div class="option"><input type="radio" name="q4" value="A" disabled> <span class="option-letter">A.</span> Option A</div><div class="option"><input type="radio" name="q4" value="B" disabled> <span class="option-letter">B.</span> Option B</div><div class="option"><input type="radio" name="q4" value="C" disabled> <span class="option-letter">C.</span> Option C</div><div class="option"><input type="radio" name="q4" value="D" disabled> <span class="option-letter">D.</span> Option D</div></div></div>
+            <div class="question multiple-choice">
+                <div class="question-number">5</div>
+                <div class="question-type">Multiple Choice</div>
+                <div class="question-text">
+                    &quot;correct_answer&quot;: &quot;Deep learning is a subset of machine learning, which in turn is a subset of artificial intelligence. AI is the broad concept of machines mimicking human intelligence, ML focuses on systems learning from data, and DL uses artificial neural networks for complex learning.&quot;,
+                    <div class="points">(1 puan)</div>
+                </div>
+            <div class="options"><div class="option"><input type="radio" name="q5" value="A" disabled> <span class="option-letter">A.</span> Option A</div><div class="option"><input type="radio" name="q5" value="B" disabled> <span class="option-letter">B.</span> Option B</div><div class="option"><input type="radio" name="q5" value="C" disabled> <span class="option-letter">C.</span> Option C</div><div class="option"><input type="radio" name="q5" value="D" disabled> <span class="option-letter">D.</span> Option D</div></div></div>
+            <div class="question multiple-choice">
+                <div class="question-number">6</div>
+                <div class="question-type">Multiple Choice</div>
+                <div class="question-text">
+                    &quot;explanation&quot;: &quot;The answer should clearly show the hierarchical relationship between the three concepts.&quot;,
+                    <div class="points">(1 puan)</div>
+                </div>
+            <div class="options"><div class="option"><input type="radio" name="q6" value="A" disabled> <span class="option-letter">A.</span> Option A</div><div class="option"><input type="radio" name="q6" value="B" disabled> <span class="option-letter">B.</span> Option B</div><div class="option"><input type="radio" name="q6" value="C" disabled> <span class="option-letter">C.</span> Option C</div><div class="option"><input type="radio" name="q6" value="D" disabled> <span class="option-letter">D.</span> Option D</div></div></div>
+            <div class="question multiple-choice">
+                <div class="question-number">7</div>
+                <div class="question-type">Multiple Choice</div>
+                <div class="question-text">
+                    &quot;question&quot;: &quot;Deep learning primarily relies on which type of computational model?&quot;,
+                    <div class="points">(1 puan)</div>
+                </div>
+            <div class="options"><div class="option"><input type="radio" name="q7" value="A" disabled> <span class="option-letter">A.</span> Option A</div><div class="option"><input type="radio" name="q7" value="B" disabled> <span class="option-letter">B.</span> Option B</div><div class="option"><input type="radio" name="q7" value="C" disabled> <span class="option-letter">C.</span> Option C</div><div class="option"><input type="radio" name="q7" value="D" disabled> <span class="option-letter">D.</span> Option D</div></div></div>
+            <div class="question multiple-choice">
+                <div class="question-number">8</div>
+                <div class="question-type">Multiple Choice</div>
+                <div class="question-text">
+                    &quot;question&quot;: &quot;Provide a real-world example of how machine learning is used.&quot;,
+                    <div class="points">(1 puan)</div>
+                </div>
+            <div class="options"><div class="option"><input type="radio" name="q8" value="A" disabled> <span class="option-letter">A.</span> Option A</div><div class="option"><input type="radio" name="q8" value="B" disabled> <span class="option-letter">B.</span> Option B</div><div class="option"><input type="radio" name="q8" value="C" disabled> <span class="option-letter">C.</span> Option C</div><div class="option"><input type="radio" name="q8" value="D" disabled> <span class="option-letter">D.</span> Option D</div></div></div>
+            <div class="question multiple-choice">
+                <div class="question-number">9</div>
+                <div class="question-type">Multiple Choice</div>
+                <div class="question-text">
+                    &quot;explanation&quot;: &quot;The answer should provide a concrete application showing the learning aspect of machine learning.&quot;,
+                    <div class="points">(1 puan)</div>
+                </div>
+            <div class="options"><div class="option"><input type="radio" name="q9" value="A" disabled> <span class="option-letter">A.</span> Option A</div><div class="option"><input type="radio" name="q9" value="B" disabled> <span class="option-letter">B.</span> Option B</div><div class="option"><input type="radio" name="q9" value="C" disabled> <span class="option-letter">C.</span> Option C</div><div class="option"><input type="radio" name="q9" value="D" disabled> <span class="option-letter">D.</span> Option D</div></div></div>
+                </div>
+                
+                <div class="footer">
+                    📄 Generated on September 24, 2025 | 🎓 Educational Assessment Platform
+                </div>
+            </div>
+        </body>
+        </html>
+        
