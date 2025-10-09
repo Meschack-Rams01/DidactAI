@@ -1,8 +1,9 @@
-{% extends 'base.html' %}
+﻿{% extends 'base.html' %}
 {% load static %}
 {% load ai_filters %}
+{% csrf_token %}
 
-{% block title %}{{ generation.title }} - DidactIA{% endblock %}
+{% block title %}{{ generation.title }} - DidactAI{% endblock %}
 
 {% block content %}
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -19,13 +20,13 @@
                     <h1 class="text-3xl font-bold text-gray-900">{{ generation.title }}</h1>
                     <div class="mt-1 flex items-center space-x-4 text-sm text-gray-600">
                         <span class="capitalize">{{ generation.get_content_type_display }}</span>
-                        <span>•</span>
+                        <span>â€¢</span>
                         <span>{{ generation.created_at|date:"M d, Y" }}</span>
-                        <span>•</span>
+                        <span>â€¢</span>
                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                            {% if generation.status == 'completed' %}bg-green-100 text-green-800
-                            {% elif generation.status == 'processing' %}bg-yellow-100 text-yellow-800
-                            {% elif generation.status == 'error' %}bg-red-100 text-red-800
+                            {% if generation.status == "completed" %}bg-green-100 text-green-800
+                            {% elif generation.status == "processing" %}bg-yellow-100 text-yellow-800
+                            {% elif generation.status == "error" %}bg-red-100 text-red-800
                             {% else %}bg-gray-100 text-gray-800{% endif %}">
                             {{ generation.get_status_display }}
                         </span>
@@ -35,7 +36,30 @@
             
             <!-- Action Buttons -->
             <div class="flex space-x-3">
-                <!-- Edit Button - Most Important -->
+                <!-- Debug Info (remove in production) -->
+                <div class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                    Status: {{ generation.status }} | Can Export: {% if generation.status == "completed" %}Yes{% else %}No{% endif %}
+                </div>
+                
+                <!-- Enhanced Export Button - Primary Action -->
+                {% if generation.status == "completed" %}
+                    <a href="{% url 'exports:export_generation' generation.id %}" 
+                       class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                        <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                        </svg>
+                        ðŸ“„ Export to PDF/Word
+                    </a>
+                {% else %}
+                    <div class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-500 bg-gray-100 cursor-not-allowed">
+                        <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                        </svg>
+                        Export (Generation Incomplete)
+                    </div>
+                {% endif %}
+                
+                <!-- Edit Button -->
                 <a href="{% url 'ai_generator:edit_generation' generation.id %}" 
                    class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -44,13 +68,13 @@
                     Edit Quiz
                 </a>
                 
-                {% if can_export %}
-                    <a href="#" onclick="showExportModal()" 
-                       class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                {% if generation.status == "completed" %}
+                    <a href="#" onclick="showExportModal()"
+                       class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
                         <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                         </svg>
-                        Export
+                        ðŸ“‹ Quick Export Options
                     </a>
                 {% endif %}
                 
@@ -68,21 +92,21 @@
     <!-- Messages -->
     {% if messages %}
         {% for message in messages %}
-            <div class="mb-4 p-4 rounded-md {% if message.tags == 'error' %}bg-red-50 border border-red-200{% elif message.tags == 'success' %}bg-green-50 border border-green-200{% else %}bg-blue-50 border border-blue-200{% endif %}">
+            <div class="mb-4 p-4 rounded-md {% if message.tags == "error" %}bg-red-50 border border-red-200{% elif message.tags == "success" %}bg-green-50 border border-green-200{% else %}bg-blue-50 border border-blue-200{% endif %}">
                 <div class="flex">
                     <div class="flex-shrink-0">
-                        {% if message.tags == 'error' %}
+                        {% if message.tags == "error" %}
                             <svg class="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
                             </svg>
-                        {% elif message.tags == 'success' %}
+                        {% elif message.tags == "success" %}
                             <svg class="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
                             </svg>
                         {% endif %}
                     </div>
                     <div class="ml-3">
-                        <p class="text-sm {% if message.tags == 'error' %}text-red-700{% elif message.tags == 'success' %}text-green-700{% else %}text-blue-700{% endif %}">
+                        <p class="text-sm {% if message.tags == "error" %}text-red-700{% elif message.tags == "success" %}text-green-700{% else %}text-blue-700{% endif %}">
                             {{ message }}
                         </p>
                     </div>
@@ -139,7 +163,7 @@
                                             {{ question.question_text }}
                                         </h4>
                                         
-                                        {% if question.question_type == 'multiple_choice' and question.options %}
+                                        {% if question.question_type == "multiple_choice" and question.options %}
                                             <div class="space-y-2">
                                                 {% for option in question.options %}
                                                     <div class="flex items-center">
@@ -248,9 +272,9 @@
                             <div class="flex items-center justify-between">
                                 <div class="flex-1 min-w-0">
                                     <p class="text-sm font-medium text-gray-900 truncate">{{ export.title }}</p>
-                                    <p class="text-xs text-gray-500">{{ export.get_export_format_display }} • {{ export.created_at|timesince }} ago</p>
+                                    <p class="text-xs text-gray-500">{{ export.get_export_format_display }} â€¢ {{ export.created_at|timesince }} ago</p>
                                 </div>
-                                {% if export.status == 'completed' %}
+                                {% if export.status == "completed" %}
                                     <a href="{% url 'exports:download' export.id %}" 
                                        class="ml-2 text-primary-600 hover:text-primary-500">
                                         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -263,7 +287,7 @@
                     </div>
                     <div class="mt-4">
                         <a href="{% url 'exports:list' %}" class="text-sm text-primary-600 hover:text-primary-500">
-                            View all exports →
+                            View all exports â†’
                         </a>
                     </div>
                 </div>

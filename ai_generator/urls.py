@@ -8,6 +8,9 @@ from . import views
 app_name = 'ai_generator'
 
 urlpatterns = [
+    # Index page
+    path('', views.index, name='index'),
+    
     # Generator views
     path('quiz/', views.quiz_generator, name='quiz_generator'),
     path('exam/', views.exam_generator, name='exam_generator'),

@@ -142,22 +142,29 @@ class ExtendedProfileForm(forms.ModelForm):
     class Meta:
         from .models import CustomUser
         model = CustomUser
-        fields = ['bio', 'preferred_language', 'phone_number', 'avatar', 'institution', 'department']
+        fields = ['first_name', 'last_name', 'bio', 'preferred_language', 'phone_number', 'avatar', 'institution', 'department']
         widgets = {
+            'first_name': forms.TextInput(attrs={
+                'class': 'mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary-500 focus:border-primary-500'
+            }),
+            'last_name': forms.TextInput(attrs={
+                'class': 'mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary-500 focus:border-primary-500'
+            }),
             'bio': forms.Textarea(attrs={
-                'class': 'w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500',
-                'rows': 3
+                'class': 'mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary-500 focus:border-primary-500',
+                'rows': 4,
+                'placeholder': 'Tell us a bit about yourself...'
             }),
             'preferred_language': forms.Select(attrs={
-                'class': 'w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500'
+                'class': 'mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary-500 focus:border-primary-500'
             }),
             'phone_number': forms.TextInput(attrs={
-                'class': 'w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500'
+                'class': 'mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary-500 focus:border-primary-500'
             }),
             'institution': forms.TextInput(attrs={
-                'class': 'w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500'
+                'class': 'mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary-500 focus:border-primary-500'
             }),
             'department': forms.TextInput(attrs={
-                'class': 'w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500'
+                'class': 'mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary-500 focus:border-primary-500'
             }),
         }

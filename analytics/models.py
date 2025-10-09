@@ -377,6 +377,179 @@ class APIUsageLog(models.Model):
         return f"{self.user.get_full_name()} - {self.service} - {self.created_at}"
 
 
+class ContentAnalytics(models.Model):
+    """Model for tracking content usage and analytics"""
+    
+    CONTENT_TYPE_CHOICES = [
+        ('quiz', _('Quiz')),
+        ('exam', _('Exam')),
+        ('syllabus', _('Syllabus')),
+        ('lesson', _('Lesson')),
+        ('assignment', _('Assignment')),
+        ('other', _('Other')),
+    ]
+    
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='content_analytics'
+    )
+    course = models.ForeignKey(
+        Course,
+        on_delete=models.CASCADE,
+        related_name='content_analytics',
+        blank=True,
+        null=True
+    )
+    content_type = models.CharField(
+        _('Content Type'), 
+        max_length=50, 
+        choices=CONTENT_TYPE_CHOICES
+    )
+    content_title = models.CharField(
+        _('Content Title'), 
+        max_length=200
+    )
+    content_id = models.PositiveIntegerField(
+        _('Content ID'),
+        help_text=_('ID of the related content object')
+    )
+    
+    # Analytics data
+    view_count = models.PositiveIntegerField(
+        _('View Count'), 
+        default=0
+    )
+    download_count = models.PositiveIntegerField(
+        _('Download Count'), 
+        default=0
+    )
+    share_count = models.PositiveIntegerField(
+        _('Share Count'), 
+        default=0
+    )
+    edit_count = models.PositiveIntegerField(
+        _('Edit Count'), 
+        default=0
+    )
+    
+    # Engagement metrics
+    total_time_spent = models.PositiveIntegerField(
+        _('Total Time Spent (seconds)'), 
+        default=0
+    )
+    average_session_time = models.FloatField(
+        _('Average Session Time (seconds)'), 
+        default=0.0
+    )
+    bounce_rate = models.FloatField(
+        _('Bounce Rate (%)'), 
+        default=0.0,
+        help_text=_('Percentage of users who left without interaction')
+    )
+    
+    # Performance metrics
+    load_time_avg = models.FloatField(
+        _('Average Load Time (seconds)'), 
+        default=0.0
+    )
+    error_count = models.PositiveIntegerField(
+        _('Error Count'), 
+        default=0
+    )
+    
+    # Metadata
+    language = models.CharField(
+        _('Language'), 
+        max_length=10, 
+        default='en'
+    )
+    difficulty_level = models.CharField(
+        _('Difficulty Level'), 
+        max_length=20, 
+        blank=True, 
+        null=True
+    )
+    tags = models.JSONField(
+        _('Tags'), 
+        default=list,
+        blank=True
+    )
+    
+    # Tracking dates
+    first_accessed = models.DateTimeField(
+        _('First Accessed'), 
+        auto_now_add=True
+    )
+    last_accessed = models.DateTimeField(
+        _('Last Accessed'), 
+        auto_now=True
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        verbose_name = _('Content Analytics')
+        verbose_name_plural = _('Content Analytics')
+        ordering = ['-last_accessed']
+        unique_together = ['user', 'content_type', 'content_id']
+        indexes = [
+            models.Index(fields=['user', 'content_type', '-last_accessed']),
+            models.Index(fields=['course', '-last_accessed']),
+            models.Index(fields=['content_type', '-view_count']),
+        ]
+        
+    def __str__(self):
+        return f"{self.user.get_full_name()} - {self.content_title}"
+    
+    def increment_view_count(self):
+        """Increment view count and update last accessed"""
+        self.view_count += 1
+        self.last_accessed = timezone.now()
+        self.save(update_fields=['view_count', 'last_accessed'])
+    
+    def increment_download_count(self):
+        """Increment download count"""
+        self.download_count += 1
+        self.save(update_fields=['download_count'])
+    
+    def increment_share_count(self):
+        """Increment share count"""
+        self.share_count += 1
+        self.save(update_fields=['share_count'])
+    
+    def increment_edit_count(self):
+        """Increment edit count"""
+        self.edit_count += 1
+        self.save(update_fields=['edit_count'])
+    
+    def update_engagement_metrics(self, session_time: float):
+        """Update engagement metrics with new session data"""
+        # Update total time spent
+        self.total_time_spent += int(session_time)
+        
+        # Recalculate average session time
+        if self.view_count > 0:
+            self.average_session_time = self.total_time_spent / self.view_count
+        
+        self.save(update_fields=['total_time_spent', 'average_session_time'])
+    
+    def update_performance_metrics(self, load_time: float, had_error: bool = False):
+        """Update performance metrics"""
+        # Update load time average
+        if self.view_count > 0:
+            total_load_time = self.load_time_avg * (self.view_count - 1) + load_time
+            self.load_time_avg = total_load_time / self.view_count
+        else:
+            self.load_time_avg = load_time
+        
+        # Update error count
+        if had_error:
+            self.error_count += 1
+        
+        self.save(update_fields=['load_time_avg', 'error_count'])
+
+
 class ErrorLog(models.Model):
     """Model for tracking application errors"""
     

@@ -1,6 +1,6 @@
-{% extends 'base.html' %}
+﻿{% extends 'base.html' %}
 
-{% block title %}Dashboard - DidactIA{% endblock %}
+{% block title %}Dashboard - DidactAI{% endblock %}
 
 {% block content %}
 <div class="space-y-6">
@@ -13,7 +13,7 @@
                         Welcome back, {{ user.get_full_name }}!
                     </h1>
                     <p class="mt-2 text-primary-100">
-                        {% if user.institution %}{{ user.institution }}{% else %}DidactIA Platform{% endif %}
+                        {% if user.institution %}{{ user.institution }}{% else %}DidactAI Platform{% endif %}
                     </p>
                     <p class="mt-1 text-sm text-primary-200">
                         Last login: {{ user.last_login|date:"M d, Y at g:i A"|default:"First time login" }}
@@ -296,29 +296,6 @@
                     </a>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <!-- Demo notification button for testing -->
-    <div class="bg-white shadow rounded-lg p-4">
-        <h3 class="text-lg font-medium text-gray-900 mb-4">Test Features</h3>
-        <div class="space-x-3">
-            <button @click="DidactIA.notify('Welcome to DidactIA! Your AI-powered education platform is ready.', 'success')" 
-                    class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-success-600 hover:bg-success-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-success-500">
-                Test Success Notification
-            </button>
-            <button @click="DidactIA.notify('Your quiz has been generated and is ready for export.', 'info')" 
-                    class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                Test Info Notification
-            </button>
-            <button @click="DidactIA.notify('Please check your API configuration.', 'warning')" 
-                    class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-warning-600 hover:bg-warning-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-warning-500">
-                Test Warning Notification
-            </button>
-            <button @click="DidactIA.notify('There was an error processing your request.', 'error')" 
-                    class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
-                Test Error Notification
-            </button>
         </div>
     </div>
 </div>

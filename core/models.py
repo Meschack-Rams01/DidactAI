@@ -38,7 +38,7 @@ class GlobalSettings(models.Model):
     default_ai_model = models.CharField(
         _('Default AI Model'), 
         max_length=50, 
-        default='gemini-1.5-flash'
+        default='gemini-2.5-flash'
     )
     max_tokens_per_request = models.PositiveIntegerField(
         _('Max Tokens per Request'), 

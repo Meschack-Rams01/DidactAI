@@ -1,0 +1,63 @@
+# Core Django and Framework
+Django==4.2.24
+djangorestframework==3.15.2
+django-cors-headers==4.8.0
+django-environ==0.11.2
+python-decouple==3.8
+
+# Database
+psycopg2-binary==2.9.7
+dj-database-url==2.1.0
+
+# Authentication & Security  
+django-allauth==0.65.2
+django-crispy-forms==2.4
+crispy-tailwind==0.5.0
+
+# File Handling & Storage
+Pillow==11.3.0
+django-storages==1.14.6
+boto3==1.35.9
+supabase==2.6.0
+
+# Document Processing
+PyPDF2==3.0.1
+python-docx==1.2.0
+python-pptx==0.6.22
+pytesseract==0.3.10
+opencv-python==4.12.0.88
+
+# AI & NLP Libraries  
+langchain==0.3.12
+langchain-google-genai==2.1.0
+google-generativeai==0.8.5
+transformers==4.43.3
+torch==2.4.0
+sentence-transformers==3.2.1
+langdetect==1.0.9
+
+# Export & PDF Generation
+reportlab==4.4.1
+python-docx==1.2.0
+
+# Utilities
+celery==5.3.6
+redis==5.1.1
+requests==2.32.3
+python-magic==0.4.27
+
+# Development
+django-debug-toolbar==4.4.6
+black==24.10.0
+flake8==7.0.0
+pytest-django==4.8.0
+
+# Production Server
+gunicorn==22.0.0
+
+# Search and Elasticsearch (Compatible versions)
+elasticsearch==7.17.12
+django-elasticsearch-dsl==7.4.2
+
+# Social Auth (Compatible version)
+social-auth-app-django==5.4.1

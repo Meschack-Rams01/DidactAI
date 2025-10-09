@@ -81,12 +81,54 @@ class ExportDownloadView(LoginRequiredMixin, DetailView):
         # Increment download count
         export.increment_download_count()
         
+        # Determine content type based on export format
+        content_type_mapping = {
+            'pdf': 'application/pdf',
+            'docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'html': 'text/html; charset=utf-8',
+            'txt': 'text/plain; charset=utf-8',
+            'zip': 'application/zip',
+            'json': 'application/json; charset=utf-8',
+            'xml': 'application/xml; charset=utf-8'
+        }
+        
+        content_type = content_type_mapping.get(
+            export.export_format.lower(), 
+            'application/octet-stream'
+        )
+        
         # Prepare response
         response = HttpResponse(
             export.generated_file.read(),
-            content_type='application/octet-stream'
+            content_type=content_type
         )
-        response['Content-Disposition'] = f'attachment; filename="{export.title}.{export.export_format}"'
+        
+        # Set proper file extension and encoding for filename
+        import urllib.parse
+        
+        # Ensure filename has correct extension
+        filename = export.title
+        if not filename.lower().endswith(f'.{export.export_format.lower()}'):
+            filename = f"{filename}.{export.export_format.lower()}"
+        
+        # Encode filename properly for international characters
+        safe_filename = urllib.parse.quote(filename, safe='')
+        response['Content-Disposition'] = f'attachment; filename*=UTF-8\'\'\'{safe_filename}'
+        
+        # Set additional headers for better download experience
+        response['Content-Length'] = export.generated_file.size
+        response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+        response['Pragma'] = 'no-cache'
+        response['Expires'] = '0'
+        
+        # Track download for analytics
+        try:
+            from .analytics import track_download
+            track_download(export, request.user)
+        except Exception as e:
+            # Don't break download if analytics fails
+            import logging
+            logging.getLogger(__name__).warning(f"Analytics tracking failed: {str(e)}")
         
         return response
 
@@ -116,6 +158,15 @@ def export_generation(request, generation_id):
         course__instructor=request.user
     )
     
+    # If it's a GET request, show the export form
+    if request.method == 'GET':
+        context = {
+            'title': f'Export: {generation.title}',
+            'generation': generation,
+            'format_choices': ExportJob.FORMAT_CHOICES,
+        }
+        return render(request, 'exports/export_generation_form.html', context)
+    
     if request.method == 'POST':
         export_format = request.POST.get('format', 'pdf')
         include_answer_key = request.POST.get('include_answer_key') == 'on'
@@ -133,22 +184,82 @@ def export_generation(request, generation_id):
             include_answer_key=include_answer_key,
             include_instructions=include_instructions,
             watermark=request.POST.get('watermark', ''),
+            university_logo=request.FILES.get('university_logo'),
             branding_settings={
                 'institution_name': request.POST.get('institution_name', ''),
                 'department': request.POST.get('department', '')
             }
         )
         
-        # Process export
+        # Process export with enhanced branding
         try:
-            from .services import ExportService
+            from .services import ExportService, WEASYPRINT_AVAILABLE
+            
+            # Check if WeasyPrint is available for certain formats
+            # Note: ReportLab is used as primary PDF generator on Windows
             export_service = ExportService()
+            
+            # Enhanced branding settings with comprehensive university information
+            export_job.branding_settings.update({
+                'university_name': request.POST.get('university_name', request.POST.get('institution_name', '')),
+                'faculty': request.POST.get('faculty', ''),
+                'department': request.POST.get('department', ''),
+                'course': request.POST.get('course', ''),
+                'academic_year': request.POST.get('academic_year', ''),
+                'semester': request.POST.get('semester', ''),
+                'instructor': request.POST.get('instructor', ''),
+                'exam_date': request.POST.get('exam_date', ''),
+                'additional_notes': request.POST.get('additional_notes', ''),
+                # Student information fields configuration
+                'student_info': {
+                    'include_student_name': request.POST.get('include_student_name') == 'on',
+                    'include_student_id': request.POST.get('include_student_id') == 'on',
+                    'include_signature': request.POST.get('include_signature') == 'on',
+                    'include_date_field': request.POST.get('include_date_field') == 'on'
+                },
+                # Logo upload handling
+                'has_logo': 'university_logo' in request.FILES
+            })
+            
+            # Handle logo upload if present
+            if export_job.university_logo:
+                # Update branding settings with logo information
+                export_job.branding_settings['logo_path'] = export_job.university_logo.path
+                export_job.branding_settings['logo_url'] = export_job.university_logo.url
+                export_job.branding_settings['logo_filename'] = export_job.university_logo.name
+            export_job.save()
+            
             if create_versions and export_format in ['pdf', 'zip']:
-                result = export_service.export_with_versions(export_job, num_versions=3)
+                # Create multiple versions for exams
+                result = export_service.export_content(
+                    content_data=export_service._prepare_generation_data(generation),
+                    export_format='zip',
+                    branding=export_job.branding_settings,
+                    versions=['A', 'B', 'C']
+                )
             else:
                 result = export_service.export_generation(export_job)
             
             if result['success']:
+                # Track export creation for analytics
+                try:
+                    from .analytics import ExportAnalytics
+                    analytics = ExportAnalytics()
+                    analytics.track_export_creation(
+                        export_job=export_job,
+                        user=request.user,
+                        creation_details={
+                            'branding': export_job.branding_settings,
+                            'versions': 3 if create_versions else 1,
+                            'include_answer_key': include_answer_key,
+                            'format': export_format
+                        }
+                    )
+                except Exception as e:
+                    # Don't break the flow if analytics fails
+                    import logging
+                    logging.getLogger(__name__).warning(f"Analytics tracking failed: {str(e)}")
+                
                 messages.success(request, f'Export "{title}" created successfully!')
                 return redirect('exports:detail', pk=export_job.id)
             else:
@@ -222,6 +333,66 @@ class ExportTemplateCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateVi
     
     def get_success_url(self):
         return reverse_lazy('exports:template_detail', kwargs={'pk': self.object.pk})
+
+
+@login_required
+def test_clean_export(request):
+    """Quick test endpoint for clean export functionality"""
+    from .services import PDFExporter, HTMLExporter
+    
+    # Sample data for testing
+    test_data = {
+        'title': 'Cloud Computing Fundamentals and Computing Paradigms - CLEAN TEST',
+        'description': 'Professional exam format without question type labels',
+        'questions': [
+            {
+                'type': 'multiple_choice',
+                'question': 'What is the primary benefit of cloud computing scalability?',
+                'options': [
+                    'Reduced hardware costs',
+                    'Automatic resource adjustment based on demand', 
+                    'Faster network speeds',
+                    'Better security protocols'
+                ],
+                'correct_answer': 'B',
+                'points': 5
+            },
+            {
+                'type': 'true_false',
+                'question': 'Infrastructure as a Service (IaaS) provides the highest level of control over computing resources.',
+                'correct_answer': 'True', 
+                'points': 3
+            },
+            {
+                'type': 'short_answer',
+                'question': 'Explain the difference between public and private cloud deployments.',
+                'points': 10
+            }
+        ]
+    }
+    
+    branding = {
+        'university_name': 'Technical University',
+        'department': 'Computer Science Department',
+        'course': 'CS 4800 - Cloud Computing',
+        'semester': 'Fall 2024',
+        'instructor': 'Dr. Smith'
+    }
+    
+    try:
+        pdf_exporter = PDFExporter() 
+        pdf_buffer = pdf_exporter.export_quiz(test_data, branding)
+        
+        response = HttpResponse(
+            pdf_buffer.getvalue(),
+            content_type='application/pdf'
+        )
+        response['Content-Disposition'] = 'attachment; filename="clean_export_test.pdf"'
+        return response
+        
+    except Exception as e:
+        messages.error(request, f'Test export failed: {str(e)}')
+        return redirect('exports:list')
 
 
 @login_required

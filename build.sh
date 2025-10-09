@@ -1,21 +1,21 @@
-#!/usr/bin/env bash
-# Render.com build script for DidactIA
+﻿#!/usr/bin/env bash
+# Render.com build script for DidactAI
 # Exit on error
 set -o errexit
 
-echo "🚀 Starting DidactIA build process..."
+echo "ðŸš€ Starting DidactAI build process..."
 
 # Install Python dependencies
-echo "📦 Installing Python dependencies..."
+echo "ðŸ“¦ Installing Python dependencies..."
 pip install -r requirements.txt
 
 # Collect static files for production
-echo "🎨 Collecting static files..."
+echo "ðŸŽ¨ Collecting static files..."
 python manage.py collectstatic --noinput
 
 # Apply database migrations
-echo "🗄️ Applying database migrations..."
+echo "ðŸ—„ï¸ Applying database migrations..."
 python manage.py migrate
 
-echo "✅ Build process completed successfully!"
-echo "🎉 DidactIA is ready for deployment!"
+echo "âœ… Build process completed successfully!"
+echo "ðŸŽ‰ DidactAI is ready for deployment!"

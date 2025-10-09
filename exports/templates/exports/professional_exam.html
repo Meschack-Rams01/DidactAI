@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ generation.title }}</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            color: #000;
+            background: #fff;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #000;
+            padding-bottom: 20px;
+        }
+        
+        .institution-logo {
+            max-height: 80px;
+            margin-bottom: 10px;
+        }
+        
+        .institution-name {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        
+        .faculty-name {
+            font-size: 18px;
+            margin: 5px 0;
+        }
+        
+        .department-name {
+            font-size: 16px;
+            margin: 5px 0;
+            color: #333;
+        }
+        
+        .exam-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin: 20px 0;
+            text-decoration: underline;
+        }
+        
+        .exam-info {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #000;
+            background-color: #f9f9f9;
+        }
+        
+        .exam-info table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .exam-info th,
+        .exam-info td {
+            text-align: left;
+            padding: 5px 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .exam-info th {
+            font-weight: bold;
+            width: 30%;
+        }
+        
+        .instructions {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #666;
+            background-color: #f0f0f0;
+        }
+        
+        .instructions h3 {
+            margin-top: 0;
+        }
+        
+        .questions-section {
+            margin: 30px 0;
+        }
+        
+        .question {
+            margin: 25px 0;
+            page-break-inside: avoid;
+        }
+        
+        .question-number {
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        .question-text {
+            margin: 10px 0;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        
+        .question-points {
+            float: right;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .options {
+            margin: 15px 0;
+            padding-left: 20px;
+        }
+        
+        .option {
+            margin: 8px 0;
+            font-size: 14px;
+        }
+        
+        .answer-space {
+            margin: 15px 0;
+            border-bottom: 1px solid #000;
+            height: 40px;
+        }
+        
+        .essay-space {
+            margin: 15px 0;
+            border: 1px solid #ccc;
+            min-height: 200px;
+            padding: 10px;
+        }
+        
+        .true-false-options {
+            margin: 15px 0;
+            padding-left: 20px;
+        }
+        
+        .answer-key {
+            margin-top: 40px;
+            page-break-before: always;
+            border-top: 3px solid #000;
+            padding-top: 20px;
+        }
+        
+        .answer-key h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .answer-item {
+            margin: 10px 0;
+            padding: 5px;
+            background-color: #f0f8ff;
+        }
+        
+        .watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 72px;
+            color: rgba(200, 200, 200, 0.3);
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        @media print {
+            body { 
+                margin: 0;
+                padding: 15px;
+            }
+            .no-print { 
+                display: none; 
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Watermark -->
+    {% if branding.watermark %}
+        <div class="watermark">{{ branding.watermark }}</div>
+    {% endif %}
+
+    <!-- Header with Institutional Branding -->
+    <div class="header">
+        {% if branding.logo %}
+            <img src="{{ branding.logo }}" alt="Institution Logo" class="institution-logo">
+        {% endif %}
+        
+        {% if branding.institution_name %}
+            <div class="institution-name">{{ branding.institution_name }}</div>
+        {% endif %}
+        
+        {% if branding.faculty %}
+            <div class="faculty-name">{{ branding.faculty }}</div>
+        {% endif %}
+        
+        {% if branding.department %}
+            <div class="department-name">{{ branding.department }}</div>
+        {% endif %}
+        
+        <div class="exam-title">{{ generation.title }}</div>
+    </div>
+
+    <!-- Exam Information -->
+    <div class="exam-info">
+        <table>
+            {% if branding.course_code %}
+            <tr>
+                <th>Course Code:</th>
+                <td>{{ branding.course_code }}</td>
+            </tr>
+            {% endif %}
+            
+            {% if branding.instructor_name %}
+            <tr>
+                <th>Instructor:</th>
+                <td>{{ branding.instructor_name }}</td>
+            </tr>
+            {% endif %}
+            
+            {% if branding.exam_date %}
+            <tr>
+                <th>Date:</th>
+                <td>{{ branding.exam_date }}</td>
+            </tr>
+            {% endif %}
+            
+            {% if branding.time_limit %}
+            <tr>
+                <th>Duration:</th>
+                <td>{{ branding.time_limit }}</td>
+            </tr>
+            {% endif %}
+            
+            {% if branding.academic_year %}
+            <tr>
+                <th>Academic Year:</th>
+                <td>{{ branding.academic_year }}</td>
+            </tr>
+            {% endif %}
+            
+            <tr>
+                <th>Total Questions:</th>
+                <td>{{ total_questions }}</td>
+            </tr>
+            
+            <tr>
+                <th>Total Points:</th>
+                <td>{{ total_points }}</td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Instructions -->
+    {% if branding.include_instructions %}
+    <div class="instructions">
+        <h3>Instructions</h3>
+        <p>1. Read all questions carefully before answering.</p>
+        <p>2. Answer all questions to the best of your ability.</p>
+        <p>3. Write clearly and legibly.</p>
+        <p>4. Manage your time wisely.</p>
+        {% if branding.time_limit %}
+            <p>5. You have {{ branding.time_limit }} to complete this {{ generation.content_type }}.</p>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Questions -->
+    <div class="questions-section">
+        {% for question in questions %}
+            <div class="question">
+                <div class="question-number">
+                    {{ forloop.counter }}.
+                    {% if question.points %}
+                        <span class="question-points">[{{ question.points }} point{{ question.points|pluralize }}]</span>
+                    {% endif %}
+                </div>
+                
+                <div class="question-text">{{ question.question }}</div>
+
+                <!-- Multiple Choice Options -->
+                {% if question.type == 'multiple_choice' and question.options %}
+                    <div class="options">
+                        {% for option in question.options %}
+                            <div class="option">{{ forloop.counter|add:64|stringformat:"c" }}) {{ option }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <!-- True/False Options -->
+                {% if question.type == 'true_false' %}
+                    <div class="true-false-options">
+                        <div class="option">A) True</div>
+                        <div class="option">B) False</div>
+                    </div>
+                {% endif %}
+
+                <!-- Short Answer Space -->
+                {% if question.type == 'short_answer' %}
+                    <div class="answer-space"></div>
+                    <div class="answer-space"></div>
+                {% endif %}
+
+                <!-- Essay Space -->
+                {% if question.type == 'essay' %}
+                    <div class="essay-space">
+                        {% if question.min_length or question.max_length %}
+                            <p><em>
+                                {% if question.min_length %}Minimum {{ question.min_length }} words. {% endif %}
+                                {% if question.max_length %}Maximum {{ question.max_length }} words.{% endif %}
+                            </em></p>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Answer Key (if requested) -->
+    {% if include_answers %}
+        <div class="answer-key">
+            <h2>Answer Key</h2>
+            {% for question in questions %}
+                <div class="answer-item">
+                    <strong>{{ forloop.counter }}.</strong> 
+                    {{ question.correct_answer }}
+                    
+                    {% if include_explanations and question.explanation %}
+                        <br><em>Explanation: {{ question.explanation }}</em>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Footer -->
+    <div style="position: fixed; bottom: 10px; right: 20px; font-size: 10px; color: #666;">
+        Generated on {{ export_date|date:"F j, Y" }}
+    </div>
+</body>
+</html>

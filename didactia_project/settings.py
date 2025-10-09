@@ -1,5 +1,5 @@
-"""
-Django settings for DidactIA project.
+﻿"""
+Django settings for DidactAI project.
 
 A comprehensive educational content management and AI generation platform.
 """
@@ -55,7 +55,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',  # For i18n
-    'core.i18n.LanguageMiddleware',  # Custom language detection
+    # 'core.i18n.LanguageMiddleware',  # Custom language detection - keep disabled to stay in English
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -63,7 +63,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'didactia_project.urls'
+ROOT_URLCONF = 'DidactAI_project.urls'
 
 TEMPLATES = [
     {
@@ -76,14 +76,14 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'django.template.context_processors.i18n',
-                'core.i18n.translation_context',
+                'django.template.context_processors.i18n',  # Re-enabled for i18n
+                # 'core.i18n.translation_context',  # Keep disabled - custom translation
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = 'didactia_project.wsgi.application'
+WSGI_APPLICATION = 'DidactAI_project.wsgi.application'
 
 # Database Configuration
 DATABASE_URL = config('DATABASE_URL', default=f'sqlite:///{BASE_DIR}/db.sqlite3')
@@ -111,24 +111,13 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # Internationalization
-LANGUAGE_CODE = config('DEFAULT_LANGUAGE', default='en')
+LANGUAGE_CODE = 'en'  # Default to English interface
 TIME_ZONE = 'UTC'
-USE_I18N = True
+USE_I18N = True  # Enable internationalization
 USE_TZ = True
 
 LANGUAGES = [
     ('en', 'English'),
-    ('fr', 'Français'),
-    ('es', 'Español'),
-    ('de', 'Deutsch'),
-    ('pt', 'Português'),
-    ('it', 'Italiano'),
-    ('ru', 'Русский'),
-    ('zh', '中文'),
-    ('ja', '日本語'),
-    ('ar', 'العربية'),
-    ('he', 'עברית'),
-    ('tr', 'Türkçe'),
 ]
 
 LOCALE_PATHS = [
@@ -205,11 +194,15 @@ LOGOUT_REDIRECT_URL = '/'
 
 # Email Configuration
 EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')
-EMAIL_HOST = config('EMAIL_HOST', default='')
+EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')
 EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
 EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
+EMAIL_USE_SSL = config('EMAIL_USE_SSL', default=False, cast=bool)
 EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='DidactAI <noreply@DidactAI.com>')
+SERVER_EMAIL = config('SERVER_EMAIL', default='DidactAI <noreply@DidactAI.com>')
+SERVER_NAME = config('SERVER_NAME', default='localhost:8000')
 
 # Security Settings for Production
 if not DEBUG:
@@ -229,7 +222,7 @@ LOGGING = {
         'file': {
             'level': 'INFO',
             'class': 'logging.FileHandler',
-            'filename': BASE_DIR / 'logs' / 'didactia.log',
+            'filename': BASE_DIR / 'logs' / 'DidactAI.log',
         },
         'console': {
             'level': 'INFO',
@@ -243,11 +236,11 @@ LOGGING = {
 }
 
 # Application-specific settings
-DIDACTIA_SETTINGS = {
+DidactAI_SETTINGS = {
     'ALLOWED_FILE_EXTENSIONS': config('ALLOWED_FILE_EXTENSIONS', default='pdf,docx,pptx,png,jpg,jpeg', cast=lambda v: [s.strip() for s in v.split(',')]),
     'MAX_FILE_SIZE': config('MAX_UPLOAD_SIZE', default=50000000, cast=int),
     'SUPPORTED_LANGUAGES': config('SUPPORTED_LANGUAGES', default='en,fr,es,de,it,tr', cast=lambda v: [s.strip() for s in v.split(',')]),
-    'DEFAULT_AI_MODEL': 'gemini-1.5-flash',
+    'DEFAULT_AI_MODEL': 'gemini-2.5-flash',
     'EXAM_VERSIONS_COUNT': 3,  # A, B, C versions
     'AUTO_DELETE_DAYS': 90,  # Auto-delete old files after 90 days
     'ENABLE_VERSIONING': True,  # Enable content versioning
@@ -258,3 +251,4 @@ DIDACTIA_SETTINGS = {
 }
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+

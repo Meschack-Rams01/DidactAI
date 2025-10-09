@@ -1,56 +1,56 @@
-#!/bin/bash
-# DidactIA macOS Setup Script
+﻿#!/bin/bash
+# DidactAI macOS Setup Script
 # Run: chmod +x setup_mac.sh && ./setup_mac.sh
 
-echo "🍎 Setting up DidactIA on macOS..."
+echo "ðŸŽ Setting up DidactAI on macOS..."
 echo "=================================="
 
 # Check if Python 3 is installed
 if ! command -v python3 &> /dev/null; then
-    echo "❌ Python 3 not found. Installing via Homebrew..."
+    echo "âŒ Python 3 not found. Installing via Homebrew..."
     
     # Check if Homebrew is installed
     if ! command -v brew &> /dev/null; then
-        echo "📦 Installing Homebrew..."
+        echo "ðŸ“¦ Installing Homebrew..."
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     fi
     
     # Install Python
     brew install python
 else
-    echo "✅ Python 3 found: $(python3 --version)"
+    echo "âœ… Python 3 found: $(python3 --version)"
 fi
 
 # Create virtual environment
-echo "🔧 Creating virtual environment..."
+echo "ðŸ”§ Creating virtual environment..."
 python3 -m venv venv
 
 # Activate virtual environment
-echo "🔄 Activating virtual environment..."
+echo "ðŸ”„ Activating virtual environment..."
 source venv/bin/activate
 
 # Upgrade pip
-echo "📦 Upgrading pip..."
+echo "ðŸ“¦ Upgrading pip..."
 pip install --upgrade pip
 
 # Install dependencies
-echo "📚 Installing project dependencies..."
+echo "ðŸ“š Installing project dependencies..."
 pip install -r requirements.txt
 
 # Copy environment file
-echo "📝 Setting up environment file..."
+echo "ðŸ“ Setting up environment file..."
 if [ ! -f .env ]; then
     cp .env.example .env
-    echo "✅ .env file created from template"
+    echo "âœ… .env file created from template"
 else
-    echo "⚠️  .env file already exists, skipping..."
+    echo "âš ï¸  .env file already exists, skipping..."
 fi
 
 echo ""
-echo "🎉 Setup Complete!"
+echo "ðŸŽ‰ Setup Complete!"
 echo "=================="
 echo ""
-echo "📝 Next Steps:"
+echo "ðŸ“ Next Steps:"
 echo "1. Edit your environment file with API keys:"
 echo "   nano .env"
 echo ""
@@ -66,8 +66,8 @@ echo ""
 echo "5. Open your browser to:"
 echo "   http://localhost:8000"
 echo ""
-echo "🔑 Don't forget to add your API keys to .env:"
+echo "ðŸ”‘ Don't forget to add your API keys to .env:"
 echo "   - GEMINI_API_KEY=your-gemini-api-key"
 echo "   - HUGGINGFACE_API_TOKEN=your-huggingface-token"
 echo ""
-echo "✨ Happy coding! Your DidactIA AI platform is ready!"
+echo "âœ¨ Happy coding! Your DidactAI AI platform is ready!"

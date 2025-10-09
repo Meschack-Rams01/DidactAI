@@ -21,7 +21,7 @@ class GeminiService:
     def __init__(self):
         # Configure Gemini with API key
         genai.configure(api_key=settings.GEMINI_API_KEY)
-        self.model = genai.GenerativeModel('gemini-1.5-flash')
+        self.model = genai.GenerativeModel('gemini-2.5-flash')
         self.max_retries = 2
         self.base_delay = 1
     
@@ -106,7 +106,8 @@ class QuizGenerator:
     
     def generate_quiz(self, content: str, language: str = 'en', 
                      num_questions: int = 10, difficulty: str = 'medium',
-                     question_types: List[str] = None) -> Dict[str, Any]:
+                     question_types: List[str] = None, 
+                     question_type_counts: Dict[str, int] = None) -> Dict[str, Any]:
         """
         Generate quiz questions from content
         
@@ -115,7 +116,8 @@ class QuizGenerator:
             language: Target language for questions
             num_questions: Number of questions to generate
             difficulty: Difficulty level (easy, medium, hard)
-            question_types: Types of questions to generate
+            question_types: Types of questions to generate (for backward compatibility)
+            question_type_counts: Dict mapping question types to exact counts
             
         Returns:
             Dict containing generated quiz data
@@ -128,7 +130,7 @@ class QuizGenerator:
         
         # Create prompt for quiz generation
         prompt = self._create_quiz_prompt(
-            content, language, num_questions, difficulty, question_types
+            content, language, num_questions, difficulty, question_types, question_type_counts
         )
         # Generate content
         result = self.gemini.generate_content(prompt)
@@ -158,7 +160,8 @@ class QuizGenerator:
     
     def _create_quiz_prompt(self, content: str, language: str, 
                            num_questions: int, difficulty: str,
-                           question_types: List[str]) -> str:
+                           question_types: List[str],
+                           question_type_counts: Dict[str, int] = None) -> str:
         """Create a prompt for quiz generation"""
         
         difficulty_instructions = {
@@ -175,7 +178,26 @@ class QuizGenerator:
             'essay': 'Essay questions requiring detailed analysis and explanation'
         }
         
-        selected_types = [type_instructions[t] for t in question_types if t in type_instructions]
+        # Prepare question type distribution instructions
+        if question_type_counts and isinstance(question_type_counts, dict):
+            # Use specific counts provided
+            distribution_text = "SPECIFIC QUESTION TYPE DISTRIBUTION REQUIRED:\n"
+            selected_types = []
+            total_specified = sum(question_type_counts.values())
+            
+            for q_type, count in question_type_counts.items():
+                if q_type in type_instructions and count > 0:
+                    distribution_text += f"• {count} {q_type.replace('_', ' ').title()} questions - {type_instructions[q_type]}\n"
+                    selected_types.append(type_instructions[q_type])
+            
+            distribution_text += f"\nTOTAL QUESTIONS: {total_specified} (use this exact count, not {num_questions})\n"
+            num_questions = total_specified  # Update to match exact count
+        else:
+            # Use old behavior for backward compatibility
+            distribution_text = "QUESTION TYPE REQUIREMENTS:\n"
+            selected_types = [type_instructions[t] for t in question_types if t in type_instructions]
+            for instruction in selected_types:
+                distribution_text += f"• {instruction}\n"
         
         # Language specific instructions
         language_instructions = {
@@ -202,8 +224,7 @@ EXAMINATION SPECIFICATIONS:
 - Academic Level: {difficulty.upper()}
 - Assessment Focus: {difficulty_instructions.get(difficulty, '')}
 
-QUESTION DESIGN REQUIREMENTS:
-{chr(10).join(f"• {instruction}" for instruction in selected_types)}
+{distribution_text}
 
 CRITICAL QUALITY STANDARDS:
 1. MULTIPLE CHOICE QUESTIONS:
@@ -521,7 +542,8 @@ class ExamGenerator:
     
     def generate_exam(self, content: str, language: str = 'en',
                      num_questions: int = 25, duration: int = 120,
-                     sections: List[Dict] = None) -> Dict[str, Any]:
+                     sections: List[Dict] = None, question_types: List[str] = None,
+                     question_type_counts: Dict[str, int] = None) -> Dict[str, Any]:
         """
         Generate a comprehensive exam
         
@@ -535,11 +557,53 @@ class ExamGenerator:
         Returns:
             Dict containing generated exam data
         """
+        # Use user-selected question types or defaults
+        if question_types is None:
+            question_types = ['multiple_choice', 'short_answer']
+        
         if sections is None:
-            sections = [
-                {'name': 'Multiple Choice', 'questions': num_questions // 2, 'types': ['multiple_choice']},
-                {'name': 'Short Answer', 'questions': num_questions // 2, 'types': ['short_answer']}
-            ]
+            # Create sections based on question type counts or user's question type selection
+            if question_type_counts and isinstance(question_type_counts, dict):
+                # Use specific counts provided
+                sections = []
+                total_questions = 0
+                
+                for q_type, count in question_type_counts.items():
+                    if count > 0:
+                        sections.append({
+                            'name': f'{q_type.replace("_", " ").title()} Section',
+                            'questions': count,
+                            'types': [q_type],
+                            'question_type_counts': {q_type: count}  # Pass specific count
+                        })
+                        total_questions += count
+                
+                # Update total questions to match actual distribution
+                num_questions = total_questions
+            
+            elif len(question_types) == 1:
+                # Single question type
+                sections = [{
+                    'name': f'{question_types[0].replace("_", " ").title()} Questions',
+                    'questions': num_questions,
+                    'types': question_types
+                }]
+            else:
+                # Multiple question types - distribute evenly
+                questions_per_type = num_questions // len(question_types)
+                remaining_questions = num_questions % len(question_types)
+                
+                sections = []
+                for i, q_type in enumerate(question_types):
+                    section_questions = questions_per_type
+                    if i < remaining_questions:  # Distribute remaining questions
+                        section_questions += 1
+                    
+                    sections.append({
+                        'name': f'{q_type.replace("_", " ").title()} Section',
+                        'questions': section_questions,
+                        'types': [q_type]
+                    })
         
         exam_data = {
             'title': f'Comprehensive Exam',
@@ -554,12 +618,16 @@ class ExamGenerator:
         total_time = 0
         
         for section in sections:
+            # Check if section has specific question type counts
+            section_counts = section.get('question_type_counts', None)
+            
             section_result = self.quiz_generator.generate_quiz(
                 content=content,
                 language=language,
                 num_questions=section['questions'],
                 difficulty='medium',
-                question_types=section['types']
+                question_types=section['types'],
+                question_type_counts=section_counts
             )
             
             if section_result.get('success'):

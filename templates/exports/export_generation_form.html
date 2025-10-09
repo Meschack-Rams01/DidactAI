@@ -1,7 +1,7 @@
-{% extends 'base.html' %}
+﻿{% extends 'base.html' %}
 {% load static %}
 
-{% block title %}{{ title }} - DidactIA{% endblock %}
+{% block title %}{{ title }} - DidactAI{% endblock %}
 
 {% block content %}
 <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -23,21 +23,21 @@
     <!-- Messages -->
     {% if messages %}
         {% for message in messages %}
-            <div class="mb-4 p-4 rounded-md {% if message.tags == 'error' %}bg-red-50 border border-red-200{% elif message.tags == 'success' %}bg-green-50 border border-green-200{% else %}bg-blue-50 border border-blue-200{% endif %}">
+            <div class="mb-4 p-4 rounded-md {% if message.tags == "error" %}bg-red-50 border border-red-200{% elif message.tags == "success" %}bg-green-50 border border-green-200{% else %}bg-blue-50 border border-blue-200{% endif %}">
                 <div class="flex">
                     <div class="flex-shrink-0">
-                        {% if message.tags == 'error' %}
+                        {% if message.tags == "error" %}
                             <svg class="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
                             </svg>
-                        {% elif message.tags == 'success' %}
+                        {% elif message.tags == "success" %}
                             <svg class="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
                             </svg>
                         {% endif %}
                     </div>
                     <div class="ml-3">
-                        <p class="text-sm {% if message.tags == 'error' %}text-red-700{% elif message.tags == 'success' %}text-green-700{% else %}text-blue-700{% endif %}">
+                        <p class="text-sm {% if message.tags == "error" %}text-red-700{% elif message.tags == "success" %}text-green-700{% else %}text-blue-700{% endif %}">
                             {{ message }}
                         </p>
                     </div>
@@ -55,7 +55,7 @@
                     <p class="mt-1 text-sm text-gray-600">Choose your export format and options</p>
                 </div>
                 
-                <form method="post" class="p-6 space-y-6">
+                <form method="post" enctype="multipart/form-data" class="p-6 space-y-6">
                     {% csrf_token %}
                     
                     <!-- Export Title -->
@@ -93,7 +93,7 @@
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
                                 required>
                             {% for value, label in format_choices %}
-                                <option value="{{ value }}" {% if value == 'pdf' %}selected{% endif %}>{{ label }}</option>
+                                <option value="{{ value }}" {% if value == "pdf" %}selected{% endif %}>{{ label }}</option>
                             {% endfor %}
                         </select>
                         <p class="mt-1 text-sm text-gray-500">Choose the format for your exported document</p>
@@ -138,34 +138,197 @@
                         </div>
                     </div>
 
-                    <!-- Branding -->
+                    <!-- University Branding -->
                     <div class="space-y-4">
-                        <h4 class="text-md font-medium text-gray-900">Branding & Customization</h4>
+                        <h4 class="text-md font-medium text-gray-900">University & Institution Information</h4>
+                        
+                        <!-- University Logo -->
+                        <div>
+                            <label for="university_logo" class="block text-sm font-medium text-gray-700 mb-1">
+                                University Logo
+                            </label>
+                            <div class="relative">
+                                <input type="file" 
+                                       id="university_logo" 
+                                       name="university_logo"
+                                       accept="image/*"
+                                       class="sr-only"
+                                       onchange="updateFileName(this)">
+                                <label for="university_logo" 
+                                       class="flex items-center justify-center w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 cursor-pointer">
+                                    <svg class="h-5 w-5 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                                    </svg>
+                                    <span id="file-label" class="text-sm text-gray-600">Choose a file</span>
+                                </label>
+                            </div>
+                            <p class="mt-1 text-xs text-gray-500">Upload university logo (PNG, JPG, or SVG format)</p>
+                        </div>
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label for="institution_name" class="block text-sm font-medium text-gray-700 mb-1">
-                                    Institution Name
+                                <label for="university_name" class="block text-sm font-medium text-gray-700 mb-1">
+                                    University Name *
                                 </label>
                                 <input type="text" 
-                                       id="institution_name" 
-                                       name="institution_name"
-                                       placeholder="e.g., University of Example"
+                                       id="university_name" 
+                                       name="university_name"
+                                       placeholder="e.g., Harvard University"
+                                       required
                                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500">
                             </div>
                             
                             <div>
+                                <label for="faculty" class="block text-sm font-medium text-gray-700 mb-1">
+                                    Faculty *
+                                </label>
+                                <input type="text" 
+                                       id="faculty" 
+                                       name="faculty"
+                                       placeholder="e.g., Faculty of Science and Technology"
+                                       required
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500">
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
                                 <label for="department" class="block text-sm font-medium text-gray-700 mb-1">
-                                    Department
+                                    Department *
                                 </label>
                                 <input type="text" 
                                        id="department" 
                                        name="department"
-                                       placeholder="e.g., Computer Science"
+                                       placeholder="e.g., Computer Science Department"
+                                       required
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500">
+                            </div>
+                            
+                            <div>
+                                <label for="course" class="block text-sm font-medium text-gray-700 mb-1">
+                                    Course *
+                                </label>
+                                <input type="text" 
+                                       id="course" 
+                                       name="course"
+                                       placeholder="e.g., CS 4800 - Cloud Computing Fundamentals"
+                                       required
                                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500">
                             </div>
                         </div>
-
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="academic_year" class="block text-sm font-medium text-gray-700 mb-1">
+                                    Academic Year *
+                                </label>
+                                <input type="text" 
+                                       id="academic_year" 
+                                       name="academic_year"
+                                       placeholder="e.g., 2024-2025"
+                                       required
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500">
+                            </div>
+                            
+                            <div>
+                                <label for="semester" class="block text-sm font-medium text-gray-700 mb-1">
+                                    Semester *
+                                </label>
+                                <select id="semester" 
+                                        name="semester"
+                                        required
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500">
+                                    <option value="">Select Semester</option>
+                                    <option value="Fall Semester">Fall Semester</option>
+                                    <option value="Spring Semester">Spring Semester</option>
+                                    <option value="Summer Semester">Summer Semester</option>
+                                    <option value="Winter Semester">Winter Semester</option>
+                                    <option value="First Semester">First Semester</option>
+                                    <option value="Second Semester">Second Semester</option>
+                                    <option value="Third Semester">Third Semester</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="instructor" class="block text-sm font-medium text-gray-700 mb-1">
+                                    Instructor Name
+                                </label>
+                                <input type="text" 
+                                       id="instructor" 
+                                       name="instructor"
+                                       placeholder="e.g., Dr. John Smith"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500">
+                            </div>
+                            
+                            <div>
+                                <label for="exam_date" class="block text-sm font-medium text-gray-700 mb-1">
+                                    Exam/Quiz Date
+                                </label>
+                                <input type="date" 
+                                       id="exam_date" 
+                                       name="exam_date"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Student Information Fields -->
+                    <div class="space-y-4">
+                        <h4 class="text-md font-medium text-gray-900">Student Information Section</h4>
+                        <p class="text-sm text-gray-600">These fields will appear in the exported document for students to fill in.</p>
+                        
+                        <div class="space-y-3">
+                            <div class="flex items-center">
+                                <input id="include_student_name" 
+                                       name="include_student_name" 
+                                       type="checkbox" 
+                                       checked
+                                       class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded">
+                                <label for="include_student_name" class="ml-2 block text-sm text-gray-700">
+                                    Include student full name field
+                                </label>
+                            </div>
+                            
+                            <div class="flex items-center">
+                                <input id="include_student_id" 
+                                       name="include_student_id" 
+                                       type="checkbox" 
+                                       checked
+                                       class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded">
+                                <label for="include_student_id" class="ml-2 block text-sm text-gray-700">
+                                    Include student ID/number field
+                                </label>
+                            </div>
+                            
+                            <div class="flex items-center">
+                                <input id="include_signature" 
+                                       name="include_signature" 
+                                       type="checkbox" 
+                                       checked
+                                       class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded">
+                                <label for="include_signature" class="ml-2 block text-sm text-gray-700">
+                                    Include signature field
+                                </label>
+                            </div>
+                            
+                            <div class="flex items-center">
+                                <input id="include_date_field" 
+                                       name="include_date_field" 
+                                       type="checkbox" 
+                                       class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded">
+                                <label for="include_date_field" class="ml-2 block text-sm text-gray-700">
+                                    Include date field for student to fill
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Additional Customization -->
+                    <div class="space-y-4">
+                        <h4 class="text-md font-medium text-gray-900">Additional Customization</h4>
+                        
                         <div>
                             <label for="watermark" class="block text-sm font-medium text-gray-700 mb-1">
                                 Watermark Text
@@ -173,8 +336,19 @@
                             <input type="text" 
                                    id="watermark" 
                                    name="watermark"
-                                   placeholder="Optional watermark text"
+                                   placeholder="Optional watermark text (e.g., CONFIDENTIAL, DRAFT)"
                                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500">
+                        </div>
+                        
+                        <div>
+                            <label for="additional_notes" class="block text-sm font-medium text-gray-700 mb-1">
+                                Additional Instructions/Notes
+                            </label>
+                            <textarea id="additional_notes" 
+                                      name="additional_notes" 
+                                      rows="3"
+                                      placeholder="Any additional instructions or notes to include in the document"
+                                      class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"></textarea>
                         </div>
                     </div>
 
@@ -258,12 +432,27 @@
 </div>
 
 <script>
+// File input functionality
+function updateFileName(input) {
+    const label = document.getElementById('file-label');
+    if (input.files && input.files.length > 0) {
+        label.textContent = input.files[0].name;
+        label.classList.remove('text-gray-600');
+        label.classList.add('text-gray-900');
+    } else {
+        label.textContent = 'Choose a file';
+        label.classList.remove('text-gray-900');
+        label.classList.add('text-gray-600');
+    }
+}
+
+// Format selection functionality
 document.getElementById('format').addEventListener('change', function() {
     const versionsCheckbox = document.getElementById('create_versions');
     const format = this.value;
     
     // Only enable versions for PDF and ZIP formats
-    if (format === 'pdf' || format === 'zip') {
+    if (format === "pdf" || format === "zip") {
         versionsCheckbox.disabled = false;
         versionsCheckbox.parentElement.classList.remove('opacity-50');
     } else {

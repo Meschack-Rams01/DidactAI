@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 """
 Fixed script to create courses for users (using correct field names)
 """
@@ -6,11 +6,11 @@ import os
 import django
 
 # Set up Django
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'didactia_project.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'DidactAI_project.settings')
 django.setup()
 
 def fix_courses_final():
-    print("🔧 Creating courses for users...")
+    print("ðŸ”§ Creating courses for users...")
     
     try:
         from courses.models import Course
@@ -20,7 +20,7 @@ def fix_courses_final():
         
         # Show all users and their courses
         users = User.objects.all()
-        print("👥 Current users and their courses:")
+        print("ðŸ‘¥ Current users and their courses:")
         for i, user in enumerate(users, 1):
             user_courses = Course.objects.filter(instructor=user)
             print(f"   {i}. {user.get_full_name() or user.username} ({user.email}) - {user_courses.count()} courses")
@@ -32,13 +32,13 @@ def fix_courses_final():
                 users_without_courses.append(user)
         
         if users_without_courses:
-            print(f"\n👤 Users without courses:")
+            print(f"\nðŸ‘¤ Users without courses:")
             for i, user in enumerate(users_without_courses, 1):
                 print(f"   {i}. {user.get_full_name() or user.username} ({user.email})")
             
             # Create courses for the first user without courses (likely the current user)
             user_to_fix = users_without_courses[0]  # Usually the current logged-in user
-            print(f"\n📝 Creating courses for: {user_to_fix.get_full_name() or user_to_fix.username}")
+            print(f"\nðŸ“ Creating courses for: {user_to_fix.get_full_name() or user_to_fix.username}")
             
             # Create sample courses using correct field names from the model
             sample_courses = [
@@ -76,37 +76,37 @@ def fix_courses_final():
                 try:
                     course = Course.objects.create(**course_data)
                     created_courses.append(course)
-                    print(f"✅ Created: {course.title} ({course.course_code})")
+                    print(f"âœ… Created: {course.title} ({course.course_code})")
                 except Exception as e:
-                    print(f"❌ Error creating {course_data['title']}: {e}")
+                    print(f"âŒ Error creating {course_data['title']}: {e}")
             
-            print(f"\n🎉 Successfully created {len(created_courses)} courses!")
+            print(f"\nðŸŽ‰ Successfully created {len(created_courses)} courses!")
             print(f"   User {user_to_fix.get_full_name() or user_to_fix.username} now has {Course.objects.filter(instructor=user_to_fix).count()} courses")
             
         else:
-            print("✅ All users already have courses!")
+            print("âœ… All users already have courses!")
         
         # Test the view logic
-        print(f"\n🧪 Testing exam generator view logic...")
+        print(f"\nðŸ§ª Testing exam generator view logic...")
         for user in users:
             user_courses = Course.objects.filter(instructor=user)
             if user_courses.count() > 0:
-                print(f"✅ {user.get_full_name() or user.username}: {user_courses.count()} courses available")
+                print(f"âœ… {user.get_full_name() or user.username}: {user_courses.count()} courses available")
                 for course in user_courses:
                     print(f"    - {course.full_course_name}")
         
         # Show final summary
         all_courses = Course.objects.all()
-        print(f"\n📊 Final Summary:")
+        print(f"\nðŸ“Š Final Summary:")
         print(f"   Total users: {users.count()}")
         print(f"   Total courses: {all_courses.count()}")
         print(f"   Users with courses: {users.filter(courses__isnull=False).distinct().count()}")
         
-        print(f"\n✅ Fix applied! The courses should now appear in the AI Exam Generator dropdown.")
+        print(f"\nâœ… Fix applied! The courses should now appear in the AI Exam Generator dropdown.")
         print(f"   Please refresh the page: http://127.0.0.1:8000/ai-generator/exam/")
         
     except Exception as e:
-        print(f"❌ Error: {e}")
+        print(f"âŒ Error: {e}")
         import traceback
         traceback.print_exc()
         return False

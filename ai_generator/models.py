@@ -149,7 +149,7 @@ class AIGeneration(models.Model):
     ai_model = models.CharField(
         _('AI Model'), 
         max_length=50, 
-        default='gemini-1.5-flash'
+        default='gemini-2.5-flash'
     )
     tokens_used = models.PositiveIntegerField(
         _('Tokens Used'), 

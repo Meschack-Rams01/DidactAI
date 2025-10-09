@@ -1,5 +1,5 @@
-"""
-Advanced Analytics Service for DidactIA
+﻿"""
+Advanced Analytics Service for DidactAI
 
 This module provides comprehensive analytics and reporting capabilities,
 including user behavior tracking, content analytics, and performance metrics.
@@ -13,7 +13,7 @@ from django.db.models import Count, Avg, Sum, Q, F
 from django.db.models.functions import TruncDate, TruncWeek, TruncMonth
 from django.utils import timezone
 from django.contrib.auth import get_user_model
-from .models import UserActivityLog, ContentAnalytics, SystemMetrics, CustomEvent
+from .models import UserActivityLog, SystemMetrics
 
 User = get_user_model()
 
@@ -39,12 +39,14 @@ class AnalyticsService:
             Boolean indicating success
         """
         try:
-            CustomEvent.objects.create(
-                event_name=event_name,
-                user=user,
-                properties=properties,
-                timestamp=timezone.now()
-            )
+            # For now, track as user activity
+            if user:
+                UserActivityLog.objects.create(
+                    user=user,
+                    action=event_name,
+                    description=properties.get('description', event_name),
+                    metadata=properties
+                )
             return True
         except Exception:
             return False
@@ -87,28 +89,28 @@ class AnalyticsService:
         """Get content statistics for a user"""
         from courses.models import Course
         from uploads.models import UploadedFile
-        from ai_generator.models import Generation
+        from ai_generator.models import AIGeneration
         from exports.models import ExportJob
         
         return {
             'courses_created': Course.objects.filter(instructor=user).count(),
-            'files_uploaded': UploadedFile.objects.filter(uploaded_by=user).count(),
-            'ai_generations': Generation.objects.filter(created_by=user).count(),
-            'exports_created': ExportJob.objects.filter(user=user).count(),
+            'files_uploaded': UploadedFile.objects.filter(course__instructor=user).count(),
+            'ai_generations': AIGeneration.objects.filter(course__instructor=user).count(),
+            'exports_created': ExportJob.objects.filter(course__instructor=user).count(),
             'total_storage_used': self._calculate_user_storage(user),
-            'last_activity': UserActivityLog.objects.filter(user=user).order_by('-timestamp').first()
+            'last_activity': UserActivityLog.objects.filter(user=user).order_by('-created_at').first()
         }
     
     def get_recent_activities(self, user, limit: int = 20) -> List[Dict[str, Any]]:
         """Get recent user activities"""
-        activities = UserActivityLog.objects.filter(user=user).order_by('-timestamp')[:limit]
+        activities = UserActivityLog.objects.filter(user=user).order_by('-created_at')[:limit]
         
         return [
             {
                 'id': activity.id,
                 'action': activity.action,
                 'description': activity.description,
-                'timestamp': activity.timestamp,
+                'created_at': activity.created_at,
                 'metadata': activity.metadata
             }
             for activity in activities
@@ -119,7 +121,7 @@ class AnalyticsService:
         activities = UserActivityLog.objects.filter(
             user=user,
             action__in=['course_viewed', 'content_generated', 'file_uploaded', 'quiz_completed']
-        ).order_by('-timestamp')
+        ).order_by('-created_at')
         
         if not activities:
             return {'current_streak': 0, 'longest_streak': 0, 'last_activity': None}
@@ -127,7 +129,7 @@ class AnalyticsService:
         # Group activities by date
         activity_dates = set()
         for activity in activities:
-            activity_dates.add(activity.timestamp.date())
+            activity_dates.add(activity.created_at.date())
         
         # Sort dates in descending order
         sorted_dates = sorted(activity_dates, reverse=True)
@@ -149,7 +151,7 @@ class AnalyticsService:
         return {
             'current_streak': current_streak,
             'longest_streak': longest_streak,
-            'last_activity': activities.first().timestamp,
+            'last_activity': activities.first().created_at,
             'total_active_days': len(activity_dates)
         }
     
@@ -202,9 +204,9 @@ class AnalyticsService:
         
         # Daily active users over last 30 days
         daily_active = UserActivityLog.objects.filter(
-            timestamp__gte=thirty_days_ago
+            created_at__gte=thirty_days_ago
         ).extra(
-            {'day': 'date(timestamp)'}
+            {'day': 'date(created_at)'}
         ).values('day').annotate(
             unique_users=Count('user', distinct=True)
         ).order_by('day')
@@ -214,7 +216,7 @@ class AnalyticsService:
         
         # Feature usage
         feature_usage = UserActivityLog.objects.filter(
-            timestamp__gte=thirty_days_ago
+            created_at__gte=thirty_days_ago
         ).values('action').annotate(
             count=Count('id')
         ).order_by('-count')[:10]
@@ -230,7 +232,7 @@ class AnalyticsService:
     def get_content_performance_metrics(self) -> Dict[str, Any]:
         """Get content performance metrics"""
         from courses.models import Course
-        from ai_generator.models import Generation
+        from ai_generator.models import AIGeneration
         
         # Most popular courses
         popular_courses = Course.objects.annotate(
@@ -238,7 +240,7 @@ class AnalyticsService:
         ).order_by('-view_count')[:10]
         
         # AI generation statistics
-        generation_stats = Generation.objects.values('generation_type').annotate(
+        generation_stats = AIGeneration.objects.values('content_type').annotate(
             count=Count('id')
         ).order_by('-count')
         
@@ -281,7 +283,7 @@ class AnalyticsService:
     def get_top_performing_content(self) -> Dict[str, Any]:
         """Get top performing content across all categories"""
         from courses.models import Course
-        from ai_generator.models import Generation
+        from ai_generator.models import AIGeneration
         from uploads.models import UploadedFile
         
         return {
@@ -333,7 +335,7 @@ class AnalyticsService:
         """Get count of active users in the last N days"""
         cutoff_date = timezone.now() - timedelta(days=days)
         return UserActivityLog.objects.filter(
-            timestamp__gte=cutoff_date
+            created_at__gte=cutoff_date
         ).values('user').distinct().count()
     
     def _get_total_content_count(self) -> int:
@@ -345,7 +347,7 @@ class AnalyticsService:
         return (
             Course.objects.count() +
             UploadedFile.objects.count() +
-            Generation.objects.count()
+            AIGeneration.objects.count()
         )
     
     def _get_total_storage_usage(self) -> int:
@@ -362,7 +364,7 @@ class AnalyticsService:
         """Get API request count for the last N days"""
         cutoff_date = timezone.now() - timedelta(days=days)
         return UserActivityLog.objects.filter(
-            timestamp__gte=cutoff_date,
+            created_at__gte=cutoff_date,
             action__startswith='api_'
         ).count()
     
@@ -398,10 +400,10 @@ class AnalyticsService:
         thirty_days_ago = timezone.now() - timedelta(days=30)
         
         trends = UserActivityLog.objects.filter(
-            timestamp__gte=thirty_days_ago,
+            created_at__gte=thirty_days_ago,
             action__in=['course_created', 'file_uploaded', 'content_generated']
         ).extra(
-            {'day': 'date(timestamp)'}
+            {'day': 'date(created_at)'}
         ).values('day', 'action').annotate(
             count=Count('id')
         ).order_by('day')
@@ -432,9 +434,9 @@ class AnalyticsService:
         thirty_days_ago = timezone.now() - timedelta(days=30)
         
         activities = UserActivityLog.objects.filter(
-            timestamp__gte=thirty_days_ago
+            created_at__gte=thirty_days_ago
         ).extra(
-            {'day': 'date(timestamp)'}
+            {'day': 'date(created_at)'}
         ).values('day').annotate(
             total_activities=Count('id'),
             unique_users=Count('user', distinct=True)
@@ -446,7 +448,7 @@ class AnalyticsService:
         """Get content growth trends by type"""
         from courses.models import Course
         from uploads.models import UploadedFile
-        from ai_generator.models import Generation
+        from ai_generator.models import AIGeneration
         
         thirty_days_ago = timezone.now() - timedelta(days=30)
         
@@ -469,7 +471,7 @@ class AnalyticsService:
         ).order_by('day')
         
         # Generation trends
-        generation_trends = Generation.objects.filter(
+        generation_trends = AIGeneration.objects.filter(
             created_at__gte=thirty_days_ago
         ).extra(
             {'day': 'date(created_at)'}
@@ -520,11 +522,11 @@ class AnalyticsService:
     
     def _get_trending_generations(self, limit: int = 5) -> List[Dict[str, Any]]:
         """Get trending AI generations"""
-        from ai_generator.models import Generation
+        from ai_generator.models import AIGeneration
         
         # Recent generations with high activity
         week_ago = timezone.now() - timedelta(days=7)
-        generations = Generation.objects.filter(
+        generations = AIGeneration.objects.filter(
             created_at__gte=week_ago
         ).annotate(
             activity_count=Count('userlog__id')
@@ -533,10 +535,10 @@ class AnalyticsService:
         return [
             {
                 'id': gen.id,
-                'type': gen.generation_type,
+                'type': gen.content_type,
                 'title': gen.title,
                 'activity_count': gen.activity_count,
-                'created_by': gen.created_by.get_full_name()
+                'created_by': gen.course.instructor.get_full_name()
             }
             for gen in generations
         ]
@@ -638,27 +640,9 @@ class EventProcessor:
     
     def _update_content_analytics(self, content_type: str, content_id: int, action: str):
         """Update content-specific analytics"""
-        analytics, created = ContentAnalytics.objects.get_or_create(
-            content_type=content_type,
-            content_id=content_id,
-            defaults={
-                'views': 0,
-                'downloads': 0,
-                'shares': 0,
-                'ratings_sum': 0,
-                'ratings_count': 0
-            }
-        )
-        
-        # Update based on action
-        if action in ['view', 'course_viewed', 'content_viewed']:
-            analytics.views = F('views') + 1
-        elif action in ['download', 'file_downloaded']:
-            analytics.downloads = F('downloads') + 1
-        elif action in ['share', 'content_shared']:
-            analytics.shares = F('shares') + 1
-        
-        analytics.save(update_fields=['views', 'downloads', 'shares'])
+        # For now, just log the activity
+        # In production, this would update content-specific analytics
+        pass
 
 
 class ReportGenerator:
@@ -674,7 +658,7 @@ class ReportGenerator:
         
         activities = UserActivityLog.objects.filter(
             user=user,
-            timestamp__range=(start_date, end_date)
+            created_at__range=(start_date, end_date)
         )
         
         # Activity breakdown
@@ -682,14 +666,14 @@ class ReportGenerator:
         
         # Daily activity
         daily_activity = activities.extra(
-            {'day': 'date(timestamp)'}
+            {'day': 'date(created_at)'}
         ).values('day').annotate(
             count=Count('id')
         ).order_by('day')
         
         # Most active hours
         hourly_activity = activities.extra(
-            {'hour': 'EXTRACT(hour FROM timestamp)'}
+            {'hour': 'EXTRACT(hour FROM created_at)'}
         ).values('hour').annotate(
             count=Count('id')
         ).order_by('hour')
@@ -729,7 +713,7 @@ class ReportGenerator:
         
         # Activity summary
         activities = UserActivityLog.objects.filter(
-            timestamp__range=(start_date, end_date)
+            created_at__range=(start_date, end_date)
         )
         
         return {
@@ -763,7 +747,7 @@ class UserBehaviorAnalyzer:
         
         activities = UserActivityLog.objects.filter(
             user=user,
-            timestamp__gte=thirty_days_ago
+            created_at__gte=thirty_days_ago
         )
         
         return {
@@ -780,7 +764,7 @@ class UserBehaviorAnalyzer:
             return None
         
         day_counts = activities.extra(
-            {'day_of_week': 'EXTRACT(dow FROM timestamp)'}
+            {'day_of_week': 'EXTRACT(dow FROM created_at)'}
         ).values('day_of_week').annotate(
             count=Count('id')
         ).order_by('-count').first()
@@ -798,7 +782,7 @@ class UserBehaviorAnalyzer:
         
         # Peak hours
         hourly_counts = activities.extra(
-            {'hour': 'EXTRACT(hour FROM timestamp)'}
+            {'hour': 'EXTRACT(hour FROM created_at)'}
         ).values('hour').annotate(
             count=Count('id')
         ).order_by('-count')
@@ -817,22 +801,22 @@ class UserBehaviorAnalyzer:
         # Various engagement factors
         activities_count = UserActivityLog.objects.filter(
             user=user,
-            timestamp__gte=thirty_days_ago
+            created_at__gte=thirty_days_ago
         ).count()
         
         # Content creation activities
         creation_activities = UserActivityLog.objects.filter(
             user=user,
-            timestamp__gte=thirty_days_ago,
+            created_at__gte=thirty_days_ago,
             action__in=['course_created', 'file_uploaded', 'content_generated']
         ).count()
         
         # Unique days active
         active_days = UserActivityLog.objects.filter(
             user=user,
-            timestamp__gte=thirty_days_ago
+            created_at__gte=thirty_days_ago
         ).extra(
-            {'day': 'date(timestamp)'}
+            {'day': 'date(created_at)'}
         ).values('day').distinct().count()
         
         # Calculate engagement score
@@ -843,3 +827,4 @@ class UserBehaviorAnalyzer:
         total_score = activity_score + creation_score + consistency_score
         
         return min(100, total_score)
+

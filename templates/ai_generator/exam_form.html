@@ -1,9 +1,52 @@
-{% extends 'base.html' %}
+﻿{% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Generate Exam - DidactIA{% endblock %}
+{% block title %}Generate Exam - DidactAI{% endblock %}
 
 {% block extra_css %}
+<style>
+    .file-preview {
+        background: #f8fafc;
+        border: 2px dashed #cbd5e1;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+    .file-preview.has-files {
+        background: #f0f9ff;
+        border-color: #0ea5e9;
+    }
+    .file-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .modal-backdrop {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+    }
+    .modal-content {
+        background: white;
+        border-radius: 8px;
+        padding: 24px;
+        max-width: 500px;
+        width: 90%;
+        max-height: 80vh;
+        overflow-y: auto;
+        position: relative;
+        z-index: 10000;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+</style>
 <style>
     .file-preview {
         background: #f8fafc;
@@ -70,21 +113,21 @@
     <!-- Messages -->
     {% if messages %}
         {% for message in messages %}
-            <div class="mb-4 p-4 rounded-md {% if message.tags == 'error' %}bg-red-50 border border-red-200{% elif message.tags == 'success' %}bg-green-50 border border-green-200{% else %}bg-blue-50 border border-blue-200{% endif %}">
+            <div class="mb-4 p-4 rounded-md {% if message.tags == "error" %}bg-red-50 border border-red-200{% elif message.tags == "success" %}bg-green-50 border border-green-200{% else %}bg-blue-50 border border-blue-200{% endif %}">
                 <div class="flex">
                     <div class="flex-shrink-0">
-                        {% if message.tags == 'error' %}
+                        {% if message.tags == "error" %}
                             <svg class="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
                             </svg>
-                        {% elif message.tags == 'success' %}
+                        {% elif message.tags == "success" %}
                             <svg class="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
                             </svg>
                         {% endif %}
                     </div>
                     <div class="ml-3">
-                        <p class="text-sm {% if message.tags == 'error' %}text-red-700{% elif message.tags == 'success' %}text-green-700{% else %}text-blue-700{% endif %}">
+                        <p class="text-sm {% if message.tags == "error" %}text-red-700{% elif message.tags == "success" %}text-green-700{% else %}text-blue-700{% endif %}">
                             {{ message }}
                         </p>
                     </div>
@@ -142,14 +185,6 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                                     </svg>
                                     Browse Course Files
-                                </button>
-                                <button type="button" onclick="testAPI()" 
-                                        class="ml-2 inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
-                                    Test API
-                                </button>
-                                <button type="button" onclick="checkFormState()" 
-                                        class="ml-2 inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
-                                    Check Form
                                 </button>
                             </div>
                         </div>
@@ -292,12 +327,10 @@
                class="px-6 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
                 Cancel
             </a>
-            <button type="submit" 
-                    x-bind:disabled="loading || selectedFiles.length === 0"
-                    x-bind:class="loading || selectedFiles.length === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-primary-700'"
-                    class="px-6 py-2 bg-primary-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
-                <span x-show="!loading">Generate Exam</span>
-                <span x-show="loading" class="flex items-center">
+            <button type="submit" id="generate-btn"
+                    class="px-6 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors duration-200">
+                <span id="btn-text">Generate Exam</span>
+                <span id="btn-loading" style="display: none;" class="flex items-center">
                     <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -376,7 +409,7 @@ function showFileSelector(files) {
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                     <h3 style="margin: 0; font-size: 18px; font-weight: bold;">Select Source Files</h3>
                     <button type="button" onclick="closeModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #666;">
-                        ×
+                        Ã—
                     </button>
                 </div>
                 <div style="max-height: 300px; overflow-y: auto;">
@@ -385,7 +418,7 @@ function showFileSelector(files) {
                             <input type="checkbox" value="${file.id}" class="file-checkbox" style="margin-right: 10px;">
                             <div>
                                 <div style="font-weight: bold; font-size: 14px;">${file.original_filename}</div>
-                                <div style="font-size: 12px; color: #666;">${file.file_type.toUpperCase()} • ${file.file_size_human} • ${file.created_at}</div>
+                                <div style="font-size: 12px; color: #666;">${file.file_type.toUpperCase()} â€¢ ${file.file_size_human} â€¢ ${file.created_at}</div>
                             </div>
                         </label>
                     `).join('')}
@@ -448,20 +481,27 @@ function confirmFileSelection() {
 function updateSelectedFiles(files) {
     console.log('updateSelectedFiles called with:', files);
     
+    // Store globally for access
+    window._selectedFiles = files;
+    
     const filesList = document.getElementById('selected-files-list');
     const checkboxesContainer = document.getElementById('file-checkboxes');
+    const filePreview = document.querySelector('.file-preview');
     
     if (!filesList || !checkboxesContainer) {
         console.error('Required elements not found:', { filesList, checkboxesContainer });
         return;
     }
     
-    // Update the display list
+    // Update the display list with better styling
     filesList.innerHTML = files.map(file => `
-        <div class="flex items-center justify-between p-2 bg-white rounded border">
-            <span class="text-sm text-gray-900">${file.name}</span>
-            <button type="button" onclick="removeFile('${file.id}')" class="text-red-500 hover:text-red-700">
-                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background: white; border: 1px solid #e5e7eb; border-radius: 6px; margin-bottom: 8px;">
+            <div>
+                <div style="font-size: 14px; font-weight: 500; color: #111827;">${file.name}</div>
+                <div style="font-size: 12px; color: #6b7280;">Ready for generation</div>
+            </div>
+            <button type="button" onclick="removeFile('${file.id}')" style="color: #dc2626; background: none; border: none; cursor: pointer; padding: 4px;">
+                <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
             </button>
@@ -470,24 +510,57 @@ function updateSelectedFiles(files) {
     
     // Update the hidden form inputs
     checkboxesContainer.innerHTML = files.map(file => 
-        `<input type="checkbox" name="source_files" value="${file.id}" checked>`
+        `<input type="hidden" name="source_files" value="${file.id}">`
     ).join('');
     
-    // Update Alpine.js data
+    // Update file preview styling
+    if (filePreview) {
+        if (files.length > 0) {
+            filePreview.classList.add('has-files');
+        } else {
+            filePreview.classList.remove('has-files');
+        }
+    }
+    
+    // Update Alpine.js data with multiple methods
     try {
         const formElement = document.querySelector('[x-data]');
-        if (formElement && formElement.__x) {
-            formElement.__x.$data.selectedFiles = files;
-            console.log('Updated Alpine.js selectedFiles:', files);
+        if (formElement) {
+            // Try Alpine 3.x method
+            if (formElement._x_dataStack && formElement._x_dataStack[0]) {
+                formElement._x_dataStack[0].selectedFiles = files;
+                console.log('Updated Alpine.js via _x_dataStack');
+            }
+            // Try Alpine 2.x method
+            else if (formElement.__x && formElement.__x.$data) {
+                formElement.__x.$data.selectedFiles = files;
+                console.log('Updated Alpine.js via __x.$data');
+            }
+            
+            // Force Alpine to re-evaluate
+            if (typeof Alpine !== 'undefined' && Alpine.refresh) {
+                Alpine.refresh(formElement);
+            }
         }
     } catch (e) {
         console.log('Could not update Alpine.js data:', e);
     }
     
-    // Dispatch custom event
-    window.dispatchEvent(new CustomEvent('files-updated', { detail: files }));
+    // Manually show/hide sections since Alpine might not be working
+    const emptyState = document.querySelector('[x-show="selectedFiles.length === 0"]');
+    const fileState = document.querySelector('[x-show="selectedFiles.length > 0"]');
     
-    console.log('Files updated successfully');
+    if (emptyState && fileState) {
+        if (files.length > 0) {
+            emptyState.style.display = 'none';
+            fileState.style.display = 'block';
+        } else {
+            emptyState.style.display = 'block';
+            fileState.style.display = 'none';
+        }
+    }
+    
+    console.log(`Files updated successfully: ${files.length} files selected`);
 }
 
 function removeFile(fileId) {
@@ -517,8 +590,53 @@ function closeModal() {
     }
 }
 
-document.querySelector('form').addEventListener('submit', function() {
-    document.querySelector('[x-data]').__x.$data.loading = true;
+// Form submission handling
+document.querySelector('form').addEventListener('submit', function(e) {
+    console.log('Form submission started');
+    
+    // Validate form
+    const courseSelect = document.getElementById('course');
+    const sourceFileInputs = document.querySelectorAll('input[name="source_files"]');
+    
+    if (!courseSelect.value) {
+        e.preventDefault();
+        alert('Please select a course first.');
+        return false;
+    }
+    
+    if (sourceFileInputs.length === 0) {
+        e.preventDefault();
+        alert('Please select at least one source file.');
+        return false;
+    }
+    
+    // Update button state
+    const generateBtn = document.getElementById('generate-btn');
+    const btnText = document.getElementById('btn-text');
+    const btnLoading = document.getElementById('btn-loading');
+    
+    if (generateBtn && btnText && btnLoading) {
+        generateBtn.disabled = true;
+        generateBtn.classList.add('opacity-75', 'cursor-not-allowed');
+        generateBtn.classList.remove('hover:bg-primary-700');
+        btnText.style.display = 'none';
+        btnLoading.style.display = 'flex';
+    }
+    
+    // Update Alpine.js if available
+    try {
+        const formElement = document.querySelector('[x-data]');
+        if (formElement && formElement._x_dataStack && formElement._x_dataStack[0]) {
+            formElement._x_dataStack[0].loading = true;
+        } else if (formElement && formElement.__x && formElement.__x.$data) {
+            formElement.__x.$data.loading = true;
+        }
+    } catch (e) {
+        console.log('Could not update Alpine.js loading state:', e);
+    }
+    
+    console.log('Form validation passed, submitting...');
+    return true;
 });
 
 // Simple fallback file selector using alerts
@@ -556,67 +674,11 @@ function showSimpleFileSelector(files) {
     }
 }
 
-// Test function to debug API calls
-async function testAPI() {
-    const courseId = document.getElementById('course').value;
-    console.log('=== API Test Started ===');
-    console.log('Course ID:', courseId);
-    
-    if (!courseId) {
-        alert('Please select a course first');
-        return;
-    }
-    
-    try {
-        const url = `/uploads/api/course/${courseId}/files/`;
-        console.log('Calling URL:', url);
-        
-        const response = await fetch(url);
-        console.log('Response:', response);
-        console.log('Response status:', response.status);
-        console.log('Response ok:', response.ok);
-        
-        const text = await response.text();
-        console.log('Raw response text:', text);
-        
-        const data = JSON.parse(text);
-        console.log('Parsed data:', data);
-        console.log('Number of files:', data.length);
-        
-        alert(`API test successful! Found ${data.length} files. Check console for details.`);
-        
-    } catch (error) {
-        console.error('API test failed:', error);
-        alert(`API test failed: ${error.message}`);
-    }
-    console.log('=== API Test Ended ===');
-};
-
-// Function to check form state for debugging
-function checkFormState() {
-    console.log('=== Form State Check ===');
-    
-    const filesList = document.getElementById('selected-files-list');
-    const checkboxesContainer = document.getElementById('file-checkboxes');
-    const sourceFileInputs = document.querySelectorAll('input[name="source_files"]');
-    
-    console.log('Files list element:', filesList);
-    console.log('Files list content:', filesList ? filesList.innerHTML : 'Not found');
-    console.log('Checkboxes container:', checkboxesContainer);
-    console.log('Source file inputs:', sourceFileInputs.length);
-    
-    sourceFileInputs.forEach((input, index) => {
-        console.log(`Input ${index + 1}:`, { value: input.value, checked: input.checked });
-    });
-    
-    // Check Alpine.js data
-    const formElement = document.querySelector('[x-data]');
-    if (formElement && formElement.__x) {
-        console.log('Alpine.js selectedFiles:', formElement.__x.$data.selectedFiles);
-    }
-    
-    console.log('=== End Form State Check ===');
-}
+// Form initialization
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Exam form initialized successfully');
+});
 
 </script>
 {% endblock %}
+

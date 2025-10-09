@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 """
 Fix script for AI generation malformed output issue
 Identifies and resolves problems with quiz generation
@@ -12,7 +12,7 @@ from datetime import datetime
 
 # Setup Django environment
 sys.path.append('C:\\Users\\Ramat\\Desktop\\Nouveau dossier')
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'didactia_project.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'DidactAI_project.settings')
 django.setup()
 
 from ai_generator.models import AIGeneration
@@ -20,14 +20,14 @@ from ai_generator.services import QuizGenerator
 
 def diagnose_generation_issues():
     """Diagnose issues with recent AI generations"""
-    print("🔍 DIAGNOSING AI GENERATION ISSUES...")
+    print("ðŸ” DIAGNOSING AI GENERATION ISSUES...")
     print("=" * 50)
     
     # Get recent generations
     recent_generations = AIGeneration.objects.order_by('-created_at')[:5]
     
     for gen in recent_generations:
-        print(f"\n📋 Generation ID: {gen.id}")
+        print(f"\nðŸ“‹ Generation ID: {gen.id}")
         print(f"   Title: {gen.title}")
         print(f"   Created: {gen.created_at}")
         print(f"   Content Type: {gen.content_type}")
@@ -58,15 +58,15 @@ def diagnose_generation_issues():
                         issues.append("Missing correct answer")
                     
                     if issues:
-                        print(f"     ❌ ISSUES: {', '.join(issues)}")
+                        print(f"     âŒ ISSUES: {', '.join(issues)}")
                     else:
-                        print(f"     ✅ Question looks good")
+                        print(f"     âœ… Question looks good")
         else:
-            print("   ❌ No generated content found")
+            print("   âŒ No generated content found")
 
 def create_fixed_quiz_sample():
     """Create a properly formatted quiz to test the system"""
-    print("\n🛠️ CREATING FIXED QUIZ SAMPLE...")
+    print("\nðŸ› ï¸ CREATING FIXED QUIZ SAMPLE...")
     print("=" * 50)
     
     # Proper quiz data structure
@@ -170,28 +170,28 @@ def create_fixed_quiz_sample():
 
 def test_ai_service():
     """Test the AI generator service"""
-    print("\n🧪 TESTING AI GENERATOR SERVICE...")
+    print("\nðŸ§ª TESTING AI GENERATOR SERVICE...")
     print("=" * 50)
     
     try:
         quiz_generator = QuizGenerator()
-        print("✅ Quiz Generator Service initialized successfully")
+        print("âœ… Quiz Generator Service initialized successfully")
         
         # Test with a simple prompt
         test_content = "Cloud computing provides on-demand access to computing resources over the internet. It offers scalability, cost-effectiveness, and flexibility for businesses."
         
-        print(f"\n📝 Testing with content: {test_content[:100]}...")
+        print(f"\nðŸ“ Testing with content: {test_content[:100]}...")
         
         # This would normally call the AI service
         # result = quiz_generator.generate_quiz(test_content, num_questions=2)
-        print("⚠️ Skipping actual AI call to avoid API costs")
+        print("âš ï¸ Skipping actual AI call to avoid API costs")
         
     except Exception as e:
-        print(f"❌ Error testing Quiz Generator service: {str(e)}")
+        print(f"âŒ Error testing Quiz Generator service: {str(e)}")
 
 def save_fixed_generation():
     """Save a properly formatted generation to the database"""
-    print("\n💾 SAVING FIXED GENERATION TO DATABASE...")
+    print("\nðŸ’¾ SAVING FIXED GENERATION TO DATABASE...")
     print("=" * 50)
     
     try:
@@ -206,7 +206,7 @@ def save_fixed_generation():
             status='completed'
         )
         
-        print(f"✅ Fixed generation created with ID: {generation.id}")
+        print(f"âœ… Fixed generation created with ID: {generation.id}")
         print(f"   Title: {generation.title}")
         print(f"   Questions: {len(fixed_data['questions'])}")
         print(f"   Total Points: {fixed_data['total_points']}")
@@ -214,12 +214,12 @@ def save_fixed_generation():
         return generation
         
     except Exception as e:
-        print(f"❌ Error saving fixed generation: {str(e)}")
+        print(f"âŒ Error saving fixed generation: {str(e)}")
         return None
 
 def main():
     """Main function to run diagnostics and fixes"""
-    print("🚀 AI GENERATION ISSUE DIAGNOSTIC & FIX TOOL")
+    print("ðŸš€ AI GENERATION ISSUE DIAGNOSTIC & FIX TOOL")
     print("=" * 60)
     
     # Step 1: Diagnose existing issues
@@ -232,19 +232,19 @@ def main():
     fixed_gen = save_fixed_generation()
     
     # Step 4: Final recommendations
-    print("\n💡 RECOMMENDATIONS:")
+    print("\nðŸ’¡ RECOMMENDATIONS:")
     print("=" * 50)
-    print("1. ✅ Check AI prompt templates for malformed JSON generation")
-    print("2. ✅ Validate AI responses before saving to database")
-    print("3. ✅ Implement fallback generation for parsing failures")
-    print("4. ✅ Add better error handling in the AI generation pipeline")
-    print("5. ✅ Test the fixed generation for proper export functionality")
+    print("1. âœ… Check AI prompt templates for malformed JSON generation")
+    print("2. âœ… Validate AI responses before saving to database")
+    print("3. âœ… Implement fallback generation for parsing failures")
+    print("4. âœ… Add better error handling in the AI generation pipeline")
+    print("5. âœ… Test the fixed generation for proper export functionality")
     
     if fixed_gen:
-        print(f"\n🎯 Next Steps:")
-        print(f"   • Visit: /ai-generator/view/{fixed_gen.id}/ to see the fixed quiz")
-        print(f"   • Test export functionality with the fixed generation")
-        print(f"   • Use this as a template for proper question formatting")
+        print(f"\nðŸŽ¯ Next Steps:")
+        print(f"   â€¢ Visit: /ai-generator/view/{fixed_gen.id}/ to see the fixed quiz")
+        print(f"   â€¢ Test export functionality with the fixed generation")
+        print(f"   â€¢ Use this as a template for proper question formatting")
 
 if __name__ == '__main__':
     main()

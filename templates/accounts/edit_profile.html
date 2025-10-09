@@ -1,0 +1,191 @@
+﻿{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ title }} - DidactAI{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto py-6 sm:px-6 lg:px-8">
+    <!-- Back to Profile Button -->
+    <div class="mb-6">
+        <a href="{% url 'accounts:profile' %}" 
+           class="inline-flex items-center text-sm text-gray-500 hover:text-gray-700">
+            <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+            Back to Profile
+        </a>
+    </div>
+
+    <!-- Edit Profile Form -->
+    <div class="bg-white shadow rounded-lg">
+        <div class="px-6 py-5 border-b border-gray-200">
+            <h3 class="text-lg font-medium text-gray-900">Edit Profile</h3>
+            <p class="mt-1 text-sm text-gray-500">Update your personal information and preferences.</p>
+        </div>
+
+        <form method="post" enctype="multipart/form-data" class="px-6 py-5">
+            {% csrf_token %}
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- First Name -->
+                <div>
+                    <label for="{{ form.first_name.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        First Name
+                    </label>
+                    {{ form.first_name }}
+                    {% if form.first_name.errors %}
+                        {% for error in form.first_name.errors %}
+                            <p class="mt-1 text-xs text-red-600">{{ error }}</p>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
+                <!-- Last Name -->
+                <div>
+                    <label for="{{ form.last_name.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        Last Name
+                    </label>
+                    {{ form.last_name }}
+                    {% if form.last_name.errors %}
+                        {% for error in form.last_name.errors %}
+                            <p class="mt-1 text-xs text-red-600">{{ error }}</p>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
+                <!-- Email (Read-only) -->
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700">
+                        Email Address
+                    </label>
+                    <input type="email" 
+                           id="email" 
+                           value="{{ user.email }}"
+                           disabled
+                           class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 bg-gray-50 text-gray-500 cursor-not-allowed">
+                    <p class="mt-1 text-xs text-gray-500">Email cannot be changed</p>
+                </div>
+
+                <!-- Username (Read-only) -->
+                <div>
+                    <label for="username" class="block text-sm font-medium text-gray-700">
+                        Username
+                    </label>
+                    <input type="text" 
+                           id="username" 
+                           value="{{ user.username }}"
+                           disabled
+                           class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 bg-gray-50 text-gray-500 cursor-not-allowed">
+                    <p class="mt-1 text-xs text-gray-500">Username cannot be changed</p>
+                </div>
+
+                <!-- Institution -->
+                <div>
+                    <label for="{{ form.institution.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        Institution/University
+                    </label>
+                    {{ form.institution }}
+                    {% if form.institution.errors %}
+                        {% for error in form.institution.errors %}
+                            <p class="mt-1 text-xs text-red-600">{{ error }}</p>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
+                <!-- Department -->
+                <div>
+                    <label for="{{ form.department.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        Department
+                    </label>
+                    {{ form.department }}
+                    {% if form.department.errors %}
+                        {% for error in form.department.errors %}
+                            <p class="mt-1 text-xs text-red-600">{{ error }}</p>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
+                <!-- Preferred Language -->
+                <div>
+                    <label for="{{ form.preferred_language.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        Preferred Language
+                    </label>
+                    {{ form.preferred_language }}
+                    {% if form.preferred_language.errors %}
+                        {% for error in form.preferred_language.errors %}
+                            <p class="mt-1 text-xs text-red-600">{{ error }}</p>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
+                <!-- Phone Number -->
+                <div>
+                    <label for="{{ form.phone_number.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        Phone Number
+                    </label>
+                    {{ form.phone_number }}
+                    {% if form.phone_number.errors %}
+                        {% for error in form.phone_number.errors %}
+                            <p class="mt-1 text-xs text-red-600">{{ error }}</p>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Avatar Upload -->
+            {% if form.avatar %}
+            <div class="mt-6">
+                <label for="{{ form.avatar.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                    Profile Picture
+                </label>
+                <div class="mt-2 flex items-center space-x-4">
+                    {% if user.avatar %}
+                        <img class="h-16 w-16 rounded-full object-cover" src="{{ user.avatar.url }}" alt="Current avatar">
+                    {% else %}
+                        <div class="h-16 w-16 bg-gray-300 rounded-full flex items-center justify-center">
+                            <span class="text-gray-600 text-xl font-medium">{{ user.get_profile_initials }}</span>
+                        </div>
+                    {% endif %}
+                    {{ form.avatar }}
+                    {% if form.avatar.errors %}
+                        {% for error in form.avatar.errors %}
+                            <p class="mt-1 text-xs text-red-600">{{ error }}</p>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                <p class="mt-1 text-xs text-gray-500">JPG, PNG files up to 5MB</p>
+            </div>
+            {% endif %}
+
+            <!-- Bio -->
+            <div class="mt-6">
+                <label for="{{ form.bio.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                    Biography
+                </label>
+                {{ form.bio }}
+                {% if form.bio.errors %}
+                    {% for error in form.bio.errors %}
+                        <p class="mt-1 text-xs text-red-600">{{ error }}</p>
+                    {% endfor %}
+                {% endif %}
+                <p class="mt-1 text-xs text-gray-500">Brief description for your profile (optional)</p>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="mt-8 flex items-center justify-end space-x-3">
+                <a href="{% url 'accounts:profile' %}" 
+                   class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                    Cancel
+                </a>
+                <button type="submit" 
+                        class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                    <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

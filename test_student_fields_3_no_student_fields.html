@@ -1,0 +1,561 @@
+
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Student Information Fields Test</title>
+            <style>
+                @import url('https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap');
+                
+                * {
+                    margin: 0;
+                    padding: 0;
+                    box-sizing: border-box;
+                }
+                
+                body {
+                    font-family: 'Inter', 'Arial', sans-serif;
+                    line-height: 1.6;
+                    color: #2c3e50;
+                    background: white;
+                    margin: 0;
+                    padding: 60px 40px 40px 40px;
+                }
+                
+                .exam-container {
+                    max-width: 210mm;
+                    margin: 0 auto;
+                    background: white;
+                    min-height: 297mm;
+                }
+                
+                /* University Header */
+                .university-header {
+                    display: flex;
+                    align-items: center;
+                    border-bottom: 3px solid #2c3e50;
+                    padding-bottom: 20px;
+                    margin-bottom: 30px;
+                }
+                
+                .logo-placeholder {
+                    width: 80px;
+                    height: 80px;
+                    border: 2px solid #34495e;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 12px;
+                    color: #7f8c8d;
+                    margin-right: 25px;
+                    background: #ecf0f1;
+                    flex-shrink: 0;
+                }
+                
+                .header-info {
+                    flex: 1;
+                }
+                
+                .university-name {
+                    font-family: 'Crimson Text', serif;
+                    font-size: 28px;
+                    font-weight: 700;
+                    color: #2c3e50;
+                    margin-bottom: 5px;
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
+                }
+                
+                .faculty-name {
+                    font-size: 18px;
+                    color: #2c3e50;
+                    margin-bottom: 6px;
+                    font-weight: 600;
+                    font-style: italic;
+                }
+                
+                .department-name {
+                    font-size: 16px;
+                    color: #34495e;
+                    margin-bottom: 4px;
+                    font-weight: 500;
+                }
+                
+                .course-info {
+                    font-size: 14px;
+                    color: #2c3e50;
+                    font-weight: 600;
+                    margin-bottom: 4px;
+                }
+                
+                .academic-info {
+                    font-size: 12px;
+                    color: #7f8c8d;
+                    font-weight: 400;
+                    font-style: italic;
+                }
+                
+                /* Exam Title */
+                .exam-title {
+                    text-align: center;
+                    margin: 40px 0 30px;
+                }
+                
+                .exam-type {
+                    font-family: 'Crimson Text', serif;
+                    font-size: 36px;
+                    font-weight: 700;
+                    color: #2c3e50;
+                    margin-bottom: 10px;
+                    text-transform: uppercase;
+                    letter-spacing: 2px;
+                }
+                
+                /* Exam Metadata */
+                .exam-metadata {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 15px;
+                    margin: 30px 0;
+                    padding: 20px;
+                    border: 1px solid #bdc3c7;
+                    background: #f8f9fa;
+                }
+                
+                .metadata-item {
+                    display: flex;
+                    align-items: center;
+                    font-size: 14px;
+                }
+                
+                .metadata-label {
+                    font-weight: 600;
+                    color: #2c3e50;
+                    margin-right: 10px;
+                    min-width: 80px;
+                }
+                
+                .metadata-value {
+                    color: #34495e;
+                    border-bottom: 1px solid #bdc3c7;
+                    flex: 1;
+                    padding-bottom: 2px;
+                }
+                
+                /* Instructions Section */
+                .instructions-section {
+                    margin: 30px 0;
+                    padding: 20px;
+                    border: 2px solid #34495e;
+                    background: #fdfdfd;
+                }
+                
+                .instructions-title {
+                    font-family: 'Crimson Text', serif;
+                    font-size: 18px;
+                    font-weight: 700;
+                    color: #2c3e50;
+                    margin-bottom: 15px;
+                    text-transform: uppercase;
+                    border-bottom: 1px solid #ecf0f1;
+                    padding-bottom: 5px;
+                }
+                
+                .instructions-list {
+                    list-style: none;
+                }
+                
+                .instructions-list li {
+                    padding: 5px 0;
+                    position: relative;
+                    padding-left: 20px;
+                    color: #34495e;
+                    font-size: 14px;
+                }
+                
+                .instructions-list li::before {
+                    content: '-';
+                    position: absolute;
+                    left: 0;
+                    color: #2c3e50;
+                    font-weight: bold;
+                }
+                
+                /* Questions */
+                .question {
+                    margin: 25px 0;
+                    page-break-inside: avoid;
+                }
+                
+                .question-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: flex-start;
+                    margin-bottom: 12px;
+                }
+                
+                .question-number {
+                    font-weight: 600;
+                    color: #2c3e50;
+                    font-size: 16px;
+                }
+                
+                .question-points {
+                    font-size: 12px;
+                    color: #7f8c8d;
+                    font-style: italic;
+                }
+                
+                .question-text {
+                    font-size: 15px;
+                    line-height: 1.6;
+                    color: #2c3e50;
+                    margin-bottom: 15px;
+                    text-align: justify;
+                }
+                
+                /* Multiple Choice Options */
+                .mc-options {
+                    margin: 15px 0;
+                }
+                
+                .mc-option {
+                    display: flex;
+                    margin: 8px 0;
+                    align-items: flex-start;
+                }
+                
+                .option-checkbox {
+                    width: 12px;
+                    height: 12px;
+                    border: 2px solid #2c3e50;
+                    margin-right: 10px;
+                    margin-top: 4px;
+                    flex-shrink: 0;
+                }
+                
+                .option-letter {
+                    font-weight: 600;
+                    color: #2c3e50;
+                    margin-right: 8px;
+                    min-width: 20px;
+                }
+                
+                .option-text {
+                    line-height: 1.5;
+                    color: #34495e;
+                }
+                
+                /* True/False Questions */
+                .tf-options {
+                    display: flex;
+                    gap: 40px;
+                    margin: 15px 0;
+                    justify-content: flex-start;
+                }
+                
+                .tf-option {
+                    display: flex;
+                    align-items: center;
+                }
+                
+                /* Answer Spaces */
+                .answer-space {
+                    border-bottom: 2px solid #2c3e50;
+                    display: inline-block;
+                    min-width: 300px;
+                    height: 25px;
+                    margin: 10px 0;
+                }
+                
+                .answer-lines {
+                    margin: 15px 0;
+                }
+                
+                .answer-line {
+                    border-bottom: 1px solid #95a5a6;
+                    height: 30px;
+                    margin: 8px 0;
+                    width: 100%;
+                }
+                
+                /* Fill in the Blank */
+                .fill-blank {
+                    margin: 15px 0;
+                }
+                
+                .blank-space {
+                    border-bottom: 2px solid #2c3e50;
+                    display: inline-block;
+                    min-width: 120px;
+                    height: 20px;
+                    margin: 0 5px;
+                }
+                
+                /* Essay Questions */
+                .essay-space {
+                    margin: 20px 0;
+                    min-height: 200px;
+                    border: 1px solid #bdc3c7;
+                    background: repeating-linear-gradient(
+                        transparent,
+                        transparent 28px,
+                        #ecf0f1 28px,
+                        #ecf0f1 30px
+                    );
+                }
+                
+                /* Student Information Section */
+                .student-info-section {
+                    margin: 30px 0;
+                    padding: 20px;
+                    border: 2px solid #34495e;
+                    background: #fdfdfd;
+                }
+                
+                .student-info-title {
+                    font-family: 'Crimson Text', serif;
+                    font-size: 16px;
+                    font-weight: 700;
+                    color: #2c3e50;
+                    margin-bottom: 15px;
+                    text-transform: uppercase;
+                    border-bottom: 1px solid #ecf0f1;
+                    padding-bottom: 5px;
+                }
+                
+                .student-fields {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 15px;
+                }
+                
+                .student-field {
+                    display: flex;
+                    align-items: center;
+                    font-size: 14px;
+                }
+                
+                .student-field-label {
+                    font-weight: 600;
+                    color: #2c3e50;
+                    margin-right: 10px;
+                    min-width: 120px;
+                }
+                
+                .student-field-line {
+                    flex: 1;
+                    border-bottom: 2px solid #2c3e50;
+                    height: 25px;
+                }
+                
+                .signature-field {
+                    grid-column: 1 / -1;
+                    margin-top: 10px;
+                }
+                
+                /* Footer */
+                .exam-footer {
+                    margin-top: 50px;
+                    padding-top: 20px;
+                    border-top: 1px solid #bdc3c7;
+                    text-align: center;
+                    font-size: 12px;
+                    color: #7f8c8d;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                }
+                
+                .footer-left, .footer-right {
+                    font-size: 11px;
+                    color: #95a5a6;
+                }
+                
+                /* Print Styles */
+                @media print {
+                    body {
+                        padding: 20px;
+                        font-size: 12pt;
+                    }
+                    
+                    .exam-container {
+                        max-width: none;
+                    }
+                    
+                    .question {
+                        page-break-inside: avoid;
+                        break-inside: avoid;
+                    }
+                    
+                    .university-header {
+                        page-break-after: avoid;
+                    }
+                    
+                    .instructions-section {
+                        page-break-after: avoid;
+                    }
+                }
+                
+                /* Instructor Answer Indicators */
+                .correct-answer {
+                    background-color: #d4edda !important;
+                    border-color: #28a745 !important;
+                }
+                
+                .correct-answer .option-checkbox {
+                    background-color: #28a745;
+                    border-color: #28a745;
+                    position: relative;
+                }
+                
+                .correct-answer .option-checkbox::after {
+                    content: '✓';
+                    color: white;
+                    font-size: 10px;
+                    position: absolute;
+                    top: -2px;
+                    left: 1px;
+                }
+                
+                .answer-key {
+                    margin-top: 10px;
+                    padding: 8px 12px;
+                    background-color: #e8f4fd;
+                    border: 1px solid #3498db;
+                    border-radius: 4px;
+                    font-size: 13px;
+                    color: #2980b9;
+                }
+                
+                .answer-key strong {
+                    color: #1565C0;
+                }
+                
+                
+                .option {
+                    margin: 12px 0;
+                    padding: 12px 15px;
+                    background: #f9fafb;
+                    border: 2px solid #e5e7eb;
+                    border-radius: 10px;
+                    display: flex;
+                    align-items: center;
+                    cursor: pointer;
+                    transition: all 200ms ease;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="exam-container">
+                <!-- University Header -->
+                <div class="university-header">
+                    <div class="logo-placeholder">
+                        UNIVERSITY<br/>LOGO<br/><small>(Upload in export form)</small>
+                    </div>
+                    <div class="header-info">
+                        <div class="university-name">Test University</div>
+                        <div class="faculty-name">FACULTY NAME</div>
+                        <div class="department-name">Test Department</div>
+                        <div class="course-info">TEST 101</div>
+                        <div class="academic-info">ACADEMIC YEAR – SEMESTER</div>
+                    </div>
+                </div>
+                
+                <!-- Exam Title -->
+                <div class="exam-title">
+                    <div class="exam-type">QUIZ</div>
+                </div>
+                
+                <!-- Exam Metadata -->
+                <div class="exam-metadata">
+                    <div class="metadata-item">
+                        <div class="metadata-label">INSTRUCTOR:</div>
+                        <div class="metadata-value">Instructor Name</div>
+                    </div>
+                    <div class="metadata-item">
+                        <div class="metadata-label">DATE:</div>
+                        <div class="metadata-value">Exam Date</div>
+                    </div>
+                    <div class="metadata-item">
+                        <div class="metadata-label">DURATION:</div>
+                        <div class="metadata-value">2 hours</div>
+                    </div>
+                    <div class="metadata-item">
+                        <div class="metadata-label">TOTAL:</div>
+                        <div class="metadata-value">1 points</div>
+                    </div>
+                </div>
+                
+                <!-- Student Information Section -->
+                <div class="student-info-section">
+                    <h3 class="student-info-title">STUDENT INFORMATION</h3>
+                    <div class="student-fields">
+                        <!-- These fields will be conditionally rendered based on branding settings -->
+                        
+                    </div>
+                </div>
+                
+                <!-- Instructions -->
+                <div class="instructions-section">
+                    <div class="instructions-title">Instructions:</div>
+                    <ul class="instructions-list">
+                        <li>Read each question carefully</li>
+                        <li>Answer clearly in the space provided</li>
+                        <li>Calculators are permitted unless otherwise noted</li>
+                        <li>Show all work for calculation problems</li>
+                    </ul>
+                </div>
+                
+                <!-- Questions -->
+                
+                <div class="question">
+                    <div class="question-header">
+                        <div class="question-number">1.</div>
+                        <div class="question-points">(1 point)</div>
+                    </div>
+                    <div class="question-text">Test question for student info fields.</div>
+            <div class="mc-options">
+                            <div class="mc-option">
+                                <div class="option-checkbox"></div>
+                                <div class="option-letter">A.</div>
+                                <div class="option-text">A</div>
+                            </div>
+                        
+                            <div class="mc-option">
+                                <div class="option-checkbox"></div>
+                                <div class="option-letter">B.</div>
+                                <div class="option-text">B</div>
+                            </div>
+                        
+                            <div class="mc-option">
+                                <div class="option-checkbox"></div>
+                                <div class="option-letter">C.</div>
+                                <div class="option-text">C</div>
+                            </div>
+                        
+                            <div class="mc-option">
+                                <div class="option-checkbox"></div>
+                                <div class="option-letter">D.</div>
+                                <div class="option-text">D</div>
+                            </div>
+                        </div></div>
+                
+                <!-- Footer -->
+                <div class="exam-footer">
+                    <div class="footer-left">
+                        {{ branding.academic_year|default:"Academic Year" }} | {{ branding.semester|default:"Semester" }}
+                    </div>
+                    <div class="footer-center">
+                        Test University – Official Quiz
+                    </div>
+                    <div class="footer-right">
+                        {{ branding.department|default:"Department" }}
+                    </div>
+                </div>
+            </div>
+        </body>
+        </html>
+        

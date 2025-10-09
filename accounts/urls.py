@@ -18,10 +18,23 @@ urlpatterns = [
     
     # Profile
     path('profile/', views.profile_view, name='profile'),
+    path('profile/edit/', views.edit_profile_view, name='edit_profile'),
+    
+    # Account Settings
+    path('settings/password/', auth_views.PasswordChangeView.as_view(
+        template_name='accounts/change_password.html',
+        success_url='/accounts/profile/'
+    ), name='change_password'),
+    path('settings/notifications/', views.notifications_view, name='notifications'),
+    path('settings/privacy/', views.privacy_view, name='privacy'),
     
     # Password reset
     path('password_reset/', 
-         auth_views.PasswordResetView.as_view(template_name='registration/password_reset.html'),
+         auth_views.PasswordResetView.as_view(
+             template_name='registration/password_reset.html',
+             email_template_name='registration/password_reset_email.html',
+             subject_template_name='registration/password_reset_subject.txt'
+         ),
          name='password_reset'),
     path('password_reset/done/', 
          auth_views.PasswordResetDoneView.as_view(template_name='registration/password_reset_done.html'),

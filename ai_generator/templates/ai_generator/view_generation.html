@@ -2,6 +2,38 @@
 
 {% block title %}{{ generation.title }}{% endblock %}
 
+{% block extra_css %}
+<style>
+.branding-preview {
+    border: 2px dashed #e5e7eb;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    text-align: center;
+    background-color: #f9fafb;
+}
+
+.logo-preview {
+    max-width: 150px;
+    max-height: 80px;
+    object-fit: contain;
+}
+
+.export-options {
+    display: none;
+}
+
+.export-options.show {
+    display: block;
+}
+
+.question-preview {
+    border-left: 4px solid #3b82f6;
+    padding-left: 1rem;
+    margin: 0.5rem 0;
+}
+</style>
+{% endblock %}
+
 {% block page_title %}{{ generation.title }}{% endblock %}
 {% block page_description %}View your generated {{ generation.generation_type }}{% endblock %}
 
@@ -105,6 +137,215 @@
         {% include 'ai_generator/partials/exam_display.html' with content=generation.generated_content %}
     {% endif %}
 
+        <!-- Professional Export Section -->
+        <div class="bg-white shadow rounded-lg mb-8">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-medium text-gray-900 flex items-center">
+                    <svg class="w-5 h-5 text-primary-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path>
+                    </svg>
+                    Professional Export
+                </h3>
+                <p class="mt-1 text-sm text-gray-500">Download your {{ generation.content_type }} with professional formatting and institutional branding</p>
+            </div>
+            <div class="px-6 py-6">
+                <form id="exportForm" method="post" action="{% url 'ai_generator:export_generation' generation.id %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <!-- Export Format -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Export Format</label>
+                            <select name="format" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" required>
+                                <option value="pdf">📄 PDF Document</option>
+                                <option value="docx">📝 Word Document (.docx)</option>
+                                <option value="html">🌐 Web Page (.html)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Export Content</label>
+                            <select name="content_type" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" required>
+                                <option value="questions_only">Questions Only</option>
+                                <option value="questions_answers" selected>Questions + Answers</option>
+                                <option value="questions_answers_explanations">Questions + Answers + Explanations</option>
+                                <option value="answer_sheet_separate">Separate Answer Sheet</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Page Layout</label>
+                            <select name="layout" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" required>
+                                <option value="standard">📋 Standard Layout</option>
+                                <option value="formal">🎓 Formal Academic</option>
+                                <option value="compact">📱 Compact Layout</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Institutional Branding -->
+                    <div class="border border-gray-200 rounded-lg p-6 mb-6 bg-gray-50">
+                        <h4 class="text-lg font-medium text-gray-900 mb-4 flex items-center">
+                            <svg class="w-5 h-5 text-indigo-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a1.994 1.994 0 01-1.414.586H7a2 2 0 01-2-2V5a2 2 0 012-2z"></path>
+                            </svg>
+                            Institutional Branding
+                        </h4>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Logo Upload -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Institution Logo</label>
+                                <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-gray-400 transition-colors">
+                                    <div class="space-y-1 text-center">
+                                        <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                                            <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                        </svg>
+                                        <div class="flex text-sm text-gray-600">
+                                            <label for="logo" class="relative cursor-pointer bg-white rounded-md font-medium text-primary-600 hover:text-primary-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary-500">
+                                                <span>Upload logo</span>
+                                                <input id="logo" name="logo" type="file" accept="image/*" class="sr-only" onchange="previewLogo(this)">
+                                            </label>
+                                            <p class="pl-1">or drag and drop</p>
+                                        </div>
+                                        <p class="text-xs text-gray-500">PNG, JPG up to 2MB</p>
+                                    </div>
+                                </div>
+                                <div id="logoPreview" class="mt-3 hidden">
+                                    <img class="logo-preview mx-auto" alt="Logo preview">
+                                </div>
+                            </div>
+                            
+                            <!-- Institution Details -->
+                            <div class="space-y-4">
+                                <div>
+                                    <label for="institution_name" class="block text-sm font-medium text-gray-700">Institution Name</label>
+                                    <input type="text" name="institution_name" id="institution_name" 
+                                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" 
+                                           placeholder="University of Technology">
+                                </div>
+                                <div>
+                                    <label for="faculty" class="block text-sm font-medium text-gray-700">Faculty/School</label>
+                                    <input type="text" name="faculty" id="faculty" 
+                                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" 
+                                           placeholder="Faculty of Engineering">
+                                </div>
+                                <div>
+                                    <label for="department" class="block text-sm font-medium text-gray-700">Department</label>
+                                    <input type="text" name="department" id="department" 
+                                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" 
+                                           placeholder="Computer Science Department">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Additional Fields -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                            <div>
+                                <label for="course_code" class="block text-sm font-medium text-gray-700">Course Code</label>
+                                <input type="text" name="course_code" id="course_code" 
+                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" 
+                                       placeholder="CS-301">
+                            </div>
+                            <div>
+                                <label for="instructor_name" class="block text-sm font-medium text-gray-700">Instructor Name</label>
+                                <input type="text" name="instructor_name" id="instructor_name" 
+                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" 
+                                       placeholder="Dr. John Smith" 
+                                       value="{{ request.user.get_full_name|default:request.user.username }}">
+                            </div>
+                            <div>
+                                <label for="academic_year" class="block text-sm font-medium text-gray-700">Academic Year</label>
+                                <input type="text" name="academic_year" id="academic_year" 
+                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" 
+                                       placeholder="2024-2025" 
+                                       value="{% now 'Y' %}-{% now 'Y'|add:'1' %}">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Export Options -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-900 mb-3">Export Options</h4>
+                            <div class="space-y-3">
+                                <div class="flex items-center">
+                                    <input id="include_instructions" name="include_instructions" type="checkbox" class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded" checked>
+                                    <label for="include_instructions" class="ml-2 block text-sm text-gray-900">Include Instructions</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input id="include_answer_key" name="include_answer_key" type="checkbox" class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded" checked>
+                                    <label for="include_answer_key" class="ml-2 block text-sm text-gray-900">Include Answer Key</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input id="include_explanations" name="include_explanations" type="checkbox" class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded">
+                                    <label for="include_explanations" class="ml-2 block text-sm text-gray-900">Include Explanations</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input id="include_points" name="include_points" type="checkbox" class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded" checked>
+                                    <label for="include_points" class="ml-2 block text-sm text-gray-900">Show Points</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-900 mb-3">Additional Settings</h4>
+                            <div class="space-y-3">
+                                <div>
+                                    <label for="watermark" class="block text-sm font-medium text-gray-700">Watermark Text</label>
+                                    <input type="text" name="watermark" id="watermark" 
+                                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" 
+                                           placeholder="CONFIDENTIAL">
+                                </div>
+                                <div>
+                                    <label for="exam_date" class="block text-sm font-medium text-gray-700">Exam Date</label>
+                                    <input type="date" name="exam_date" id="exam_date" 
+                                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500">
+                                </div>
+                                <div>
+                                    <label for="time_limit" class="block text-sm font-medium text-gray-700">Time Limit</label>
+                                    <input type="text" name="time_limit" id="time_limit" 
+                                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" 
+                                           placeholder="2 hours" 
+                                           value="{% if generation.generated_content.duration %}{{ generation.generated_content.duration }} minutes{% endif %}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Preview Section -->
+                    <div class="mb-6">
+                        <h4 class="text-sm font-medium text-gray-900 mb-3">Preview</h4>
+                        <div class="branding-preview">
+                            <div id="previewContent">
+                                <div class="text-center mb-4">
+                                    <div id="previewLogo" class="hidden mb-2">
+                                        <img class="logo-preview mx-auto" alt="Institution logo">
+                                    </div>
+                                    <h2 class="text-xl font-bold text-gray-900" id="previewInstitution">Your Institution</h2>
+                                    <p class="text-gray-600" id="previewFaculty">Faculty Name</p>
+                                    <p class="text-gray-500" id="previewDepartment">Department Name</p>
+                                </div>
+                                <hr class="my-4">
+                                <div class="text-center">
+                                    <h3 class="text-lg font-semibold text-gray-900">{{ generation.title }}</h3>
+                                    <p class="text-gray-600">{{ generation.content_type|title }} - {{ questions|length }} Questions</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Export Button -->
+                    <div class="flex justify-end">
+                        <button type="submit" 
+                                class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path>
+                            </svg>
+                            Generate Professional Export
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <!-- Actions -->
         <div class="bg-white shadow rounded-lg">
             <div class="px-6 py-4 border-b border-gray-200">
@@ -192,5 +433,71 @@ function shareGeneration() {
         });
     }
 }
+
+// Export form functionality
+function previewLogo(input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            // Show preview in upload section
+            const logoPreview = document.getElementById('logoPreview');
+            const logoImg = logoPreview.querySelector('img');
+            logoImg.src = e.target.result;
+            logoPreview.classList.remove('hidden');
+            
+            // Show in main preview
+            const previewLogo = document.getElementById('previewLogo');
+            const previewImg = previewLogo.querySelector('img');
+            previewImg.src = e.target.result;
+            previewLogo.classList.remove('hidden');
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+// Update preview when form fields change
+document.addEventListener('DOMContentLoaded', function() {
+    const institutionName = document.getElementById('institution_name');
+    const faculty = document.getElementById('faculty');
+    const department = document.getElementById('department');
+    
+    const previewInstitution = document.getElementById('previewInstitution');
+    const previewFaculty = document.getElementById('previewFaculty');
+    const previewDepartment = document.getElementById('previewDepartment');
+    
+    institutionName.addEventListener('input', function() {
+        previewInstitution.textContent = this.value || 'Your Institution';
+    });
+    
+    faculty.addEventListener('input', function() {
+        previewFaculty.textContent = this.value || 'Faculty Name';
+    });
+    
+    department.addEventListener('input', function() {
+        previewDepartment.textContent = this.value || 'Department Name';
+    });
+    
+    // Form submission handling
+    document.getElementById('exportForm').addEventListener('submit', function(e) {
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        
+        // Show loading state
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = `
+            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Generating Export...
+        `;
+        
+        // Reset button after some time (in case of errors)
+        setTimeout(() => {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+        }, 30000);
+    });
+});
 </script>
 {% endblock %}

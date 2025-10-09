@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 """
 Script to fix user courses issue - create courses for the current user
 """
@@ -6,11 +6,11 @@ import os
 import django
 
 # Set up Django
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'didactia_project.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'DidactAI_project.settings')
 django.setup()
 
 def fix_user_courses():
-    print("🔧 Fixing user courses issue...")
+    print("ðŸ”§ Fixing user courses issue...")
     
     try:
         from courses.models import Course
@@ -20,7 +20,7 @@ def fix_user_courses():
         
         # Show all users and their courses
         users = User.objects.all()
-        print("👥 All users and their courses:")
+        print("ðŸ‘¥ All users and their courses:")
         for i, user in enumerate(users, 1):
             user_courses = Course.objects.filter(instructor=user)
             print(f"   {i}. {user.get_full_name() or user.username} ({user.email}) - {user_courses.count()} courses")
@@ -28,7 +28,7 @@ def fix_user_courses():
                 print(f"      - {course.title}")
         
         if not users.exists():
-            print("❌ No users found!")
+            print("âŒ No users found!")
             return False
         
         # Find users without courses
@@ -38,12 +38,12 @@ def fix_user_courses():
                 users_without_courses.append(user)
         
         if users_without_courses:
-            print(f"\n👤 Users without courses ({len(users_without_courses)}):")
+            print(f"\nðŸ‘¤ Users without courses ({len(users_without_courses)}):")
             for i, user in enumerate(users_without_courses, 1):
                 print(f"   {i}. {user.get_full_name() or user.username} ({user.email})")
             
             # Ask which user to create courses for
-            print(f"\n📝 Which user needs courses? (1-{len(users_without_courses)}, or 0 to skip): ", end="")
+            print(f"\nðŸ“ Which user needs courses? (1-{len(users_without_courses)}, or 0 to skip): ", end="")
             choice = input()
             
             try:
@@ -80,22 +80,22 @@ def fix_user_courses():
                             **course_data
                         )
                         created_courses.append(course)
-                        print(f"✅ Created course: {course.title} ({course.code})")
+                        print(f"âœ… Created course: {course.title} ({course.code})")
                     
-                    print(f"\n🎉 Successfully created {len(created_courses)} courses for {selected_user.get_full_name() or selected_user.username}!")
+                    print(f"\nðŸŽ‰ Successfully created {len(created_courses)} courses for {selected_user.get_full_name() or selected_user.username}!")
                     print("   The courses should now appear in the AI Exam Generator dropdown.")
                     
                 elif choice_num == 0:
-                    print("⏭️  Skipping course creation.")
+                    print("â­ï¸  Skipping course creation.")
                 else:
-                    print("❌ Invalid choice.")
+                    print("âŒ Invalid choice.")
             except ValueError:
-                print("❌ Invalid input. Please enter a number.")
+                print("âŒ Invalid input. Please enter a number.")
         else:
-            print("✅ All users have courses!")
+            print("âœ… All users have courses!")
             
         # Show final state
-        print(f"\n📊 Final course summary:")
+        print(f"\nðŸ“Š Final course summary:")
         all_courses = Course.objects.all()
         print(f"   Total courses: {all_courses.count()}")
         for user in users:
@@ -104,7 +104,7 @@ def fix_user_courses():
                 print(f"   {user.get_full_name() or user.username}: {user_courses.count()} courses")
         
     except Exception as e:
-        print(f"❌ Error: {e}")
+        print(f"âŒ Error: {e}")
         import traceback
         traceback.print_exc()
         return False

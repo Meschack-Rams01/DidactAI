@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: didactia
+    env: python
+    buildCommand: pip install -r requirements-fixed.txt
+    startCommand: gunicorn didactia_project.wsgi:application
+    plan: free
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: DJANGO_SETTINGS_MODULE
+        value: didactia_project.production_settings
+      - key: DEBUG
+        value: False
+      - key: SECRET_KEY
+        generateValue: true
+    
+  - type: pserv
+    name: didactia-db
+    env: postgresql
+    plan: free
+    databaseName: didactia_prod
+    databaseUser: didactia_user

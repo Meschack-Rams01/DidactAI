@@ -1,0 +1,181 @@
+﻿{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ title }} - DidactAI{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto py-6 sm:px-6 lg:px-8">
+    <!-- Back to Profile Button -->
+    <div class="mb-6">
+        <a href="{% url 'accounts:profile' %}" 
+           class="inline-flex items-center text-sm text-gray-500 hover:text-gray-700">
+            <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+            Back to Profile
+        </a>
+    </div>
+
+    <!-- Privacy Settings -->
+    <div class="bg-white shadow rounded-lg">
+        <div class="px-6 py-5 border-b border-gray-200">
+            <div class="flex items-center">
+                <svg class="h-6 w-6 text-gray-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                </svg>
+                <div>
+                    <h3 class="text-lg font-medium text-gray-900">Privacy Settings</h3>
+                    <p class="mt-1 text-sm text-gray-500">Control how your information is shared and displayed.</p>
+                </div>
+            </div>
+        </div>
+
+        <form method="post" class="px-6 py-5">
+            {% csrf_token %}
+            
+            <div class="space-y-8">
+                <!-- Profile Visibility -->
+                <div>
+                    <h4 class="text-base font-medium text-gray-900 mb-4">Profile Visibility</h4>
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <div class="flex items-center h-5">
+                                <input id="profile_public" 
+                                       name="profile_public" 
+                                       type="checkbox"
+                                       {% if user.profile_public %}checked{% endif %}
+                                       class="focus:ring-primary-500 h-4 w-4 text-primary-600 border-gray-300 rounded">
+                            </div>
+                            <div class="ml-3 text-sm">
+                                <label for="profile_public" class="font-medium text-gray-700">
+                                    Public Profile
+                                </label>
+                                <p class="text-gray-500">Make your profile visible to other users in the system. This includes your name, institution, and bio.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start">
+                            <div class="flex items-center h-5">
+                                <input id="show_email" 
+                                       name="show_email" 
+                                       type="checkbox"
+                                       {% if user.show_email %}checked{% endif %}
+                                       class="focus:ring-primary-500 h-4 w-4 text-primary-600 border-gray-300 rounded">
+                            </div>
+                            <div class="ml-3 text-sm">
+                                <label for="show_email" class="font-medium text-gray-700">
+                                    Show Email Address
+                                </label>
+                                <p class="text-gray-500">Display your email address in your public profile. Only applies if your profile is public.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Privacy Information -->
+                <div class="border-t border-gray-200 pt-6">
+                    <h4 class="text-base font-medium text-gray-900 mb-4">Data Privacy Information</h4>
+                    <div class="bg-gray-50 rounded-md p-4">
+                        <div class="flex">
+                            <svg class="h-5 w-5 text-blue-400 mr-3 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                            </svg>
+                            <div class="text-sm text-gray-700">
+                                <h5 class="font-medium text-gray-900 mb-2">How we protect your data:</h5>
+                                <ul class="space-y-1 list-disc list-inside">
+                                    <li>All personal information is encrypted and stored securely</li>
+                                    <li>Your content and files are only accessible by you</li>
+                                    <li>We never share your data with third parties without consent</li>
+                                    <li>You can request data export or deletion at any time</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Activity Tracking -->
+                <div class="border-t border-gray-200 pt-6">
+                    <h4 class="text-base font-medium text-gray-900 mb-4">Activity Tracking</h4>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between py-2">
+                            <div>
+                                <span class="text-sm font-medium text-gray-700">Login Activity</span>
+                                <p class="text-xs text-gray-500">Track when you log into your account</p>
+                            </div>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                Enabled
+                            </span>
+                        </div>
+                        <div class="flex items-center justify-between py-2">
+                            <div>
+                                <span class="text-sm font-medium text-gray-700">Course Activity</span>
+                                <p class="text-xs text-gray-500">Track course creation and modifications</p>
+                            </div>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                Enabled
+                            </span>
+                        </div>
+                        <div class="flex items-center justify-between py-2">
+                            <div>
+                                <span class="text-sm font-medium text-gray-700">File Upload Activity</span>
+                                <p class="text-xs text-gray-500">Track file uploads and processing</p>
+                            </div>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                Enabled
+                            </span>
+                        </div>
+                    </div>
+                    <div class="mt-3 p-3 bg-yellow-50 rounded-md">
+                        <p class="text-sm text-yellow-800">
+                            <svg class="h-4 w-4 inline mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                            </svg>
+                            Activity tracking helps us provide better service and security. This data is only used for system optimization and security purposes.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Data Export and Deletion -->
+                <div class="border-t border-gray-200 pt-6">
+                    <h4 class="text-base font-medium text-gray-900 mb-4">Data Management</h4>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-3 border border-gray-200 rounded-md">
+                            <div>
+                                <span class="text-sm font-medium text-gray-700">Export My Data</span>
+                                <p class="text-xs text-gray-500">Download all your personal data and content</p>
+                            </div>
+                            <button type="button" class="inline-flex items-center px-3 py-1 border border-gray-300 text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50">
+                                Request Export
+                            </button>
+                        </div>
+                        <div class="flex items-center justify-between p-3 border border-red-200 rounded-md bg-red-50">
+                            <div>
+                                <span class="text-sm font-medium text-red-700">Delete My Account</span>
+                                <p class="text-xs text-red-600">Permanently delete your account and all associated data</p>
+                            </div>
+                            <button type="button" class="inline-flex items-center px-3 py-1 border border-red-300 text-xs font-medium rounded text-red-700 bg-white hover:bg-red-50">
+                                Request Deletion
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="mt-8 pt-6 border-t border-gray-200 flex items-center justify-end space-x-3">
+                <a href="{% url 'accounts:profile' %}" 
+                   class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                    Cancel
+                </a>
+                <button type="submit" 
+                        class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                    <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    Save Settings
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

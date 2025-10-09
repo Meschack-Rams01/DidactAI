@@ -1,5 +1,5 @@
-"""
-Versioning Service for DidactIA
+﻿"""
+Versioning Service for DidactAI
 
 This module provides comprehensive versioning capabilities for files and AI-generated content,
 enabling users to track changes, rollback to previous versions, and maintain content history.

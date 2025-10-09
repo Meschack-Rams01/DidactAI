@@ -1,12 +1,12 @@
-# 🔒 Security Notice for DidactIA Template
+﻿# ðŸ”’ Security Notice for DidactAI Template
 
 ## Important: This is a Template Project
 
 This repository contains a **template/example** Django application for educational purposes. All API keys and sensitive credentials shown in this repository are:
 
-- ✅ **Example keys only** - Not real production credentials
-- ✅ **Template placeholders** - Must be replaced with your own keys
-- ✅ **Safe to share publicly** - No actual working credentials exposed
+- âœ… **Example keys only** - Not real production credentials
+- âœ… **Template placeholders** - Must be replaced with your own keys
+- âœ… **Safe to share publicly** - No actual working credentials exposed
 
 ## For Deployment:
 
@@ -27,9 +27,9 @@ The following are **example/template keys only**:
 
 ## Security Best Practices:
 
-- ✅ Use `.env` files for local development
-- ✅ Use platform environment variables for production
-- ✅ Add `.env` to `.gitignore` (already done)
-- ✅ Never commit real API keys to Git
+- âœ… Use `.env` files for local development
+- âœ… Use platform environment variables for production
+- âœ… Add `.env` to `.gitignore` (already done)
+- âœ… Never commit real API keys to Git
 
-This is a safe, educational template project! 🎓
+This is a safe, educational template project! ðŸŽ“

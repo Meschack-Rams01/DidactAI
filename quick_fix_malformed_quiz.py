@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 """
 Quick fix script to repair the malformed quiz question issue
 Directly fixes the problematic generation in the database
@@ -11,20 +11,20 @@ import json
 
 # Setup Django environment
 sys.path.append('C:\\Users\\Ramat\\Desktop\\Nouveau dossier')
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'didactia_project.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'DidactAI_project.settings')
 django.setup()
 
 from ai_generator.models import AIGeneration
 
 def fix_malformed_quiz():
     """Fix the malformed quiz with ID 17"""
-    print("🛠️ FIXING MALFORMED QUIZ...")
+    print("ðŸ› ï¸ FIXING MALFORMED QUIZ...")
     print("=" * 40)
     
     try:
         # Get the problematic generation (ID 17 based on diagnostic)
         generation = AIGeneration.objects.get(id=17)
-        print(f"📋 Found generation: {generation.title} (ID: {generation.id})")
+        print(f"ðŸ“‹ Found generation: {generation.title} (ID: {generation.id})")
         
         # Get the current content
         content = generation.generated_content
@@ -39,7 +39,7 @@ def fix_malformed_quiz():
             
             # Check if it's the malformed one with '"questions": ['
             if '"questions"' in str(first_question.get('question', '')):
-                print("   ❌ Found malformed first question - fixing...")
+                print("   âŒ Found malformed first question - fixing...")
                 
                 # Replace with a proper question
                 questions[0] = {
@@ -63,22 +63,22 @@ def fix_malformed_quiz():
                 generation.generated_content = content
                 generation.save()
                 
-                print("   ✅ Fixed malformed question!")
+                print("   âœ… Fixed malformed question!")
                 print(f"   New question: {questions[0]['question']}")
                 
-        print(f"\n✅ Quiz repair completed successfully!")
+        print(f"\nâœ… Quiz repair completed successfully!")
         return generation.id
         
     except AIGeneration.DoesNotExist:
-        print("❌ Generation with ID 17 not found")
+        print("âŒ Generation with ID 17 not found")
         return None
     except Exception as e:
-        print(f"❌ Error fixing quiz: {str(e)}")
+        print(f"âŒ Error fixing quiz: {str(e)}")
         return None
 
 def test_export_fixed_quiz(generation_id):
     """Test export functionality with the fixed quiz"""
-    print(f"\n🧪 TESTING EXPORT WITH FIXED QUIZ...")
+    print(f"\nðŸ§ª TESTING EXPORT WITH FIXED QUIZ...")
     print("=" * 40)
     
     try:
@@ -124,26 +124,26 @@ def test_export_fixed_quiz(generation_id):
         with open('cloud_hpc_fixed_instructor.html', 'w', encoding='utf-8') as f:
             f.write(instructor_html)
         
-        print("   ✅ Export successful!")
-        print("   📁 Files created:")
-        print("      • cloud_hpc_fixed_student.html")
-        print("      • cloud_hpc_fixed_instructor.html")
+        print("   âœ… Export successful!")
+        print("   ðŸ“ Files created:")
+        print("      â€¢ cloud_hpc_fixed_student.html")
+        print("      â€¢ cloud_hpc_fixed_instructor.html")
         
         # Validate the export
         if 'What is the primary characteristic of HPC in the cloud?' in student_html:
-            print("   ✅ Fixed question appears in export")
+            print("   âœ… Fixed question appears in export")
         else:
-            print("   ❌ Fixed question not found in export")
+            print("   âŒ Fixed question not found in export")
             
         return True
         
     except Exception as e:
-        print(f"   ❌ Export test failed: {str(e)}")
+        print(f"   âŒ Export test failed: {str(e)}")
         return False
 
 def main():
     """Main execution function"""
-    print("🚀 QUICK FIX FOR MALFORMED QUIZ ISSUE")
+    print("ðŸš€ QUICK FIX FOR MALFORMED QUIZ ISSUE")
     print("=" * 50)
     
     # Step 1: Fix the malformed quiz
@@ -154,19 +154,19 @@ def main():
         export_success = test_export_fixed_quiz(fixed_id)
         
         if export_success:
-            print(f"\n🎉 SUCCESS! Quiz {fixed_id} has been fixed and exported successfully!")
-            print("\n📋 Summary:")
-            print("• ✅ Malformed question replaced with proper content")
-            print("• ✅ Export functionality tested and working")
-            print("• ✅ Both student and instructor versions generated")
-            print("\n💡 Next Steps:")
-            print("• Open the generated HTML files to verify the fix")
-            print("• Use the web interface to view and export the fixed quiz")
-            print(f"• Visit: http://127.0.0.1:8000/ai-generator/view/{fixed_id}/")
+            print(f"\nðŸŽ‰ SUCCESS! Quiz {fixed_id} has been fixed and exported successfully!")
+            print("\nðŸ“‹ Summary:")
+            print("â€¢ âœ… Malformed question replaced with proper content")
+            print("â€¢ âœ… Export functionality tested and working")
+            print("â€¢ âœ… Both student and instructor versions generated")
+            print("\nðŸ’¡ Next Steps:")
+            print("â€¢ Open the generated HTML files to verify the fix")
+            print("â€¢ Use the web interface to view and export the fixed quiz")
+            print(f"â€¢ Visit: http://127.0.0.1:8000/ai-generator/view/{fixed_id}/")
         else:
-            print(f"\n⚠️ Quiz {fixed_id} was fixed but export test failed")
+            print(f"\nâš ï¸ Quiz {fixed_id} was fixed but export test failed")
     else:
-        print("\n❌ Unable to fix the malformed quiz")
+        print("\nâŒ Unable to fix the malformed quiz")
 
 if __name__ == '__main__':
     main()

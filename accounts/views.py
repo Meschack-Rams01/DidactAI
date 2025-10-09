@@ -1,4 +1,4 @@
-"""
+﻿"""
 Views for user authentication and account management
 """
 
@@ -31,7 +31,7 @@ class RegisterView(CreateView):
         user = authenticate(username=username, password=password)
         if user is not None:
             login(self.request, user)
-            messages.success(self.request, _('Welcome to DidactIA! Your account has been created successfully.'))
+            messages.success(self.request, _('Welcome to DidactAI! Your account has been created successfully.'))
         return response
 
     def get_context_data(self, **kwargs):
@@ -47,6 +47,15 @@ class CustomLoginView(LoginView):
     redirect_authenticated_user = True
 
     def form_valid(self, form):
+        # Log login activity
+        from .models import log_user_activity
+        log_user_activity(
+            user=form.get_user(),
+            activity_type='login',
+            description=f'Logged in from {form.get_user().get_full_name()}',
+            request=self.request
+        )
+        
         messages.success(self.request, _('Welcome back!'))
         return super().form_valid(form)
 
@@ -58,7 +67,7 @@ class CustomLoginView(LoginView):
 
 @login_required
 def profile_view(request):
-    """User profile view"""
+    """User profile view with real statistics"""
     try:
         profile = request.user.profile
     except UserProfile.DoesNotExist:
@@ -67,10 +76,152 @@ def profile_view(request):
             user=request.user,
             timezone='UTC'
         )
-
+    
+    # Get real statistics
+    quick_stats = request.user.get_quick_stats()
+    
+    # Get recent activities
+    from .models import UserActivity
+    recent_activities = UserActivity.objects.filter(
+        user=request.user
+    ).order_by('-timestamp')[:10]
+    
+    # Calculate member since
+    member_since = request.user.date_joined
+    
     context = {
         'title': 'My Profile',
         'profile': profile,
         'user': request.user,
+        'quick_stats': quick_stats,
+        'recent_activities': recent_activities,
+        'member_since': member_since,
+        'initials': request.user.get_profile_initials(),
     }
-    return render(request, 'accounts/simple_profile.html', context)
+    return render(request, 'accounts/profile.html', context)
+
+
+@login_required
+def edit_profile_view(request):
+    """Edit user profile view"""
+    from .models import log_user_activity, UserProfile
+    from .forms import ExtendedProfileForm
+    
+    # Ensure user has a profile
+    try:
+        profile = request.user.profile
+    except UserProfile.DoesNotExist:
+        profile = UserProfile.objects.create(
+            user=request.user,
+            timezone='UTC'
+        )
+    
+    if request.method == 'POST':
+        form = ExtendedProfileForm(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+            
+            # Log activity
+            log_user_activity(
+                user=request.user,
+                activity_type='profile_updated',
+                description='Updated profile information',
+                request=request
+            )
+            
+            messages.success(request, _('Profile updated successfully!'))
+            return redirect('accounts:profile')
+        else:
+            # Add form errors to messages
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f'{field}: {error}')
+    else:
+        form = ExtendedProfileForm(instance=request.user)
+    
+    context = {
+        'title': 'Edit Profile',
+        'user': request.user,
+        'profile': profile,
+        'form': form,
+    }
+    return render(request, 'accounts/edit_profile.html', context)
+
+
+@login_required
+def notifications_view(request):
+    """Notifications settings view"""
+    try:
+        profile = request.user.profile
+    except UserProfile.DoesNotExist:
+        profile = UserProfile.objects.create(
+            user=request.user,
+            timezone='UTC'
+        )
+    
+    if request.method == 'POST':
+        # Update notification preferences
+        notifications_prefs = {
+            'email_notifications': request.POST.get('email_notifications') == 'on',
+            'course_updates': request.POST.get('course_updates') == 'on',
+            'file_processed': request.POST.get('file_processed') == 'on',
+            'export_ready': request.POST.get('export_ready') == 'on',
+            'system_updates': request.POST.get('system_updates') == 'on',
+        }
+        
+        profile.notification_preferences = notifications_prefs
+        profile.save()
+        
+        # Also update user email_notifications field if exists
+        request.user.email_notifications = notifications_prefs.get('email_notifications', True)
+        request.user.save()
+        
+        from .models import log_user_activity
+        log_user_activity(
+            user=request.user,
+            activity_type='settings_updated',
+            description='Updated notification preferences',
+            request=request
+        )
+        
+        messages.success(request, _('Notification settings updated successfully!'))
+        return redirect('accounts:notifications')
+    
+    # Get current preferences
+    current_prefs = profile.notification_preferences or {}
+    
+    context = {
+        'title': 'Notification Settings',
+        'profile': profile,
+        'preferences': current_prefs,
+    }
+    return render(request, 'accounts/notifications.html', context)
+
+
+@login_required
+def privacy_view(request):
+    """Privacy settings view"""
+    if request.method == 'POST':
+        # Update privacy settings
+        user = request.user
+        user.profile_public = request.POST.get('profile_public') == 'on'
+        user.show_email = request.POST.get('show_email') == 'on'
+        user.save()
+        
+        from .models import log_user_activity
+        log_user_activity(
+            user=request.user,
+            activity_type='settings_updated',
+            description='Updated privacy settings',
+            request=request
+        )
+        
+        messages.success(request, _('Privacy settings updated successfully!'))
+        return redirect('accounts:privacy')
+    
+    context = {
+        'title': 'Privacy Settings',
+        'user': request.user,
+    }
+    return render(request, 'accounts/privacy.html', context)
+

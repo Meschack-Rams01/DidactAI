@@ -119,9 +119,9 @@
                 <dt class="text-sm font-medium text-gray-500">{% trans "Status" %}</dt>
                 <dd class="text-sm">
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                        {% if export.status == 'completed' %}
+                        {% if export.status == "completed" %}
                             bg-green-100 text-green-800
-                        {% elif export.status == 'processing' %}
+                        {% elif export.status == "processing" %}
                             bg-yellow-100 text-yellow-800
                         {% elif export.status == 'failed' %}
                             bg-red-100 text-red-800

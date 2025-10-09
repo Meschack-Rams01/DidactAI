@@ -1,6 +1,7 @@
-"""
-Export Services for DidactIA
+﻿"""
+Professional Export Services for DidactAI
 
+Generates clean, professional exam and quiz documents without question type labels.
 This module provides services for exporting educational content to various formats
 including PDF, DOCX, HTML, and ZIP archives.
 """
@@ -27,25 +28,29 @@ try:
     from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
     from reportlab.lib.units import inch
     from reportlab.pdfgen import canvas
-    from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT
+    from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT, TA_JUSTIFY
+    from reportlab.pdfbase import pdfmetrics
+    from reportlab.pdfbase.ttfonts import TTFont
+    from reportlab.platypus import Image
+    from reportlab.lib.utils import ImageReader
+    import reportlab.rl_config
+    reportlab.rl_config.warnOnMissingFontGlyphs = 0  # Disable warnings for missing glyphs
     REPORTLAB_AVAILABLE = True
 except ImportError:
     REPORTLAB_AVAILABLE = False
 
 try:
     from docx import Document
-    from docx.shared import Inches, Pt
+    from docx.shared import Inches, Pt, RGBColor
     from docx.enum.text import WD_ALIGN_PARAGRAPH
     from docx.enum.style import WD_STYLE_TYPE
     DOCX_AVAILABLE = True
 except ImportError:
     DOCX_AVAILABLE = False
 
-try:
-    from weasyprint import HTML, CSS
-    WEASYPRINT_AVAILABLE = True
-except ImportError:
-    WEASYPRINT_AVAILABLE = False
+# WeasyPrint removed due to Windows GTK dependencies
+# Focusing on ReportLab PDF and DOCX exports which work perfectly
+WEASYPRINT_AVAILABLE = False
 
 import logging
 
@@ -58,133 +63,556 @@ class PDFExporter:
     def __init__(self):
         if not REPORTLAB_AVAILABLE:
             raise ImportError("ReportLab is required for PDF export")
+        self._setup_unicode_fonts()
         self.styles = getSampleStyleSheet()
         self._setup_custom_styles()
     
+    def _setup_unicode_fonts(self):
+        """Setup Unicode fonts that support Turkish characters"""
+        try:
+            # Try to register DejaVu fonts (widely available and support Turkish)
+            from reportlab.lib.fonts import addMapping
+            
+            # Use Helvetica as default (has better Unicode support than Times)
+            # ReportLab's built-in fonts should handle basic Turkish characters
+            self.unicode_font_normal = 'Helvetica'
+            self.unicode_font_bold = 'Helvetica-Bold'
+            
+            # Test if we can find DejaVu fonts (better Unicode support)
+            import os
+            possible_font_paths = [
+                r'C:\Windows\Fonts\DejaVuSans.ttf',
+                r'C:\Windows\Fonts\arial.ttf',
+                r'C:\Windows\Fonts\calibri.ttf',
+                '/System/Library/Fonts/Helvetica.ttc',
+                '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'
+            ]
+            
+            font_found = False
+            for font_path in possible_font_paths:
+                if os.path.exists(font_path):
+                    try:
+                        if 'DejaVu' in font_path:
+                            pdfmetrics.registerFont(TTFont('Unicode', font_path))
+                            self.unicode_font_normal = 'Unicode'
+                            font_found = True
+                            logger.info(f"Registered Unicode font: {font_path}")
+                            break
+                        elif 'arial' in font_path.lower():
+                            pdfmetrics.registerFont(TTFont('Arial', font_path))
+                            self.unicode_font_normal = 'Arial'
+                            font_found = True
+                            logger.info(f"Registered Arial font: {font_path}")
+                            break
+                    except Exception as e:
+                        logger.warning(f"Could not register font {font_path}: {e}")
+                        continue
+            
+            if not font_found:
+                logger.info("Using built-in Helvetica font (supports basic Turkish characters)")
+                
+        except Exception as e:
+            logger.warning(f"Font setup error: {e}. Using default fonts.")
+            self.unicode_font_normal = 'Helvetica'
+            self.unicode_font_bold = 'Helvetica-Bold'
+    
     def _setup_custom_styles(self):
-        """Setup custom paragraph styles"""
-        # Title style
+        """Setup custom paragraph styles for professional academic documents"""
+        # Title style - professional university appearance with Unicode support
         self.styles.add(ParagraphStyle(
             name='CustomTitle',
             parent=self.styles['Title'],
-            fontSize=24,
-            spaceAfter=30,
+            fontSize=22,
+            spaceAfter=20,
+            spaceBefore=0,
             alignment=TA_CENTER,
-            textColor=colors.darkblue
+            textColor=colors.black,
+            fontName=getattr(self, 'unicode_font_bold', 'Helvetica-Bold')
         ))
         
-        # Header style
+        # Subtitle for exam details
+        self.styles.add(ParagraphStyle(
+            name='Subtitle',
+            parent=self.styles['Normal'],
+            fontSize=12,
+            spaceAfter=15,
+            spaceBefore=5,
+            alignment=TA_CENTER,
+            textColor=colors.black,
+            fontName=getattr(self, 'unicode_font_normal', 'Helvetica')
+        ))
+        
+        # Header style - clean and professional
         self.styles.add(ParagraphStyle(
             name='CustomHeader',
             parent=self.styles['Heading1'],
-            fontSize=16,
-            spaceBefore=20,
-            spaceAfter=12,
-            textColor=colors.darkblue,
+            fontSize=14,
+            spaceBefore=25,
+            spaceAfter=15,
+            textColor=colors.black,
+            fontName=getattr(self, 'unicode_font_bold', 'Helvetica-Bold'),
             borderWidth=1,
-            borderColor=colors.darkblue,
-            borderPadding=5
+            borderColor=colors.black,
+            borderPadding=8,
+            alignment=TA_CENTER
         ))
         
-        # Question style
+        # Instructions style with box
+        self.styles.add(ParagraphStyle(
+            name='Instructions',
+            parent=self.styles['Normal'],
+            fontSize=11,
+            spaceBefore=10,
+            spaceAfter=20,
+            leftIndent=15,
+            rightIndent=15,
+            fontName=getattr(self, 'unicode_font_normal', 'Helvetica'),
+            borderWidth=1,
+            borderColor=colors.grey,
+            borderPadding=12,
+            backColor=colors.lightgrey
+        ))
+        
+        # Question style - justified and professional
         self.styles.add(ParagraphStyle(
             name='Question',
             parent=self.styles['Normal'],
-            fontSize=12,
-            spaceBefore=10,
-            spaceAfter=5,
-            leftIndent=20
+            fontSize=11,
+            spaceBefore=18,
+            spaceAfter=10,
+            leftIndent=0,
+            fontName=getattr(self, 'unicode_font_normal', 'Helvetica'),
+            alignment=TA_JUSTIFY,
+            leading=14
         ))
         
-        # Answer style
+        # Question number style
+        self.styles.add(ParagraphStyle(
+            name='QuestionNumber',
+            parent=self.styles['Normal'],
+            fontSize=11,
+            spaceBefore=18,
+            spaceAfter=8,
+            fontName=getattr(self, 'unicode_font_bold', 'Helvetica-Bold')
+        ))
+        
+        # Option style for multiple choice - properly indented
+        self.styles.add(ParagraphStyle(
+            name='Option',
+            parent=self.styles['Normal'],
+            fontSize=11,
+            spaceBefore=4,
+            spaceAfter=4,
+            leftIndent=25,
+            fontName=getattr(self, 'unicode_font_normal', 'Helvetica'),
+            alignment=TA_JUSTIFY
+        ))
+        
+        # Answer lines style
+        self.styles.add(ParagraphStyle(
+            name='AnswerLines',
+            parent=self.styles['Normal'],
+            fontSize=11,
+            spaceBefore=8,
+            spaceAfter=4,
+            leftIndent=0,
+            fontName=getattr(self, 'unicode_font_normal', 'Helvetica')
+        ))
+        
+        # Answer style for answer keys
         self.styles.add(ParagraphStyle(
             name='Answer',
             parent=self.styles['Normal'],
             fontSize=10,
-            leftIndent=40,
-            textColor=colors.darkgreen
+            leftIndent=20,
+            textColor=colors.darkgreen,
+            fontName=getattr(self, 'unicode_font_normal', 'Helvetica')
         ))
     
     def export_quiz(self, quiz_data: Dict[str, Any], branding: Dict[str, Any] = None) -> io.BytesIO:
-        """Export quiz to PDF format"""
+        """Export quiz to PDF format with professional university formatting"""
         buffer = io.BytesIO()
-        doc = SimpleDocTemplate(buffer, pagesize=A4)
+        
+        # Store branding data for header/footer use
+        self.branding_data = branding or {}
+        
+        # Create PDF document with custom margins and header/footer callback
+        doc = SimpleDocTemplate(
+            buffer,
+            pagesize=letter,
+            rightMargin=1*inch,
+            leftMargin=1*inch,
+            topMargin=1.2*inch,  # Extra space for header
+            bottomMargin=1*inch
+        )
+        
         story = []
         
-        # Add header/branding
+        # University Header
         if branding:
-            story.extend(self._add_branding(branding))
+            story.extend(self._add_professional_branding(branding))
         
-        # Title
+        # Main Title - Professional
         title = quiz_data.get('title', 'Quiz')
         story.append(Paragraph(title, self.styles['CustomTitle']))
-        story.append(Spacer(1, 20))
         
-        # Description
+        # Subtitle with exam details
+        exam_details = []
+        if quiz_data.get('estimated_duration'):
+            exam_details.append(f"Duration: {quiz_data['estimated_duration']}")
+        if quiz_data.get('total_points'):
+            exam_details.append(f"Total Points: {quiz_data['total_points']}")
+        else:
+            exam_details.append(f"Total Points: {len(quiz_data.get('questions', []))}")
+        
+        if exam_details:
+            story.append(Paragraph(' | '.join(exam_details), self.styles['Subtitle']))
+        
+        story.append(Spacer(1, 25))
+        
+        # Description with proper formatting
         if quiz_data.get('description'):
-            story.append(Paragraph(quiz_data['description'], self.styles['Normal']))
-            story.append(Spacer(1, 15))
+            story.append(Paragraph(quiz_data['description'], self.styles['Question']))
+            story.append(Spacer(1, 20))
         
-        # Instructions
-        instructions = f"""
-        <b>Instructions:</b><br/>
-        • Read each question carefully<br/>
-        • Choose the best answer for multiple choice questions<br/>
-        • Duration: {quiz_data.get('estimated_duration', 'Not specified')}<br/>
-        • Total Points: {quiz_data.get('total_points', len(quiz_data.get('questions', [])))}
+        # Instructions in a professional box
+        instructions_content = """
+        <b>INSTRUCTIONS:</b><br/><br/>
+        â€¢ Read each question carefully and completely before answering<br/>
+        â€¢ For multiple choice questions, select the best answer<br/>
+        â€¢ Write clearly and legibly for all written responses<br/>
+        â€¢ Show all work for calculation problems where applicable<br/>
+        â€¢ Review your answers before submitting<br/>
+        â€¢ Ask the instructor if you have any questions
         """
-        story.append(Paragraph(instructions, self.styles['Normal']))
-        story.append(Spacer(1, 20))
         
-        # Questions
+        # Add additional instructions if provided
+        if branding and branding.get('additional_notes'):
+            instructions_content += f"<br/><br/><b>Additional Notes:</b><br/>{branding['additional_notes']}"
+        
+        story.append(Paragraph(instructions_content, self.styles['Instructions']))
+        
+        # Add student information section
+        student_info = branding.get('student_info', {}) if branding else {}
+        if any(student_info.get(field, True) for field in ['include_student_name', 'include_student_id', 'include_signature', 'include_date_field']):
+            story.append(Spacer(1, 15))
+            
+            # Create student information table
+            student_fields = []
+            
+            if student_info.get('include_student_name', True):
+                student_fields.append(['Student Full Name:', '_' * 40])
+            
+            if student_info.get('include_student_id', True):
+                student_fields.append(['Student ID/Number:', '_' * 25])
+            
+            if student_info.get('include_date_field', False):
+                student_fields.append(['Date:', '_' * 15])
+            
+            if student_info.get('include_signature', True):
+                student_fields.append(['Signature:', '_' * 30])
+            
+            if student_fields:
+                student_table = Table(student_fields, colWidths=[140, 300])
+                student_table.setStyle(TableStyle([
+                    ('FONTNAME', (0, 0), (0, -1), 'Times-Bold'),
+                    ('FONTSIZE', (0, 0), (-1, -1), 11),
+                    ('ALIGN', (0, 0), (0, -1), 'LEFT'),
+                    ('ALIGN', (1, 0), (1, -1), 'LEFT'),
+                    ('BOTTOMPADDING', (0, 0), (-1, -1), 10),
+                    ('TOPPADDING', (0, 0), (-1, -1), 5),
+                ]))
+                story.append(student_table)
+                story.append(Spacer(1, 20))
+        
+        # Questions Section with professional formatting
         questions = quiz_data.get('questions', [])
         for i, question in enumerate(questions, 1):
             question_type = question.get('type', 'multiple_choice')
-            question_type_display = {
-                'multiple_choice': 'Multiple Choice',
-                'true_false': 'True/False',
-                'short_answer': 'Short Answer',
-                'fill_blank': 'Fill in the Blank',
-                'essay': 'Essay'
-            }.get(question_type, 'Multiple Choice')
+            points = question.get('points', 1)
             
-            # Question header with type
-            type_text = f"<b>[{question_type_display}]</b>"
-            story.append(Paragraph(type_text, self.styles['Answer']))
+            # Question number and points
+            q_header = f"<b>Question {i}.</b> ({points} point{'s' if points != 1 else ''})"
+            story.append(Paragraph(q_header, self.styles['QuestionNumber']))
             
-            # Question text
-            q_text = f"<b>{i}. {question.get('question', '')}</b> ({question.get('points', 1)} point{'s' if question.get('points', 1) != 1 else ''})"
-            story.append(Paragraph(q_text, self.styles['Question']))
+            # Question text with justified alignment
+            question_text = question.get('question', '')
+            story.append(Paragraph(question_text, self.styles['Question']))
             
-            # Handle different question types
+            # Handle different question types with professional formatting
             if question_type == 'multiple_choice' and question.get('options'):
+                story.append(Spacer(1, 8))
                 for j, option in enumerate(question['options']):
                     option_letter = chr(65 + j)  # A, B, C, D
-                    story.append(Paragraph(f"☐ {option_letter}. {option}", self.styles['Normal']))
+                    option_text = f"<b>{option_letter}.</b> {option}"
+                    story.append(Paragraph(option_text, self.styles['Option']))
+                story.append(Spacer(1, 5))
             
             elif question_type == 'true_false':
-                story.append(Paragraph("☐ True", self.styles['Normal']))
-                story.append(Paragraph("☐ False", self.styles['Normal']))
+                story.append(Spacer(1, 8))
+                story.append(Paragraph("<b>A.</b> True", self.styles['Option']))
+                story.append(Paragraph("<b>B.</b> False", self.styles['Option']))
+                story.append(Spacer(1, 5))
             
             elif question_type == 'short_answer':
-                story.append(Spacer(1, 10))
-                story.append(Paragraph("Answer: " + "_" * 70, self.styles['Normal']))
+                story.append(Spacer(1, 12))
+                story.append(Paragraph("<b>Answer:</b>", self.styles['AnswerLines']))
+                story.append(Spacer(1, 8))
+                for _ in range(5):  # 5 lines for short answer
+                    story.append(Paragraph("_" * 85, self.styles['AnswerLines']))
+                    story.append(Spacer(1, 6))
             
             elif question_type == 'fill_blank':
-                story.append(Spacer(1, 10))
-                story.append(Paragraph("Answer: " + "_" * 70, self.styles['Normal']))
+                story.append(Spacer(1, 12))
+                story.append(Paragraph("<b>Answer:</b> " + "_" * 60, self.styles['AnswerLines']))
+                story.append(Spacer(1, 8))
             
             elif question_type == 'essay':
+                story.append(Spacer(1, 12))
+                story.append(Paragraph("<b>Answer:</b> (Use the space below for your complete response)", self.styles['AnswerLines']))
                 story.append(Spacer(1, 10))
-                for _ in range(5):
-                    story.append(Paragraph("_" * 100, self.styles['Normal']))
+                for _ in range(12):  # More lines for essay questions
+                    story.append(Paragraph("_" * 85, self.styles['AnswerLines']))
+                    story.append(Spacer(1, 6))
             
-            story.append(Spacer(1, 15))
+            # Add space between questions
+            story.append(Spacer(1, 20))
         
-        # Build PDF
-        doc.build(story)
+        # Build PDF with professional template
+        doc.build(story, onFirstPage=self._add_header_footer, onLaterPages=self._add_header_footer)
         buffer.seek(0)
         return buffer
+    
+    def _add_header_footer(self, canvas, doc):
+        """Add headers and footers to each page with enhanced information"""
+        canvas.saveState()
+        
+        # Header line
+        canvas.setStrokeColor(colors.black)
+        canvas.setLineWidth(0.5)
+        canvas.line(72, letter[1] - 50, letter[0] - 72, letter[1] - 50)
+        
+        # Enhanced footer with academic information
+        canvas.setFont('Times-Roman', 9)
+        
+        # Left side: Academic year and semester
+        if hasattr(self, 'branding_data') and self.branding_data:
+            footer_left = []
+            if self.branding_data.get('academic_year'):
+                footer_left.append(f"Academic Year: {self.branding_data['academic_year']}")
+            if self.branding_data.get('semester'):
+                footer_left.append(self.branding_data['semester'])
+            
+            if footer_left:
+                left_text = ' | '.join(footer_left)
+                canvas.drawString(72, 30, left_text)
+        
+        # Center: Page number
+        canvas.setFont('Times-Roman', 10)
+        page_text = f"Page {doc.page}"
+        text_width = canvas.stringWidth(page_text, 'Times-Roman', 10)
+        canvas.drawString((letter[0] - text_width) / 2, 30, page_text)
+        
+        # Right side: University name (abbreviated)
+        if hasattr(self, 'branding_data') and self.branding_data:
+            if self.branding_data.get('university_name'):
+                uni_name = self.branding_data['university_name']
+                # Abbreviate long university names
+                if len(uni_name) > 20:
+                    words = uni_name.split()
+                    uni_name = ''.join([word[0] for word in words if word]) + 'U'
+                
+                canvas.setFont('Times-Roman', 9)
+                right_text_width = canvas.stringWidth(uni_name, 'Times-Roman', 9)
+                canvas.drawString(letter[0] - 72 - right_text_width, 30, uni_name)
+        
+        # Footer line
+        canvas.line(72, 50, letter[0] - 72, 50)
+        
+        # Add watermark if specified
+        if hasattr(self, 'branding_data') and self.branding_data and self.branding_data.get('watermark'):
+            watermark_text = self.branding_data['watermark']
+            if watermark_text.strip():
+                # Save current state
+                canvas.saveState()
+                
+                # Set watermark properties
+                canvas.setFont('Helvetica-Bold', 48)
+                canvas.setFillColor(colors.lightgrey)
+                canvas.setFillAlpha(0.3)  # Make it semi-transparent
+                
+                # Calculate center position
+                page_width = letter[0]
+                page_height = letter[1]
+                
+                # Rotate and draw watermark diagonally across the page
+                canvas.translate(page_width/2, page_height/2)
+                canvas.rotate(45)  # 45-degree angle
+                
+                # Calculate text width to center it
+                text_width = canvas.stringWidth(watermark_text, 'Helvetica-Bold', 48)
+                canvas.drawCentredString(0, 0, watermark_text)
+                
+                # Restore state
+                canvas.restoreState()
+        
+        canvas.restoreState()
+    
+    def _add_professional_branding(self, branding: Dict[str, Any]) -> List:
+        """Add comprehensive professional university branding to document"""
+        elements = []
+        
+        # University header with proper logo support
+        if branding.get('university_name') or branding.get('institution_name'):
+            institution = branding.get('university_name') or branding.get('institution_name')
+            
+            # Add logo if provided
+            if branding.get('logo_path') or branding.get('has_logo'):
+                try:
+                    # Try to load actual logo image
+                    logo_path = branding.get('logo_path')
+                    if logo_path and os.path.exists(logo_path):
+                        # Load and display actual logo image
+                        from reportlab.platypus import Image as ReportLabImage
+                        from reportlab.lib.utils import ImageReader
+                        
+                        # Create logo image with proper sizing
+                        logo_img = ReportLabImage(logo_path, width=60, height=60)
+                        elements.append(logo_img)
+                        elements.append(Spacer(1, 10))
+                        logger.info(f"Added university logo from: {logo_path}")
+                    else:
+                        # Fallback to placeholder if logo file not found
+                        logo_placeholder = Paragraph(
+                            '''<para align="center">
+                            <font size="10" color="gray">[UNIVERSITY LOGO]</font><br/>
+                            <font size="8" color="gray">Logo file not found</font>
+                            </para>''',
+                            self.styles['Normal']
+                        )
+                        elements.append(logo_placeholder)
+                        elements.append(Spacer(1, 10))
+                        logger.warning(f"Logo file not found: {logo_path}")
+                except Exception as e:
+                    logger.warning(f"Could not add logo: {e}")
+                    # Fallback to text placeholder
+                    logo_placeholder = Paragraph(
+                        '''<para align="center">
+                        <font size="10" color="gray">[UNIVERSITY LOGO]</font><br/>
+                        <font size="8" color="gray">Logo loading error</font>
+                        </para>''',
+                        self.styles['Normal']
+                    )
+                    elements.append(logo_placeholder)
+                    elements.append(Spacer(1, 10))
+            
+            # Comprehensive university info with full hierarchy
+            uni_info = f"<b>{institution.upper()}</b>"
+            
+            # Add faculty if provided
+            if branding.get('faculty'):
+                uni_info += f"<br/><i>{branding['faculty']}</i>"
+                
+            # Add department
+            if branding.get('department'):
+                uni_info += f"<br/>{branding['department']}"
+                
+            # Add course information
+            if branding.get('course'):
+                uni_info += f"<br/><b>{branding['course']}</b>"
+                
+            # Add academic year and semester
+            academic_info = []
+            if branding.get('academic_year'):
+                academic_info.append(f"Academic Year: {branding['academic_year']}")
+            if branding.get('semester'):
+                academic_info.append(branding['semester'])
+            
+            if academic_info:
+                uni_info += f"<br/><i>{' | '.join(academic_info)}</i>"
+            
+            # Create a cleaner header layout without the problematic logo placeholder
+            # University info in a clean, professional format
+            header_elements = []
+            
+            # University name - main header
+            university_style = ParagraphStyle(
+                name='UniversityHeader',
+                parent=self.styles['Normal'],
+                fontSize=18,
+                alignment=TA_CENTER,
+                spaceBefore=0,
+                spaceAfter=10,
+                textColor=colors.black,
+                fontName=getattr(self, 'unicode_font_bold', 'Helvetica-Bold')
+            )
+            header_elements.append(Paragraph(institution.upper(), university_style))
+            
+            # Faculty and department info
+            faculty_info = []
+            if branding.get('faculty'):
+                faculty_info.append(branding['faculty'])
+            if branding.get('department'):
+                faculty_info.append(branding['department'])
+            
+            if faculty_info:
+                faculty_style = ParagraphStyle(
+                    name='FacultyHeader',
+                    parent=self.styles['Normal'],
+                    fontSize=12,
+                    alignment=TA_CENTER,
+                    spaceAfter=8,
+                    textColor=colors.black,
+                    fontName=getattr(self, 'unicode_font_normal', 'Helvetica')
+                )
+                faculty_text = ' | '.join(faculty_info)
+                header_elements.append(Paragraph(faculty_text, faculty_style))
+            
+            # Course information
+            if branding.get('course'):
+                course_style = ParagraphStyle(
+                    name='CourseHeader',
+                    parent=self.styles['Normal'],
+                    fontSize=14,
+                    alignment=TA_CENTER,
+                    spaceAfter=15,
+                    textColor=colors.black,
+                    fontName=getattr(self, 'unicode_font_bold', 'Helvetica-Bold')
+                )
+                header_elements.append(Paragraph(branding['course'], course_style))
+            
+            # Add all header elements
+            for element in header_elements:
+                elements.append(element)
+            
+            # Add a separator line
+            elements.append(Spacer(1, 10))
+            # Header elements already added above
+            elements.append(Spacer(1, 20))
+            
+            # Enhanced exam metadata with instructor and date
+            metadata_parts = []
+            if branding.get('instructor'):
+                metadata_parts.append(f"Instructor: {branding['instructor']}")
+            if branding.get('exam_date'):
+                metadata_parts.append(f"Date: {branding['exam_date']}")
+            
+            if metadata_parts:
+                metadata_text = ' | '.join(metadata_parts)
+                metadata_style = ParagraphStyle(
+                    name='ExamMetadata',
+                    parent=self.styles['Normal'],
+                    fontSize=10,
+                    alignment=TA_CENTER,
+                    spaceAfter=15,
+                    fontName=getattr(self, 'unicode_font_normal', 'Helvetica'),
+                    borderWidth=1,
+                    borderColor=colors.lightgrey,
+                    borderPadding=8
+                )
+                elements.append(Paragraph(metadata_text, metadata_style))
+        
+        return elements
     
     def export_exam(self, exam_data: Dict[str, Any], branding: Dict[str, Any] = None) -> io.BytesIO:
         """Export exam to PDF format"""
@@ -250,16 +678,21 @@ class PDFExporter:
                 q_text = f"<b>{question_num}. {question.get('question', '')}</b> ({question.get('points', 1)} points)"
                 story.append(Paragraph(q_text, self.styles['Question']))
                 
-                # Question options or answer space
-                if question.get('type') == 'multiple_choice' and question.get('options'):
+                # Question options or answer space - clean professional format
+                question_type = question.get('type', 'multiple_choice')
+                if question_type == 'multiple_choice' and question.get('options'):
                     for j, option in enumerate(question['options']):
                         option_letter = chr(65 + j)
-                        story.append(Paragraph(f"{option_letter}. {option}", self.styles['Normal']))
+                        story.append(Paragraph(f"{option_letter}. {option}", self.styles['Option']))
+                elif question_type == 'true_false':
+                    story.append(Paragraph("A. True", self.styles['Option']))
+                    story.append(Paragraph("B. False", self.styles['Option']))
                 else:
-                    # Add answer space
-                    for _ in range(3):  # 3 lines for answer
-                        story.append(Paragraph("_" * 70, self.styles['Normal']))
-                        story.append(Spacer(1, 5))
+                    # Add answer space for other question types
+                    story.append(Spacer(1, 8))
+                    for _ in range(4):  # 4 lines for answer
+                        story.append(Paragraph("_" * 80, self.styles['Normal']))
+                        story.append(Spacer(1, 6))
                 
                 story.append(Spacer(1, 15))
                 question_num += 1
@@ -267,6 +700,73 @@ class PDFExporter:
             story.append(PageBreak())
         
         # Build PDF
+        doc.build(story)
+        buffer.seek(0)
+        return buffer
+    
+    def export_html_to_pdf(self, html_content: str, branding: Dict[str, Any] = None) -> io.BytesIO:
+        """Convert HTML to PDF using ReportLab (fallback for WeasyPrint)"""
+        buffer = io.BytesIO()
+        doc = SimpleDocTemplate(buffer, pagesize=A4)
+        story = []
+        
+        # Add branding if available
+        if branding:
+            story.extend(self._add_branding(branding))
+        
+        # Simple HTML to ReportLab conversion
+        # This is a basic implementation - for complex HTML, WeasyPrint would be preferred
+        from html.parser import HTMLParser
+        
+        class SimpleHTMLParser(HTMLParser):
+            def __init__(self):
+                super().__init__()
+                self.current_text = ""
+                self.in_title = False
+                self.in_question = False
+                
+            def handle_starttag(self, tag, attrs):
+                if tag == 'h1' or tag == 'h2':
+                    self.in_title = True
+                elif tag == 'div' and any(cls for name, cls in attrs if name == 'class' and 'question' in cls):
+                    self.in_question = True
+                    
+            def handle_endtag(self, tag):
+                if tag == 'h1' or tag == 'h2':
+                    if self.current_text.strip():
+                        story.append(Paragraph(self.current_text.strip(), self.styles['CustomTitle']))
+                        self.current_text = ""
+                    self.in_title = False
+                elif tag == 'div' and self.in_question:
+                    if self.current_text.strip():
+                        story.append(Paragraph(self.current_text.strip(), self.styles['Question']))
+                        self.current_text = ""
+                    self.in_question = False
+                    
+            def handle_data(self, data):
+                self.current_text += data
+        
+        # Parse HTML and convert to PDF
+        parser = SimpleHTMLParser()
+        parser.styles = self.styles
+        
+        try:
+            parser.feed(html_content)
+            
+            # Add any remaining content
+            if parser.current_text.strip():
+                story.append(Paragraph(parser.current_text.strip(), self.styles['Normal']))
+                
+        except Exception as e:
+            # Fallback: just add the HTML as plain text
+            import re
+            clean_text = re.sub('<.*?>', '', html_content)
+            story.append(Paragraph(clean_text, self.styles['Normal']))
+        
+        # Build PDF
+        if not story:
+            story.append(Paragraph("Document content could not be processed.", self.styles['Normal']))
+            
         doc.build(story)
         buffer.seek(0)
         return buffer
@@ -316,21 +816,23 @@ class PDFExporter:
         return buffer
     
     def _add_branding(self, branding: Dict[str, Any]) -> List:
-        """Add branding elements to document"""
+        """Add professional branding elements to document"""
         elements = []
         
-        # Institution name
-        if branding.get('institution_name'):
+        # Institution name - university style
+        if branding.get('institution_name') or branding.get('university_name'):
+            institution = branding.get('institution_name') or branding.get('university_name')
             inst_style = ParagraphStyle(
                 name='Institution',
                 parent=self.styles['Normal'],
-                fontSize=14,
+                fontSize=16,
                 alignment=TA_CENTER,
                 spaceBefore=0,
-                spaceAfter=10,
-                textColor=colors.darkblue
+                spaceAfter=8,
+                textColor=colors.black,
+                fontName='Helvetica-Bold'
             )
-            elements.append(Paragraph(branding['institution_name'], inst_style))
+            elements.append(Paragraph(institution.upper(), inst_style))
         
         # Department
         if branding.get('department'):
@@ -339,12 +841,33 @@ class PDFExporter:
                 parent=self.styles['Normal'],
                 fontSize=12,
                 alignment=TA_CENTER,
-                spaceAfter=20
+                spaceAfter=6,
+                textColor=colors.black,
+                fontName='Helvetica'
             )
             elements.append(Paragraph(branding['department'], dept_style))
         
+        # Course information
+        if branding.get('course'):
+            course_style = ParagraphStyle(
+                name='Course',
+                parent=self.styles['Normal'],
+                fontSize=11,
+                alignment=TA_CENTER,
+                spaceAfter=20,
+                textColor=colors.black,
+                fontName='Helvetica'
+            )
+            course_text = branding['course']
+            if branding.get('semester'):
+                course_text += f" - {branding['semester']}"
+            elements.append(Paragraph(course_text, course_style))
+        
         return elements
 
+
+# Define PDF_AVAILABLE alias to avoid conflicts
+PDF_AVAILABLE = REPORTLAB_AVAILABLE
 
 class DOCXExporter:
     """Service for exporting content to DOCX format"""
@@ -354,70 +877,146 @@ class DOCXExporter:
             raise ImportError("python-docx is required for DOCX export")
     
     def export_quiz(self, quiz_data: Dict[str, Any], branding: Dict[str, Any] = None) -> io.BytesIO:
-        """Export quiz to DOCX format"""
+        """Export quiz to DOCX format with professional university formatting"""
         doc = Document()
         
-        # Add branding
-        if branding:
-            self._add_branding(doc, branding)
+        # Set document margins for professional look
+        sections = doc.sections
+        for section in sections:
+            section.top_margin = Inches(1.0)
+            section.bottom_margin = Inches(1.0)
+            section.left_margin = Inches(1.0)
+            section.right_margin = Inches(1.0)
         
-        # Title
+        # Add professional branding first
+        if branding:
+            self._add_professional_docx_branding(doc, branding)
+        
+        # Main Title - Heading 1
         title = doc.add_heading(quiz_data.get('title', 'Quiz'), level=1)
         title.alignment = WD_ALIGN_PARAGRAPH.CENTER
         
-        # Description
+        # Exam details subtitle
+        exam_details = []
+        if quiz_data.get('estimated_duration'):
+            exam_details.append(f"Duration: {quiz_data['estimated_duration']}")
+        if quiz_data.get('total_points'):
+            exam_details.append(f"Total Points: {quiz_data['total_points']}")
+        else:
+            exam_details.append(f"Total Points: {len(quiz_data.get('questions', []))}")
+        
+        if exam_details:
+            subtitle_para = doc.add_paragraph(' | '.join(exam_details))
+            subtitle_para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+            subtitle_para.runs[0].italic = True
+        
+        doc.add_paragraph()  # Add space
+        
+        # Description with justified alignment
         if quiz_data.get('description'):
-            doc.add_paragraph(quiz_data['description'])
+            desc_para = doc.add_paragraph(quiz_data['description'])
+            desc_para.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
+            doc.add_paragraph()
         
-        # Instructions
-        doc.add_heading('Instructions:', level=2)
-        instructions = doc.add_paragraph()
-        instructions.add_run('• Read each question carefully\n')
-        instructions.add_run('• Choose the best answer for multiple choice questions\n')
-        instructions.add_run(f'• Duration: {quiz_data.get("estimated_duration", "Not specified")}\n')
-        instructions.add_run(f'• Total Points: {quiz_data.get("total_points", len(quiz_data.get("questions", [])))}')
+        # Instructions - Heading 2 with professional box
+        doc.add_heading('INSTRUCTIONS', level=2)
         
-        # Questions
+        instructions_content = [
+            'â€¢ Read each question carefully and completely before answering',
+            'â€¢ For multiple choice questions, select the best answer',
+            'â€¢ Write clearly and legibly for all written responses',
+            'â€¢ Show all work for calculation problems where applicable',
+            'â€¢ Review your answers before submitting',
+            'â€¢ Ask the instructor if you have any questions'
+        ]
+        
+        for instruction in instructions_content:
+            inst_para = doc.add_paragraph(instruction)
+            inst_para.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
+        
+        doc.add_paragraph()  # Add space after instructions
+        
+        # Questions with professional formatting
         for i, question in enumerate(quiz_data.get('questions', []), 1):
             question_type = question.get('type', 'multiple_choice')
-            question_type_display = {
-                'multiple_choice': 'Multiple Choice',
-                'true_false': 'True/False',
-                'short_answer': 'Short Answer',
-                'fill_blank': 'Fill in the Blank',
-                'essay': 'Essay'
-            }.get(question_type, 'Multiple Choice')
+            points = question.get('points', 1)
             
-            # Question type header
-            type_para = doc.add_paragraph()
-            type_para.add_run(f'[{question_type_display}]').bold = True
+            # Question header
+            q_header = doc.add_paragraph()
+            q_header.add_run(f'Question {i}.').bold = True
+            q_header.add_run(f' ({points} point{"s" if points != 1 else ""})')
             
-            # Question text
-            q_para = doc.add_paragraph()
-            q_para.add_run(f'{i}. {question.get("question", "")} ').bold = True
-            q_para.add_run(f'({question.get("points", 1)} point{"s" if question.get("points", 1) != 1 else ""})')
+            # Question text with justified alignment
+            q_text_para = doc.add_paragraph(question.get('question', ''))
+            q_text_para.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
             
             # Handle different question types
             if question_type == 'multiple_choice' and question.get('options'):
+                doc.add_paragraph()  # Add space before options
                 for j, option in enumerate(question['options']):
                     option_letter = chr(65 + j)
-                    doc.add_paragraph(f'☐ {option_letter}. {option}')
+                    option_para = doc.add_paragraph(f'{option_letter}. {option}')
+                    option_para.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
+                    # Indent options slightly
+                    option_para.paragraph_format.left_indent = Inches(0.3)
             
             elif question_type == 'true_false':
-                doc.add_paragraph('☐ True')
-                doc.add_paragraph('☐ False')
+                doc.add_paragraph()
+                true_para = doc.add_paragraph('A. True')
+                true_para.paragraph_format.left_indent = Inches(0.3)
+                false_para = doc.add_paragraph('B. False')
+                false_para.paragraph_format.left_indent = Inches(0.3)
             
             elif question_type == 'short_answer':
-                doc.add_paragraph('Answer: ' + '_' * 70)
+                doc.add_paragraph()
+                answer_label = doc.add_paragraph()
+                answer_label.add_run('Answer:').bold = True
+                doc.add_paragraph()
+                # Create table for neat answer lines
+                table = doc.add_table(rows=5, cols=1)
+                for row in table.rows:
+                    row.cells[0].text = ''
+                    row.height = Inches(0.3)
             
             elif question_type == 'fill_blank':
-                doc.add_paragraph('Answer: ' + '_' * 70)
+                doc.add_paragraph()
+                fill_para = doc.add_paragraph()
+                fill_para.add_run('Answer: ').bold = True
+                fill_para.add_run('_' * 50)
             
             elif question_type == 'essay':
-                for _ in range(5):
-                    doc.add_paragraph('_' * 80)
+                doc.add_paragraph()
+                essay_label = doc.add_paragraph()
+                essay_label.add_run('Answer: ').bold = True
+                essay_label.add_run('(Use the space below for your complete response)')
+                doc.add_paragraph()
+                # Create larger table for essay responses
+                essay_table = doc.add_table(rows=10, cols=1)
+                for row in essay_table.rows:
+                    row.cells[0].text = ''
+                    row.height = Inches(0.35)
             
-            doc.add_paragraph()  # Add space between questions
+            # Add space between questions
+            doc.add_paragraph()
+            doc.add_paragraph()
+        
+        # Add watermark if specified
+        if branding and branding.get('watermark'):
+            watermark_text = branding['watermark']
+            if watermark_text.strip():
+                try:
+                    # Add watermark as a text box or header
+                    # For DOCX, we'll add it as a subtle footer text
+                    sections = doc.sections
+                    for section in sections:
+                        footer = section.footer
+                        footer_para = footer.paragraphs[0]
+                        footer_run = footer_para.add_run(f"  [{watermark_text}]  ")
+                        footer_run.font.size = Pt(8)
+                        footer_run.font.color.rgb = RGBColor(128, 128, 128)  # Light gray
+                        footer_para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+                except Exception as e:
+                    logger.warning(f"Could not add watermark to DOCX: {e}")
         
         # Save to buffer
         buffer = io.BytesIO()
@@ -425,36 +1024,140 @@ class DOCXExporter:
         buffer.seek(0)
         return buffer
     
-    def export_exam(self, exam_data: Dict[str, Any], branding: Dict[str, Any] = None) -> io.BytesIO:
-        """Export exam to DOCX format"""
-        doc = Document()
+    
+    def _add_professional_docx_branding(self, doc: Document, branding: Dict[str, Any]):
+        """Add comprehensive professional branding to DOCX document"""
+        # Enhanced university header table
+        if branding.get('university_name') or branding.get('institution_name'):
+            institution = branding.get('university_name') or branding.get('institution_name')
+            
+            # Create header table
+            header_table = doc.add_table(rows=1, cols=2)
+            header_table.columns[0].width = Inches(1.8)
+            header_table.columns[1].width = Inches(4.7)
+            
+            # Enhanced logo cell
+            logo_cell = header_table.cell(0, 0)
+            logo_para = logo_cell.paragraphs[0]
+            
+            # Try to add actual logo image
+            logo_added = False
+            if branding.get('logo_path'):
+                try:
+                    logo_path = branding.get('logo_path')
+                    if os.path.exists(logo_path):
+                        # Clear the placeholder text
+                        logo_para.clear()
+                        # Add the actual logo image
+                        run = logo_para.add_run()
+                        run.add_picture(logo_path, width=Inches(1.0))
+                        logo_para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+                        logo_added = True
+                        logger.info(f"Added logo to DOCX: {logo_path}")
+                except Exception as e:
+                    logger.warning(f"Could not add logo to DOCX: {e}")
+            
+            # Fallback to placeholder text if logo wasn't added
+            if not logo_added:
+                logo_para.text = '[UNIVERSITY LOGO]\nUpload logo in\nexport form'
+                logo_para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+                logo_para.runs[0].font.size = Pt(9)
+            
+            # Comprehensive university info cell
+            info_cell = header_table.cell(0, 1)
+            info_para = info_cell.paragraphs[0]
+            
+            # Add university name
+            info_run = info_para.add_run(institution.upper())
+            info_run.bold = True
+            info_run.font.size = Pt(16)
+            
+            # Add faculty if provided
+            if branding.get('faculty'):
+                faculty_run = info_para.add_run('\n' + branding['faculty'])
+                faculty_run.italic = True
+                faculty_run.font.size = Pt(12)
+            
+            # Add department
+            if branding.get('department'):
+                dept_run = info_para.add_run('\n' + branding['department'])
+                dept_run.font.size = Pt(11)
+            
+            # Add course information
+            if branding.get('course'):
+                course_run = info_para.add_run('\n' + branding['course'])
+                course_run.bold = True
+                course_run.font.size = Pt(12)
+            
+            # Add academic year and semester
+            academic_info = []
+            if branding.get('academic_year'):
+                academic_info.append(f"Academic Year: {branding['academic_year']}")
+            if branding.get('semester'):
+                academic_info.append(branding['semester'])
+            
+            if academic_info:
+                academic_run = info_para.add_run('\n' + ' | '.join(academic_info))
+                academic_run.italic = True
+                academic_run.font.size = Pt(10)
+            
+            # Style the table
+            header_table.style = 'Table Grid'
+            
+            doc.add_paragraph()  # Space after header
+            
+            # Enhanced exam metadata
+            if branding.get('instructor') or branding.get('exam_date'):
+                metadata_parts = []
+                if branding.get('instructor'):
+                    metadata_parts.append(f'Instructor: {branding["instructor"]}')
+                if branding.get('exam_date'):
+                    metadata_parts.append(f'Date: {branding["exam_date"]}')
+                
+                metadata_para = doc.add_paragraph(' | '.join(metadata_parts))
+                metadata_para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+                metadata_para.runs[0].font.size = Pt(11)
+                
+                doc.add_paragraph()  # Space after metadata
         
-        # Add branding
-        if branding:
-            self._add_branding(doc, branding)
-        
-        # Title
-        title = doc.add_heading(exam_data.get('title', 'Comprehensive Exam'), level=1)
-        title.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        
-        # Exam info table
-        table = doc.add_table(rows=6, cols=2)
-        table.style = 'Table Grid'
-        
-        info_data = [
-            ('Duration:', f"{exam_data.get('duration', 120)} minutes"),
-            ('Total Questions:', str(exam_data.get('total_questions', 0))),
-            ('Date:', datetime.now().strftime('%B %d, %Y')),
-            ('Time:', '________________'),
-            ('Student Name:', '_' * 30),
-            ('Student ID:', '_' * 20)
-        ]
-        
-        for i, (label, value) in enumerate(info_data):
-            table.cell(i, 0).text = label
-            table.cell(i, 1).text = value
-        
-        doc.add_paragraph()
+        # Add student information section
+        student_info = branding.get('student_info', {}) if branding else {}
+        if any(student_info.get(field, True) for field in ['include_student_name', 'include_student_id', 'include_signature', 'include_date_field']):
+            # Student information header
+            student_heading = doc.add_heading('STUDENT INFORMATION', level=3)
+            student_heading.alignment = WD_ALIGN_PARAGRAPH.CENTER
+            
+            # Create student information table
+            student_fields = []
+            if student_info.get('include_student_name', True):
+                student_fields.append(['Student Full Name:', '_' * 40])
+            if student_info.get('include_student_id', True):
+                student_fields.append(['Student ID/Number:', '_' * 25])
+            if student_info.get('include_date_field', False):
+                student_fields.append(['Date:', '_' * 15])
+            if student_info.get('include_signature', True):
+                student_fields.append(['Signature:', '_' * 30])
+            
+            if student_fields:
+                student_table = doc.add_table(rows=len(student_fields), cols=2)
+                student_table.columns[0].width = Inches(2.0)
+                student_table.columns[1].width = Inches(4.0)
+                
+                for i, (label, line) in enumerate(student_fields):
+                    label_cell = student_table.cell(i, 0)
+                    line_cell = student_table.cell(i, 1)
+                    
+                    label_para = label_cell.paragraphs[0]
+                    label_para.text = label
+                    label_para.runs[0].bold = True
+                    
+                    line_para = line_cell.paragraphs[0]
+                    line_para.text = line
+                
+                # Style the student table
+                student_table.style = 'Table Grid'
+                
+                doc.add_paragraph()  # Space after student info
         
         # Instructions
         doc.add_heading('INSTRUCTIONS:', level=2)
@@ -465,58 +1168,31 @@ class DOCXExporter:
         instructions.add_run('4. Show all work for calculation problems\n')
         instructions.add_run('5. Check your answers before submitting')
         
-        doc.add_page_break()
-        
-        # Exam sections
-        question_num = 1
-        for section in exam_data.get('sections', []):
-            # Section header
-            section_title = f"Section: {section.get('name', 'Questions')}"
-            doc.add_heading(section_title, level=2)
-            
-            if section.get('instructions'):
-                doc.add_paragraph(section['instructions'])
-            
-            # Section questions
-            for question in section.get('questions', []):
-                # Question text
-                q_para = doc.add_paragraph()
-                q_para.add_run(f'{question_num}. {question.get("question", "")} ').bold = True
-                q_para.add_run(f'({question.get("points", 1)} points)')
-                
-                # Options or answer space
-                if question.get('type') == 'multiple_choice' and question.get('options'):
-                    for j, option in enumerate(question['options']):
-                        option_letter = chr(65 + j)
-                        doc.add_paragraph(f'{option_letter}. {option}', style='List Number')
-                else:
-                    # Add answer lines
-                    for _ in range(3):
-                        doc.add_paragraph('_' * 70)
-                
-                doc.add_paragraph()
-                question_num += 1
-            
-            doc.add_page_break()
-        
-        # Save to buffer
-        buffer = io.BytesIO()
-        doc.save(buffer)
-        buffer.seek(0)
-        return buffer
     
     def _add_branding(self, doc: Document, branding: Dict[str, Any]):
-        """Add branding to document"""
-        if branding.get('institution_name'):
-            inst_para = doc.add_paragraph(branding['institution_name'])
+        """Add professional branding to document"""
+        # Institution name - university style
+        if branding.get('institution_name') or branding.get('university_name'):
+            institution = branding.get('institution_name') or branding.get('university_name')
+            inst_para = doc.add_paragraph(institution.upper())
             inst_para.alignment = WD_ALIGN_PARAGRAPH.CENTER
-            inst_para.runs[0].font.size = Pt(14)
+            inst_para.runs[0].font.size = Pt(16)
             inst_para.runs[0].bold = True
         
+        # Department
         if branding.get('department'):
             dept_para = doc.add_paragraph(branding['department'])
             dept_para.alignment = WD_ALIGN_PARAGRAPH.CENTER
             dept_para.runs[0].font.size = Pt(12)
+        
+        # Course information
+        if branding.get('course'):
+            course_text = branding['course']
+            if branding.get('semester'):
+                course_text += f" - {branding['semester']}"
+            course_para = doc.add_paragraph(course_text)
+            course_para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+            course_para.runs[0].font.size = Pt(11)
         
         doc.add_paragraph()
 
@@ -538,7 +1214,7 @@ class HTMLExporter:
             'export_date': datetime.now().strftime('%B %d, %Y')
         }
         
-        html_template = """
+        html_template = '''
         <!DOCTYPE html>
         <html lang="en">
         <head>
@@ -560,7 +1236,7 @@ class HTMLExporter:
                     color: #2c3e50;
                     background: white;
                     margin: 0;
-                    padding: 60px 40px 40px;
+                    padding: 60px 40px 40px 40px;
                 }
                 
                 .exam-container {
@@ -608,6 +1284,14 @@ class HTMLExporter:
                     letter-spacing: 1px;
                 }
                 
+                .faculty-name {
+                    font-size: 18px;
+                    color: #2c3e50;
+                    margin-bottom: 6px;
+                    font-weight: 600;
+                    font-style: italic;
+                }
+                
                 .department-name {
                     font-size: 16px;
                     color: #34495e;
@@ -617,8 +1301,16 @@ class HTMLExporter:
                 
                 .course-info {
                     font-size: 14px;
+                    color: #2c3e50;
+                    font-weight: 600;
+                    margin-bottom: 4px;
+                }
+                
+                .academic-info {
+                    font-size: 12px;
                     color: #7f8c8d;
                     font-weight: 400;
+                    font-style: italic;
                 }
                 
                 /* Exam Title */
@@ -700,7 +1392,7 @@ class HTMLExporter:
                 }
                 
                 .instructions-list li::before {
-                    content: '•';
+                    content: '-';
                     position: absolute;
                     left: 0;
                     color: #2c3e50;
@@ -754,7 +1446,7 @@ class HTMLExporter:
                 .option-checkbox {
                     width: 12px;
                     height: 12px;
-                    border: 1.5px solid #2c3e50;
+                    border: 2px solid #2c3e50;
                     margin-right: 10px;
                     margin-top: 4px;
                     flex-shrink: 0;
@@ -825,10 +1517,59 @@ class HTMLExporter:
                     border: 1px solid #bdc3c7;
                     background: repeating-linear-gradient(
                         transparent,
-                        transparent 29px,
-                        #ecf0f1 29px,
+                        transparent 28px,
+                        #ecf0f1 28px,
                         #ecf0f1 30px
                     );
+                }
+                
+                /* Student Information Section */
+                .student-info-section {
+                    margin: 30px 0;
+                    padding: 20px;
+                    border: 2px solid #34495e;
+                    background: #fdfdfd;
+                }
+                
+                .student-info-title {
+                    font-family: 'Crimson Text', serif;
+                    font-size: 16px;
+                    font-weight: 700;
+                    color: #2c3e50;
+                    margin-bottom: 15px;
+                    text-transform: uppercase;
+                    border-bottom: 1px solid #ecf0f1;
+                    padding-bottom: 5px;
+                }
+                
+                .student-fields {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 15px;
+                }
+                
+                .student-field {
+                    display: flex;
+                    align-items: center;
+                    font-size: 14px;
+                }
+                
+                .student-field-label {
+                    font-weight: 600;
+                    color: #2c3e50;
+                    margin-right: 10px;
+                    min-width: 120px;
+                }
+                
+                .student-field-line {
+                    flex: 1;
+                    border-bottom: 2px solid #2c3e50;
+                    height: 25px;
+                }
+                
+                .signature-field {
+                    grid-column: 1 / -1;
+                    margin-top: 10px;
                 }
                 
                 /* Footer */
@@ -839,6 +1580,14 @@ class HTMLExporter:
                     text-align: center;
                     font-size: 12px;
                     color: #7f8c8d;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                }
+                
+                .footer-left, .footer-right {
+                    font-size: 11px;
+                    color: #95a5a6;
                 }
                 
                 /* Print Styles */
@@ -879,7 +1628,7 @@ class HTMLExporter:
                 }
                 
                 .correct-answer .option-checkbox::after {
-                    content: '✓';
+                    content: 'âœ“';
                     color: white;
                     font-size: 10px;
                     position: absolute;
@@ -911,7 +1660,7 @@ class HTMLExporter:
                     display: flex;
                     align-items: center;
                     cursor: pointer;
-                    transition: all 0.2s ease;
+                    transition: all 200ms ease;
                 }
             </style>
         </head>
@@ -920,12 +1669,15 @@ class HTMLExporter:
                 <!-- University Header -->
                 <div class="university-header">
                     <div class="logo-placeholder">
-                        LOGO
+                        <!-- Logo placeholder will be replaced with actual logo if available -->
+                        {{ logo_image_placeholder }}
                     </div>
                     <div class="header-info">
-                        <div class="university-name">{{ branding.university_name|default:"UNIVERSITY" }}</div>
-                        <div class="department-name">{{ branding.department|default:"DEPARTMENT" }}</div>
-                        <div class="course-info">{{ branding.course|default:"COURSE NAME" }} – {{ branding.semester|default:"SEMESTER 2025" }}</div>
+                        <div class="university-name">{{ branding.university_name|default:"UNIVERSITY NAME" }}</div>
+                        <div class="faculty-name">{{ branding.faculty|default:"FACULTY NAME" }}</div>
+                        <div class="department-name">{{ branding.department|default:"DEPARTMENT NAME" }}</div>
+                        <div class="course-info">{{ branding.course|default:"COURSE NAME" }}</div>
+                        <div class="academic-info">{{ branding.academic_year|default:"ACADEMIC YEAR" }} â€“ {{ branding.semester|default:"SEMESTER" }}</div>
                     </div>
                 </div>
                 
@@ -938,11 +1690,11 @@ class HTMLExporter:
                 <div class="exam-metadata">
                     <div class="metadata-item">
                         <div class="metadata-label">INSTRUCTOR:</div>
-                        <div class="metadata-value">{{ branding.instructor|default:"Full Name" }}</div>
+                        <div class="metadata-value">{{ branding.instructor|default:"Instructor Name" }}</div>
                     </div>
                     <div class="metadata-item">
                         <div class="metadata-label">DATE:</div>
-                        <div class="metadata-value">{{ branding.exam_date|default:"November 1, 2025" }}</div>
+                        <div class="metadata-value">{{ branding.exam_date|default:"Exam Date" }}</div>
                     </div>
                     <div class="metadata-item">
                         <div class="metadata-label">DURATION:</div>
@@ -952,13 +1704,14 @@ class HTMLExporter:
                         <div class="metadata-label">TOTAL:</div>
                         <div class="metadata-value">{{ quiz_data.total_points|default:quiz_data.questions|length }} points</div>
                     </div>
-                    <div class="metadata-item">
-                        <div class="metadata-label">NAME:</div>
-                        <div class="metadata-value">_________________________________</div>
-                    </div>
-                    <div class="metadata-item">
-                        <div class="metadata-label">ID:</div>
-                        <div class="metadata-value">_________________________________</div>
+                </div>
+                
+                <!-- Student Information Section -->
+                <div class="student-info-section">
+                    <h3 class="student-info-title">STUDENT INFORMATION</h3>
+                    <div class="student-fields">
+                        <!-- These fields will be conditionally rendered based on branding settings -->
+                        {{ student_info_fields_placeholder }}
                     </div>
                 </div>
                 
@@ -978,16 +1731,24 @@ class HTMLExporter:
                 
                 <!-- Footer -->
                 <div class="exam-footer">
-                    {{ branding.university_name|default:"University" }} – {{ branding.department|default:"Department" }} – Official {{ quiz_data.content_type|default:"Exam" }}
+                    <div class="footer-left">
+                        {{ branding.academic_year|default:"Academic Year" }} | {{ branding.semester|default:"Semester" }}
+                    </div>
+                    <div class="footer-center">
+                        {{ branding.university_name|default:"University" }} â€“ Official {{ quiz_data.content_type|default:"Exam" }}
+                    </div>
+                    <div class="footer-right">
+                        {{ branding.department|default:"Department" }}
+                    </div>
                 </div>
             </div>
         </body>
         </html>
-        """
+        '''
         
         # Add instructor-specific CSS if showing answers
         if show_answers:
-            instructor_css = """
+            instructor_css = '''
             <style>
                 /* Instructor version - correct answer styling */
                 .correct-option {
@@ -1011,14 +1772,14 @@ class HTMLExporter:
                     padding: 8px 12px;
                     margin-top: 10px;
                     color: #0c4a6e;
-                    font-size: 0.9em;
+                    font-size: 14px;
                 }
                 
                 .expected-answer strong {
                     color: #0369a1;
                 }
             </style>
-            """
+            '''
             # Insert the instructor CSS before </head>
             html_template = html_template.replace('</head>', instructor_css + '\n        </head>')
         
@@ -1030,13 +1791,15 @@ class HTMLExporter:
         html = html.replace('{{ quiz_data.description }}', quiz_data.get('description', ''))
         html = html.replace('{{ export_date }}', datetime.now().strftime('%B %d, %Y'))
         
-        # Branding replacements
-        html = html.replace('{{ branding.university_name|default:"UNIVERSITY" }}', branding.get('university_name', 'UNIVERSITY') if branding else 'UNIVERSITY')
-        html = html.replace('{{ branding.department|default:"DEPARTMENT" }}', branding.get('department', 'DEPARTMENT') if branding else 'DEPARTMENT')
+        # Comprehensive branding replacements
+        html = html.replace('{{ branding.university_name|default:"UNIVERSITY NAME" }}', branding.get('university_name', 'UNIVERSITY NAME') if branding else 'UNIVERSITY NAME')
+        html = html.replace('{{ branding.faculty|default:"FACULTY NAME" }}', branding.get('faculty', 'FACULTY NAME') if branding else 'FACULTY NAME')
+        html = html.replace('{{ branding.department|default:"DEPARTMENT NAME" }}', branding.get('department', 'DEPARTMENT NAME') if branding else 'DEPARTMENT NAME')
         html = html.replace('{{ branding.course|default:"COURSE NAME" }}', branding.get('course', 'COURSE NAME') if branding else 'COURSE NAME')
-        html = html.replace('{{ branding.semester|default:"SEMESTER 2025" }}', branding.get('semester', 'SEMESTER 2025') if branding else 'SEMESTER 2025')
-        html = html.replace('{{ branding.instructor|default:"Full Name" }}', branding.get('instructor', 'Full Name') if branding else 'Full Name')
-        html = html.replace('{{ branding.exam_date|default:"November 1, 2025" }}', branding.get('exam_date', 'November 1, 2025') if branding else 'November 1, 2025')
+        html = html.replace('{{ branding.academic_year|default:"ACADEMIC YEAR" }}', branding.get('academic_year', 'ACADEMIC YEAR') if branding else 'ACADEMIC YEAR')
+        html = html.replace('{{ branding.semester|default:"SEMESTER" }}', branding.get('semester', 'SEMESTER') if branding else 'SEMESTER')
+        html = html.replace('{{ branding.instructor|default:"Instructor Name" }}', branding.get('instructor', 'Instructor Name') if branding else 'Instructor Name')
+        html = html.replace('{{ branding.exam_date|default:"Exam Date" }}', branding.get('exam_date', 'Exam Date') if branding else 'Exam Date')
         
         # More comprehensive template cleanup
         import re
@@ -1069,17 +1832,10 @@ class HTMLExporter:
         html = html.replace('{{ quiz_data.total_points|default:quiz_data.questions|length }}', 
                            str(quiz_data.get('total_points', len(quiz_data.get('questions', [])))))
         
-        # Add questions with proper type distinction
+        # Add questions - clean professional format without type labels
         questions_html = ""
         for i, question in enumerate(quiz_data.get('questions', []), 1):
             question_type = question.get('type', 'multiple_choice')
-            question_type_display = {
-                'multiple_choice': 'Çoktan Seçmeli' if 'tr' in str(quiz_data.get('language', '')).lower() else 'Multiple Choice',
-                'true_false': 'Doğru/Yanlış' if 'tr' in str(quiz_data.get('language', '')).lower() else 'True/False',
-                'short_answer': 'Kısa Cevap' if 'tr' in str(quiz_data.get('language', '')).lower() else 'Short Answer',
-                'fill_blank': 'Boşluk Doldurma' if 'tr' in str(quiz_data.get('language', '')).lower() else 'Fill in the Blank',
-                'essay': 'Kompozisyon' if 'tr' in str(quiz_data.get('language', '')).lower() else 'Essay'
-            }.get(question_type, 'Multiple Choice')
             
             # Escape HTML special characters in question content
             import html as html_escape_module
@@ -1210,8 +1966,87 @@ class HTMLExporter:
         html = html.replace('{{ branding.university_name|default:"University" }}', branding.get('university_name', 'University') if branding else 'University')
         html = html.replace('{{ quiz_data.content_type|default:"Exam" }}', quiz_data.get('content_type', 'Quiz'))
         
+        # Generate student information fields based on branding settings
+        student_info_html = ""
+        if branding and 'student_info' in branding:
+            student_info = branding['student_info']
+            student_fields = []
+            
+            if student_info.get('include_student_name', True):
+                student_fields.append('<div class="student-field"><div class="student-field-label">FULL NAME:</div><div class="student-field-line"></div></div>')
+            
+            if student_info.get('include_student_id', True):
+                student_fields.append('<div class="student-field"><div class="student-field-label">STUDENT ID:</div><div class="student-field-line"></div></div>')
+            
+            if student_info.get('include_date_field', False):
+                student_fields.append('<div class="student-field"><div class="student-field-label">DATE:</div><div class="student-field-line"></div></div>')
+            
+            if student_info.get('include_signature', True):
+                student_fields.append('<div class="student-field signature-field"><div class="student-field-label">SIGNATURE:</div><div class="student-field-line"></div></div>')
+            
+            if student_fields:
+                student_info_html = '\n'.join(student_fields)
+        else:
+            # Default student fields if no specific configuration
+            student_info_html = '''
+                <div class="student-field"><div class="student-field-label">FULL NAME:</div><div class="student-field-line"></div></div>
+                <div class="student-field"><div class="student-field-label">STUDENT ID:</div><div class="student-field-line"></div></div>
+                <div class="student-field signature-field"><div class="student-field-label">SIGNATURE:</div><div class="student-field-line"></div></div>
+            '''
+        
+        # Replace logo placeholder with actual logo if available
+        logo_html = 'UNIVERSITY<br/>LOGO<br/><small>(Upload in export form)</small>'  # Default placeholder
+        if branding and branding.get('logo_url'):
+            try:
+                logo_url = branding.get('logo_url')
+                logo_html = f'<img src="{logo_url}" alt="University Logo" style="max-width: 80px; max-height: 80px; border-radius: 50%;"/>'
+                logger.info(f"Added logo to HTML export: {logo_url}")
+            except Exception as e:
+                logger.warning(f"Could not add logo to HTML: {e}")
+        
+        html = html.replace('{{ logo_image_placeholder }}', logo_html)
+        
+        # Replace student info placeholder
+        html = html.replace('{{ student_info_fields_placeholder }}', student_info_html)
+        
         # Replace questions placeholder with generated content
         html = html.replace('{{ questions_placeholder }}', questions_html)
+        
+        # Add watermark if specified
+        if branding and branding.get('watermark'):
+            watermark_text = branding['watermark']
+            if watermark_text.strip():
+                # Add watermark CSS and HTML
+                watermark_css = f'''
+                <style>
+                    .watermark {{
+                        position: fixed;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%) rotate(45deg);
+                        font-size: 80px;
+                        color: rgba(200, 200, 200, 0.2);
+                        font-weight: bold;
+                        font-family: Arial, sans-serif;
+                        z-index: -1;
+                        pointer-events: none;
+                        user-select: none;
+                    }}
+                    @media print {{
+                        .watermark {{
+                            position: fixed !important;
+                        }}
+                    }}
+                </style>
+                '''
+                
+                watermark_html = f'<div class="watermark">{watermark_text}</div>'
+                
+                # Insert watermark CSS before </head>
+                html = html.replace('</head>', watermark_css + '\n        </head>')
+                
+                # Insert watermark HTML after <body>
+                html = html.replace('<body>', '<body>\n            ' + watermark_html)
         
         return html
 
@@ -1717,3 +2552,4 @@ class ExportService:
             'success': False,
             'error': 'Failed to create any versions'
         }
+

@@ -1,7 +1,7 @@
-{% extends 'base.html' %}
+﻿{% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Delete {{ file.original_filename }} - DidactIA{% endblock %}
+{% block title %}Delete {{ file.original_filename }} - DidactAI{% endblock %}
 
 {% block content %}
 <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -48,11 +48,11 @@
         <div class="p-6">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
-                    {% if file.file_type == 'pdf' %}
+                    {% if file.file_type == "pdf" %}
                         <svg class="h-10 w-10 text-red-500" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M4 18h12V6l-4-4H4v16zm-2 1V3a1 1 0 011-1h8.414a1 1 0 01.707.293L16.414 6.586A1 1 0 0117 7.293V19a1 1 0 01-1 1H3a1 1 0 01-1-1z"></path>
                         </svg>
-                    {% elif file.file_type == 'docx' %}
+                    {% elif file.file_type == "docx" %}
                         <svg class="h-10 w-10 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M4 18h12V6l-4-4H4v16zm-2 1V3a1 1 0 011-1h8.414a1 1 0 01.707.293L16.414 6.586A1 1 0 0117 7.293V19a1 1 0 01-1 1H3a1 1 0 01-1-1z"></path>
                         </svg>
@@ -69,7 +69,7 @@
                 <div class="ml-4 flex-1">
                     <h4 class="text-lg font-medium text-gray-900">{{ file.original_filename }}</h4>
                     <div class="mt-1 text-sm text-gray-500">
-                        <p>{{ file.course.title }} • {{ file.file_size_human }} • {{ file.created_at|date:"M d, Y" }}</p>
+                        <p>{{ file.course.title }} â€¢ {{ file.file_size_human }} â€¢ {{ file.created_at|date:"M d, Y" }}</p>
                         {% if file.description %}
                             <p class="mt-1">{{ file.description }}</p>
                         {% endif %}

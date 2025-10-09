@@ -1,11 +1,11 @@
-# Turkish translations for DidactIA Educational Platform
-# Copyright (C) 2024 DidactIA
+﻿# Turkish translations for DidactAI Educational Platform
+# Copyright (C) 2024 DidactAI
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: DidactIA Educational Platform\n"
+"Project-Id-Version: DidactAI Educational Platform\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-09-24 10:12+0000\n"
 "PO-Revision-Date: 2024-09-24 10:12+0000\n"
@@ -25,19 +25,19 @@ msgid "Courses"
 msgstr "Kurslar"
 
 msgid "Upload Files"
-msgstr "Dosya Yükle"
+msgstr "Dosya YÃ¼kle"
 
 msgid "AI Generator"
-msgstr "AI Üretici"
+msgstr "AI Ãœretici"
 
 msgid "Exam Generator"
-msgstr "Sınav Üreticisi"
+msgstr "SÄ±nav Ãœreticisi"
 
 msgid "Quiz Generator"
-msgstr "Quiz Üreticisi"
+msgstr "Quiz Ãœreticisi"
 
 msgid "Export"
-msgstr "Dışa Aktar"
+msgstr "DÄ±ÅŸa Aktar"
 
 msgid "Analytics"
 msgstr "Analitik"
@@ -49,38 +49,38 @@ msgid "Language"
 msgstr "Dil"
 
 msgid "English"
-msgstr "İngilizce"
+msgstr "Ä°ngilizce"
 
 msgid "Turkish"
-msgstr "Türkçe"
+msgstr "TÃ¼rkÃ§e"
 
 msgid "French"
-msgstr "Fransızca"
+msgstr "FransÄ±zca"
 
 msgid "Spanish"
-msgstr "İspanyolca"
+msgstr "Ä°spanyolca"
 
 msgid "German"
 msgstr "Almanca"
 
 msgid "Italian"
-msgstr "İtalyanca"
+msgstr "Ä°talyanca"
 
 # Form labels
 msgid "Course"
 msgstr "Kurs"
 
 msgid "Select a course"
-msgstr "Bir kurs seçin"
+msgstr "Bir kurs seÃ§in"
 
 msgid "Source Files"
 msgstr "Kaynak Dosyalar"
 
 msgid "Number of Questions"
-msgstr "Soru Sayısı"
+msgstr "Soru SayÄ±sÄ±"
 
 msgid "Duration (minutes)"
-msgstr "Süre (dakika)"
+msgstr "SÃ¼re (dakika)"
 
 msgid "Difficulty Level"
 msgstr "Zorluk Seviyesi"
@@ -95,108 +95,108 @@ msgid "Hard"
 msgstr "Zor"
 
 msgid "Question Types"
-msgstr "Soru Türleri"
+msgstr "Soru TÃ¼rleri"
 
 msgid "Multiple Choice"
-msgstr "Çoktan Seçmeli"
+msgstr "Ã‡oktan SeÃ§meli"
 
 msgid "True/False"
-msgstr "Doğru/Yanlış"
+msgstr "DoÄŸru/YanlÄ±ÅŸ"
 
 msgid "Short Answer"
-msgstr "Kısa Cevap"
+msgstr "KÄ±sa Cevap"
 
 msgid "Essay Questions"
-msgstr "Kompozisyon Soruları"
+msgstr "Kompozisyon SorularÄ±"
 
 msgid "Fill in the Blank"
-msgstr "Boşluk Doldurma"
+msgstr "BoÅŸluk Doldurma"
 
 msgid "Generate Quiz"
-msgstr "Quiz Oluştur"
+msgstr "Quiz OluÅŸtur"
 
 msgid "Generate Exam"
-msgstr "Sınav Oluştur"
+msgstr "SÄ±nav OluÅŸtur"
 
 msgid "Advanced Settings"
-msgstr "Gelişmiş Ayarlar"
+msgstr "GeliÅŸmiÅŸ Ayarlar"
 
 msgid "Topic Focus (Optional)"
-msgstr "Konu Odağı (İsteğe Bağlı)"
+msgstr "Konu OdaÄŸÄ± (Ä°steÄŸe BaÄŸlÄ±)"
 
 msgid "Instructions"
 msgstr "Talimatlar"
 
 msgid "Read each question carefully"
-msgstr "Her soruyu dikkatli bir şekilde okuyun"
+msgstr "Her soruyu dikkatli bir ÅŸekilde okuyun"
 
 msgid "Choose the best answer for multiple choice questions"
-msgstr "Çoktan seçmeli sorular için en iyi cevabı seçin"
+msgstr "Ã‡oktan seÃ§meli sorular iÃ§in en iyi cevabÄ± seÃ§in"
 
 msgid "Select source files"
-msgstr "Kaynak dosyaları seçin"
+msgstr "Kaynak dosyalarÄ± seÃ§in"
 
 msgid "Choose PDF, DOCX, PPTX, or image files to generate quiz from"
-msgstr "Quiz oluşturmak için PDF, DOCX, PPTX veya resim dosyalarını seçin"
+msgstr "Quiz oluÅŸturmak iÃ§in PDF, DOCX, PPTX veya resim dosyalarÄ±nÄ± seÃ§in"
 
 msgid "Choose PDF, DOCX, PPTX, or image files to generate exam from"
-msgstr "Sınav oluşturmak için PDF, DOCX, PPTX veya resim dosyalarını seçin"
+msgstr "SÄ±nav oluÅŸturmak iÃ§in PDF, DOCX, PPTX veya resim dosyalarÄ±nÄ± seÃ§in"
 
 msgid "Browse Course Files"
-msgstr "Kurs Dosyalarına Gözat"
+msgstr "Kurs DosyalarÄ±na GÃ¶zat"
 
 msgid "Cancel"
-msgstr "İptal"
+msgstr "Ä°ptal"
 
 msgid "Save"
 msgstr "Kaydet"
 
 msgid "Upload"
-msgstr "Yükle"
+msgstr "YÃ¼kle"
 
 msgid "Download"
-msgstr "İndir"
+msgstr "Ä°ndir"
 
 msgid "Delete"
 msgstr "Sil"
 
 msgid "Edit"
-msgstr "Düzenle"
+msgstr "DÃ¼zenle"
 
 msgid "View"
-msgstr "Görüntüle"
+msgstr "GÃ¶rÃ¼ntÃ¼le"
 
 # Messages
 msgid "File uploaded successfully"
-msgstr "Dosya başarıyla yüklendi"
+msgstr "Dosya baÅŸarÄ±yla yÃ¼klendi"
 
 msgid "Quiz generated successfully"
-msgstr "Quiz başarıyla oluşturuldu"
+msgstr "Quiz baÅŸarÄ±yla oluÅŸturuldu"
 
 msgid "Exam generated successfully"
-msgstr "Sınav başarıyla oluşturuldu"
+msgstr "SÄ±nav baÅŸarÄ±yla oluÅŸturuldu"
 
 msgid "Error generating content"
-msgstr "İçerik oluşturulurken hata"
+msgstr "Ä°Ã§erik oluÅŸturulurken hata"
 
 msgid "Please select a course first"
-msgstr "Lütfen önce bir kurs seçin"
+msgstr "LÃ¼tfen Ã¶nce bir kurs seÃ§in"
 
 msgid "No processed files found for this course"
-msgstr "Bu kurs için işlenmiş dosya bulunamadı"
+msgstr "Bu kurs iÃ§in iÅŸlenmiÅŸ dosya bulunamadÄ±"
 
 msgid "Please upload some files first"
-msgstr "Lütfen önce bazı dosyalar yükleyin"
+msgstr "LÃ¼tfen Ã¶nce bazÄ± dosyalar yÃ¼kleyin"
 
 # Status messages
 msgid "Processing"
-msgstr "İşleniyor"
+msgstr "Ä°ÅŸleniyor"
 
 msgid "Completed"
-msgstr "Tamamlandı"
+msgstr "TamamlandÄ±"
 
 msgid "Failed"
-msgstr "Başarısız"
+msgstr "BaÅŸarÄ±sÄ±z"
 
 msgid "Pending"
 msgstr "Bekliyor"
@@ -212,7 +212,7 @@ msgid "PowerPoint Presentation"
 msgstr "PowerPoint Sunumu"
 
 msgid "Text File"
-msgstr "Metin Dosyası"
+msgstr "Metin DosyasÄ±"
 
 msgid "Image File"
-msgstr "Resim Dosyası"
+msgstr "Resim DosyasÄ±"

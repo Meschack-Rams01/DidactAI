@@ -1,5 +1,5 @@
-"""
-ASGI config for didactia_project project.
+﻿"""
+ASGI config for DidactAI_project project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,7 @@ import os
 
 from django.core.asgi import get_asgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'didactia_project.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'DidactAI_project.settings')
 
 application = get_asgi_application()
+

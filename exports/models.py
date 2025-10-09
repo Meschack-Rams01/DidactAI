@@ -203,6 +203,13 @@ class ExportJob(models.Model):
         blank=True, 
         null=True
     )
+    university_logo = models.ImageField(
+        _('University Logo'), 
+        upload_to='export_logos/',
+        blank=True, 
+        null=True,
+        help_text=_('Upload university logo for branding in exports')
+    )
     generated_file = models.FileField(
         _('Generated File'), 
         upload_to=export_file_path,
@@ -267,10 +274,33 @@ class ExportJob(models.Model):
         self.save(update_fields=['status', 'error_message'])
     
     def increment_download_count(self):
-        """Increment download count"""
+        """Increment download count and update analytics"""
         self.download_count += 1
         self.last_downloaded = timezone.now()
         self.save(update_fields=['download_count', 'last_downloaded'])
+        
+        # Update analytics automatically
+        self._update_analytics()
+    
+    def _update_analytics(self):
+        """Update export analytics automatically"""
+        try:
+            from .analytics import ExportAnalytics
+            analytics = ExportAnalytics()
+            analytics.track_export_download(
+                export_job=self,
+                user=self.course.instructor,
+                format_type=self.export_format,
+                content_type=self.generation.content_type if self.generation else 'unknown'
+            )
+        except ImportError:
+            # Analytics module not available, skip
+            pass
+        except Exception as e:
+            # Log error but don't break the download
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"Error updating export analytics: {str(e)}")
     
     @property
     def file_size_human(self):

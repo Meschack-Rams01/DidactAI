@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 """
 Create default export templates for the system
 """
@@ -8,7 +8,7 @@ import sys
 import django
 
 # Setup Django environment
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'didactia_project.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'DidactAI_project.settings')
 django.setup()
 
 from exports.models import ExportTemplate
@@ -18,14 +18,14 @@ User = get_user_model()
 
 def create_default_templates():
     """Create default export templates"""
-    print("🎯 Creating Default Export Templates")
+    print("ðŸŽ¯ Creating Default Export Templates")
     print("=" * 50)
     
     # Get or create a system user
     system_user, created = User.objects.get_or_create(
         username='system',
         defaults={
-            'email': 'system@didactia.com',
+            'email': 'system@DidactAI.com',
             'first_name': 'System',
             'last_name': 'User',
             'is_staff': True,
@@ -34,9 +34,9 @@ def create_default_templates():
     )
     
     if created:
-        print(f"✅ Created system user: {system_user.username}")
+        print(f"âœ… Created system user: {system_user.username}")
     else:
-        print(f"📋 Using existing system user: {system_user.username}")
+        print(f"ðŸ“‹ Using existing system user: {system_user.username}")
     
     templates_data = [
         {
@@ -301,14 +301,14 @@ def create_default_templates():
         )
         
         if created:
-            print(f"✅ Created template: {template.name}")
+            print(f"âœ… Created template: {template.name}")
             created_count += 1
         else:
-            print(f"📋 Template already exists: {template.name}")
+            print(f"ðŸ“‹ Template already exists: {template.name}")
     
     print("=" * 50)
-    print(f"🎉 Created {created_count} new templates")
-    print(f"📊 Total templates in system: {ExportTemplate.objects.count()}")
+    print(f"ðŸŽ‰ Created {created_count} new templates")
+    print(f"ðŸ“Š Total templates in system: {ExportTemplate.objects.count()}")
 
 if __name__ == "__main__":
     create_default_templates()

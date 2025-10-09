@@ -1,4 +1,4 @@
-# Gunicorn configuration for DidactIA production deployment
+﻿# Gunicorn configuration for DidactAI production deployment
 # Optimized for educational platform with AI features
 
 # Server socket

@@ -1,7 +1,7 @@
-{% extends 'base.html' %}
+﻿{% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Generation History - DidactIA{% endblock %}
+{% block title %}Generation History - DidactAI{% endblock %}
 
 {% block content %}
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -176,7 +176,7 @@
                     <div class="flex items-center justify-between">
                         <div class="flex items-center space-x-4">
                             <div class="flex-shrink-0">
-                                {% if generation.content_type == 'quiz' %}
+                                {% if generation.content_type == "quiz" %}
                                     <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
                                         <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
@@ -198,9 +198,9 @@
                                         {{ generation.title }}
                                     </a>
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                        {% if generation.status == 'completed' %}bg-green-100 text-green-800
-                                        {% elif generation.status == 'processing' %}bg-yellow-100 text-yellow-800
-                                        {% elif generation.status == 'error' %}bg-red-100 text-red-800
+                                        {% if generation.status == "completed" %}bg-green-100 text-green-800
+                                        {% elif generation.status == "processing" %}bg-yellow-100 text-yellow-800
+                                        {% elif generation.status == "error" %}bg-red-100 text-red-800
                                         {% else %}bg-gray-100 text-gray-800{% endif %}">
                                         {{ generation.get_status_display }}
                                     </span>
@@ -208,12 +208,12 @@
                                 
                                 <div class="flex items-center space-x-4 text-sm text-gray-500">
                                     <span class="capitalize">{{ generation.get_content_type_display }}</span>
-                                    <span>•</span>
+                                    <span>â€¢</span>
                                     <span>{{ generation.course.title }}</span>
-                                    <span>•</span>
+                                    <span>â€¢</span>
                                     <span>{{ generation.created_at|timesince }} ago</span>
                                     {% if generation.questions.exists %}
-                                        <span>•</span>
+                                        <span>â€¢</span>
                                         <span>{{ generation.questions.count }} questions</span>
                                     {% endif %}
                                 </div>
@@ -226,14 +226,18 @@
                         
                         <!-- Action Buttons -->
                         <div class="flex items-center space-x-3">
-                            {% if generation.status == 'completed' %}
+                            {% if generation.status == "completed" %}
+                                <a href="{% url 'exports:export_generation' generation.id %}" 
+                                   class="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded text-white bg-green-600 hover:bg-green-700">
+                                    ðŸŽ“ Enhanced Export
+                                </a>
                                 <a href="{% url 'ai_generator:view_generation' generation.id %}" 
                                    class="text-primary-600 hover:text-primary-500 text-sm font-medium">
                                     View
                                 </a>
                                 <a href="{% url 'ai_generator:create_version' generation.id %}" 
                                    class="text-gray-600 hover:text-gray-500 text-sm font-medium">
-                                    Create Version
+                                    Version
                                 </a>
                                 <div class="relative" x-data="{ showMenu: false }">
                                     <button @click="showMenu = !showMenu" 
@@ -265,7 +269,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            {% elif generation.status == 'processing' %}
+                            {% elif generation.status == "processing" %}
                                 <div class="flex items-center text-yellow-600">
                                     <svg class="animate-spin -ml-1 mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -273,7 +277,7 @@
                                     </svg>
                                     <span class="text-sm">Processing...</span>
                                 </div>
-                            {% elif generation.status == 'error' %}
+                            {% elif generation.status == "error" %}
                                 <div class="flex items-center text-red-600">
                                     <svg class="mr-2 h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>

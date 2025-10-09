@@ -1,7 +1,7 @@
-{% extends 'base.html' %}
+﻿{% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Use Template: {{ template.name }} - DidactIA{% endblock %}
+{% block title %}Use Template: {{ template.name }} - DidactAI{% endblock %}
 
 {% block page_header %}
 <div class="bg-white shadow">
@@ -137,7 +137,7 @@
                         <div class="mt-1">
                             <select id="format" name="format" class="shadow-sm focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-gray-300 rounded-md">
                                 {% for value, label in format_choices %}
-                                <option value="{{ value }}" {% if value == 'html' %}selected{% endif %}>{{ label }}</option>
+                                <option value="{{ value }}" {% if value == "html" %}selected{% endif %}>{{ label }}</option>
                                 {% endfor %}
                             </select>
                         </div>

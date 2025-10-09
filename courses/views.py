@@ -97,6 +97,6 @@ class CourseDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     def get_queryset(self):
         return Course.objects.filter(instructor=self.request.user)
     
-    def delete(self, request, *args, **kwargs):
+    def form_valid(self, form):
         messages.success(self.request, self.success_message)
-        return super().delete(request, *args, **kwargs)
+        return super().form_valid(form)

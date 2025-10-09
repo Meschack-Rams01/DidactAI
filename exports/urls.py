@@ -13,4 +13,7 @@ urlpatterns = [
     # Export from AI generation
     path('generation/<int:generation_id>/', views.export_generation, name='export_generation'),
     
+    # Test clean export
+    path('test-clean/', views.test_clean_export, name='test_clean_export'),
+    
 ]

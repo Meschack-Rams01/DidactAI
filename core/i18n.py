@@ -1,5 +1,5 @@
-"""
-Internationalization (i18n) Configuration and Utilities for DidactIA
+﻿"""
+Internationalization (i18n) Configuration and Utilities for DidactAI
 
 This module provides comprehensive internationalization support including
 language detection, translation management, and localized content handling.
@@ -25,16 +25,16 @@ class LanguageManager:
     # Supported languages with display names
     SUPPORTED_LANGUAGES = {
         'en': {'name': 'English', 'native_name': 'English', 'rtl': False},
-        'fr': {'name': 'French', 'native_name': 'Français', 'rtl': False},
-        'es': {'name': 'Spanish', 'native_name': 'Español', 'rtl': False},
+        'fr': {'name': 'French', 'native_name': 'FranÃ§ais', 'rtl': False},
+        'es': {'name': 'Spanish', 'native_name': 'EspaÃ±ol', 'rtl': False},
         'de': {'name': 'German', 'native_name': 'Deutsch', 'rtl': False},
-        'pt': {'name': 'Portuguese', 'native_name': 'Português', 'rtl': False},
+        'pt': {'name': 'Portuguese', 'native_name': 'PortuguÃªs', 'rtl': False},
         'it': {'name': 'Italian', 'native_name': 'Italiano', 'rtl': False},
-        'ru': {'name': 'Russian', 'native_name': 'Русский', 'rtl': False},
-        'zh': {'name': 'Chinese', 'native_name': '中文', 'rtl': False},
-        'ja': {'name': 'Japanese', 'native_name': '日本語', 'rtl': False},
-        'ar': {'name': 'Arabic', 'native_name': 'العربية', 'rtl': True},
-        'he': {'name': 'Hebrew', 'native_name': 'עברית', 'rtl': True},
+        'ru': {'name': 'Russian', 'native_name': 'Ð ÑƒÑÑÐºÐ¸Ð¹', 'rtl': False},
+        'zh': {'name': 'Chinese', 'native_name': 'ä¸­æ–‡', 'rtl': False},
+        'ja': {'name': 'Japanese', 'native_name': 'æ—¥æœ¬èªž', 'rtl': False},
+        'ar': {'name': 'Arabic', 'native_name': 'Ø§Ù„Ø¹Ø±Ø¨ÙŠØ©', 'rtl': True},
+        'he': {'name': 'Hebrew', 'native_name': '×¢×‘×¨×™×ª', 'rtl': True},
     }
     
     def __init__(self):
@@ -286,8 +286,8 @@ class LocalizationUtils:
         # Currency symbols and positioning
         currency_formats = {
             'USD': {'en': f'${formatted_amount}', 'default': f'{formatted_amount} USD'},
-            'EUR': {'fr': f'{formatted_amount} €', 'de': f'{formatted_amount} €', 'default': f'€{formatted_amount}'},
-            'GBP': {'en': f'£{formatted_amount}', 'default': f'{formatted_amount} GBP'},
+            'EUR': {'fr': f'{formatted_amount} â‚¬', 'de': f'{formatted_amount} â‚¬', 'default': f'â‚¬{formatted_amount}'},
+            'GBP': {'en': f'Â£{formatted_amount}', 'default': f'{formatted_amount} GBP'},
         }
         
         if currency in currency_formats:
@@ -517,11 +517,11 @@ def register_translation_tags():
     def language_flag(language_code):
         """Get flag emoji or icon for language"""
         flags = {
-            'en': '🇺🇸', 'fr': '🇫🇷', 'es': '🇪🇸', 'de': '🇩🇪',
-            'pt': '🇵🇹', 'it': '🇮🇹', 'ru': '🇷🇺', 'zh': '🇨🇳',
-            'ja': '🇯🇵', 'ar': '🇸🇦', 'he': '🇮🇱'
+            'en': 'ðŸ‡ºðŸ‡¸', 'fr': 'ðŸ‡«ðŸ‡·', 'es': 'ðŸ‡ªðŸ‡¸', 'de': 'ðŸ‡©ðŸ‡ª',
+            'pt': 'ðŸ‡µðŸ‡¹', 'it': 'ðŸ‡®ðŸ‡¹', 'ru': 'ðŸ‡·ðŸ‡º', 'zh': 'ðŸ‡¨ðŸ‡³',
+            'ja': 'ðŸ‡¯ðŸ‡µ', 'ar': 'ðŸ‡¸ðŸ‡¦', 'he': 'ðŸ‡®ðŸ‡±'
         }
-        return flags.get(language_code, '🌐')
+        return flags.get(language_code, 'ðŸŒ')
     
     return register
 

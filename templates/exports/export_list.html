@@ -29,9 +29,9 @@
                                     {{ export.title }}
                                 </h3>
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
-                                           {% if export.status == 'completed' %}bg-green-100 text-green-800
-                                           {% elif export.status == 'processing' %}bg-yellow-100 text-yellow-800
-                                           {% elif export.status == 'error' %}bg-red-100 text-red-800
+                                           {% if export.status == "completed" %}bg-green-100 text-green-800
+                                           {% elif export.status == "processing" %}bg-yellow-100 text-yellow-800
+                                           {% elif export.status == "error" %}bg-red-100 text-red-800
                                            {% else %}bg-gray-100 text-gray-800{% endif %}">
                                     {{ export.get_status_display }}
                                 </span>
@@ -53,7 +53,7 @@
                                    class="flex-1 inline-flex justify-center items-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
                                     View
                                 </a>
-                                {% if export.status == 'completed' and export.generated_file %}
+                                {% if export.status == "completed" and export.generated_file %}
                                     <a href="{% url 'exports:download' export.pk %}"
                                        class="flex-1 inline-flex justify-center items-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
                                         Download

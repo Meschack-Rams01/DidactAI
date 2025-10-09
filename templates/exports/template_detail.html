@@ -1,7 +1,7 @@
-{% extends 'base.html' %}
+﻿{% extends 'base.html' %}
 {% load static %}
 
-{% block title %}{{ template.name }} - Export Templates - DidactIA{% endblock %}
+{% block title %}{{ template.name }} - Export Templates - DidactAI{% endblock %}
 
 {% block page_header %}
 <div class="bg-white shadow">
@@ -191,7 +191,7 @@
                                     <p class="text-sm text-gray-500">{{ export.created_at|timesince }} ago</p>
                                 </div>
                                 <div class="flex-shrink-0">
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {% if export.status == 'completed' %}bg-success-100 text-success-800{% elif export.status == 'error' %}bg-danger-100 text-danger-800{% else %}bg-warning-100 text-warning-800{% endif %}">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {% if export.status == "completed" %}bg-success-100 text-success-800{% elif export.status == "error" %}bg-danger-100 text-danger-800{% else %}bg-warning-100 text-warning-800{% endif %}">
                                         {{ export.get_status_display }}
                                     </span>
                                 </div>

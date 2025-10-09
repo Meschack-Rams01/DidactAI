@@ -1,7 +1,7 @@
-{% extends 'base.html' %}
+﻿{% extends 'base.html' %}
 {% load static %}
 
-{% block title %}{{ file.original_filename }} - DidactIA{% endblock %}
+{% block title %}{{ file.original_filename }} - DidactAI{% endblock %}
 
 {% block content %}
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -10,11 +10,11 @@
         <div class="flex items-center justify-between">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
-                    {% if file.file_type == 'pdf' %}
+                    {% if file.file_type == "pdf" %}
                         <svg class="h-8 w-8 text-red-500" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M4 18h12V6l-4-4H4v16zm-2 1V3a1 1 0 011-1h8.414a1 1 0 01.707.293L16.414 6.586A1 1 0 0117 7.293V19a1 1 0 01-1 1H3a1 1 0 01-1-1z"></path>
                         </svg>
-                    {% elif file.file_type == 'docx' %}
+                    {% elif file.file_type == "docx" %}
                         <svg class="h-8 w-8 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M4 18h12V6l-4-4H4v16zm-2 1V3a1 1 0 011-1h8.414a1 1 0 01.707.293L16.414 6.586A1 1 0 0117 7.293V19a1 1 0 01-1 1H3a1 1 0 01-1-1z"></path>
                         </svg>
@@ -33,7 +33,7 @@
                     <div class="mt-1 flex items-center space-x-2">
                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
                                    {% if file.status == 'processed' %}bg-green-100 text-green-800
-                                   {% elif file.status == 'processing' %}bg-yellow-100 text-yellow-800
+                                   {% elif file.status == "processing" %}bg-yellow-100 text-yellow-800
                                    {% elif file.status == 'failed' %}bg-red-100 text-red-800
                                    {% else %}bg-gray-100 text-gray-800{% endif %}">
                             {{ file.status|title }}
@@ -163,7 +163,7 @@
                                 <p class="text-sm font-medium text-green-800">Successfully Processed</p>
                                 <p class="text-sm text-green-600">File is ready for AI generation</p>
                             </div>
-                        {% elif file.status == 'processing' %}
+                        {% elif file.status == "processing" %}
                             <svg class="h-8 w-8 text-yellow-500 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -260,15 +260,15 @@
                     {% for log in logs %}
                         <div class="flex items-start">
                             <div class="flex-shrink-0">
-                                {% if log.level == 'success' %}
+                                {% if log.level == "success" %}
                                     <svg class="h-5 w-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
                                     </svg>
-                                {% elif log.level == 'error' %}
+                                {% elif log.level == "error" %}
                                     <svg class="h-5 w-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
                                     </svg>
-                                {% elif log.level == 'warning' %}
+                                {% elif log.level == "warning" %}
                                     <svg class="h-5 w-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
                                     </svg>

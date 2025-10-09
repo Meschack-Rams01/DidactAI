@@ -1,0 +1,176 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Sign-in to Your DidactAI Account</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #f8fafc;
+        }
+        .container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin: 20px;
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        .header .logo {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        .content {
+            padding: 30px;
+        }
+        .login-info {
+            background: #f1f5f9;
+            border-left: 4px solid #3b82f6;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .login-info h3 {
+            margin: 0 0 15px 0;
+            color: #1e40af;
+        }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 0;
+            font-size: 14px;
+        }
+        .info-label {
+            font-weight: 600;
+            color: #64748b;
+            min-width: 100px;
+        }
+        .info-value {
+            color: #334155;
+        }
+        .security-notice {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .security-notice h4 {
+            margin: 0 0 10px 0;
+            color: #92400e;
+            font-size: 16px;
+        }
+        .btn {
+            display: inline-block;
+            background: #3b82f6;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            margin: 20px 0;
+        }
+        .btn:hover {
+            background: #2563eb;
+        }
+        .footer {
+            background: #f8fafc;
+            padding: 20px 30px;
+            text-align: center;
+            color: #6b7280;
+            font-size: 12px;
+            border-top: 1px solid #e5e7eb;
+        }
+        .footer a {
+            color: #3b82f6;
+            text-decoration: none;
+        }
+        @media (max-width: 600px) {
+            .container {
+                margin: 10px;
+                border-radius: 0;
+            }
+            .info-row {
+                flex-direction: column;
+            }
+            .info-label {
+                min-width: auto;
+                margin-bottom: 2px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">ðŸŽ“</div>
+            <h1>{{ site_name }}</h1>
+            <p>Educational Content Management Platform</p>
+        </div>
+        
+        <div class="content">
+            <h2>Hello {{ user.get_full_name|default:user.username }}!</h2>
+            
+            <p>We wanted to let you know that your DidactAI account was accessed successfully.</p>
+            
+            <div class="login-info">
+                <h3>ðŸ” Sign-in Details</h3>
+                <div class="info-row">
+                    <span class="info-label">Time:</span>
+                    <span class="info-value">{{ login_time|date:"F d, Y \a\t g:i A T" }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">IP Address:</span>
+                    <span class="info-value">{{ ip_address }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Location:</span>
+                    <span class="info-value">Based on IP (approximate)</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Device:</span>
+                    <span class="info-value">{{ user_agent|truncatechars:50 }}</span>
+                </div>
+            </div>
+            
+            <div class="security-notice">
+                <h4>âš ï¸ Security Notice</h4>
+                <p>If this wasn't you, please secure your account immediately by changing your password and reviewing your account activity.</p>
+            </div>
+            
+            <p>For your security, we recommend:</p>
+            <ul>
+                <li>Using a strong, unique password for your DidactAI account</li>
+                <li>Enabling two-factor authentication when available</li>
+                <li>Regularly reviewing your account activity</li>
+                <li>Logging out from shared or public computers</li>
+            </ul>
+            
+            <center>
+                <a href="{{ site_url }}" class="btn">Go to DidactAI Dashboard</a>
+            </center>
+        </div>
+        
+        <div class="footer">
+            <p>This is an automated security notification from DidactAI.</p>
+            <p>If you have any questions, please contact our support team.</p>
+            <p>Â© 2024 DidactAI. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>
