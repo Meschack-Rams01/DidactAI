@@ -17,22 +17,22 @@ def fix_emoji_corruption(content):
     # Specific fixes for known corrupted patterns
     replacements = {
         # PDF/Document emoji corruption
-        'ðŸ"„': '📄',       # Document emoji
-        'ðŸ"‹': '📋',       # Clipboard emoji  
+        '📈„': '📄',       # Document emoji
+        '📈‹': '📋',       # Clipboard emoji  
         '????': '📄',      # Multiple question marks to document emoji
         '????????': '📄',  # Many question marks to document emoji
         '?????????': '📄', # Even more question marks
         '??????????': '📄', # Excessive question marks
         
         # Common emoji corruptions
-        'ðŸš€': '🚀',       # Rocket emoji
-        'ðŸŽ¯': '🎯',       # Target emoji
-        'âœ…': '✅',       # Check mark
+        '🚀': '🚀',       # Rocket emoji
+        '🍎¯': '🎯',       # Target emoji
+        '✅': '✅',       # Check mark
         'â¤ï¸': '❤️',      # Heart
-        'ðŸ"¥': '🔥',       # Fire emoji
+        '📈¥': '🔥',       # Fire emoji
         'ðŸ'¡': '💡',       # Light bulb
         'â›½': '⛽',       # Fuel emoji
-        'ðŸ"': '🔧',        # Wrench
+        '📈': '🔧',        # Wrench
         'ðŸ› ï¸': '🛠️',      # Hammer and wrench
         
         # Arrow corruptions (additional patterns)

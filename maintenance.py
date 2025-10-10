@@ -19,7 +19,7 @@ from analytics.models import ErrorLog
 
 def cleanup_old_files():
     """Clean up old export files and uploads"""
-    print("ðŸ§¹ Cleaning up old files...")
+    print("🐧¹ Cleaning up old files...")
     
     # Delete old export jobs (older than 30 days)
     cutoff_date = datetime.now() - timedelta(days=30)
@@ -74,4 +74,4 @@ if __name__ == "__main__":
     backup_database()
     generate_usage_report()
     
-    print("âœ… Maintenance completed!")
+    print("✅ Maintenance completed!")

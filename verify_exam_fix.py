@@ -37,7 +37,7 @@ def verify_exam_fix():
                     print(f"     - {course.full_course_name}")
         
         # Verify the view logic
-        print(f"\nðŸ§ª Testing View Logic:")
+        print(f"\n🐧ª Testing View Logic:")
         
         # Test the fixed exam_generator view context
         users_with_courses = users.filter(courses__isnull=False).distinct()
@@ -45,7 +45,7 @@ def verify_exam_fix():
         
         for user in users_with_courses:
             user_courses = Course.objects.filter(instructor=user)
-            print(f"   âœ… {user.get_full_name() or user.username} will see {user_courses.count()} courses in dropdown")
+            print(f"   ✅ {user.get_full_name() or user.username} will see {user_courses.count()} courses in dropdown")
             
             # This simulates what the view does
             expected_context = {
@@ -60,21 +60,21 @@ def verify_exam_fix():
         # Check if any user still has no courses
         users_without_courses = users.exclude(courses__isnull=False)
         if users_without_courses.exists():
-            print(f"\nâš  Users without courses:")
+            print(f"\n⚠ Users without courses:")
             for user in users_without_courses:
                 print(f"   - {user.get_full_name() or user.username}")
             print(f"   These users will see an empty dropdown.")
         else:
-            print(f"\nâœ… All users have courses!")
+            print(f"\n✅ All users have courses!")
         
         # Final status
         print(f"\nðŸ“‹ Fix Status Summary:")
-        print(f"   âœ… 1. Fixed missing 'courses' in exam_generator view context")
-        print(f"   âœ… 2. Created courses for users without any")
-        print(f"   âœ… 3. Template correctly uses courses from context")
-        print(f"   âœ… 4. {users_with_courses.count()}/{users.count()} users will see courses in dropdown")
+        print(f"   ✅ 1. Fixed missing 'courses' in exam_generator view context")
+        print(f"   ✅ 2. Created courses for users without any")
+        print(f"   ✅ 3. Template correctly uses courses from context")
+        print(f"   ✅ 4. {users_with_courses.count()}/{users.count()} users will see courses in dropdown")
         
-        print(f"\nðŸŽ‰ The exam generator should now display courses correctly!")
+        print(f"\n🎉 The exam generator should now display courses correctly!")
         print(f"   Please refresh: http://127.0.0.1:8000/ai-generator/exam/")
         print(f"   You should see courses in the dropdown if you're logged in as a user with courses.")
         

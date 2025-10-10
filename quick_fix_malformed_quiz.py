@@ -63,10 +63,10 @@ def fix_malformed_quiz():
                 generation.generated_content = content
                 generation.save()
                 
-                print("   âœ… Fixed malformed question!")
+                print("   ✅ Fixed malformed question!")
                 print(f"   New question: {questions[0]['question']}")
                 
-        print(f"\nâœ… Quiz repair completed successfully!")
+        print(f"\n✅ Quiz repair completed successfully!")
         return generation.id
         
     except AIGeneration.DoesNotExist:
@@ -78,7 +78,7 @@ def fix_malformed_quiz():
 
 def test_export_fixed_quiz(generation_id):
     """Test export functionality with the fixed quiz"""
-    print(f"\nðŸ§ª TESTING EXPORT WITH FIXED QUIZ...")
+    print(f"\n🐧ª TESTING EXPORT WITH FIXED QUIZ...")
     print("=" * 40)
     
     try:
@@ -124,14 +124,14 @@ def test_export_fixed_quiz(generation_id):
         with open('cloud_hpc_fixed_instructor.html', 'w', encoding='utf-8') as f:
             f.write(instructor_html)
         
-        print("   âœ… Export successful!")
+        print("   ✅ Export successful!")
         print("   ðŸ“ Files created:")
         print("      &bull; cloud_hpc_fixed_student.html")
         print("      &bull; cloud_hpc_fixed_instructor.html")
         
         # Validate the export
         if 'What is the primary characteristic of HPC in the cloud?' in student_html:
-            print("   âœ… Fixed question appears in export")
+            print("   ✅ Fixed question appears in export")
         else:
             print("   âŒ Fixed question not found in export")
             
@@ -143,7 +143,7 @@ def test_export_fixed_quiz(generation_id):
 
 def main():
     """Main execution function"""
-    print("ðŸš€ QUICK FIX FOR MALFORMED QUIZ ISSUE")
+    print("🚀 QUICK FIX FOR MALFORMED QUIZ ISSUE")
     print("=" * 50)
     
     # Step 1: Fix the malformed quiz
@@ -154,17 +154,17 @@ def main():
         export_success = test_export_fixed_quiz(fixed_id)
         
         if export_success:
-            print(f"\nðŸŽ‰ SUCCESS! Quiz {fixed_id} has been fixed and exported successfully!")
+            print(f"\n🎉 SUCCESS! Quiz {fixed_id} has been fixed and exported successfully!")
             print("\nðŸ“‹ Summary:")
-            print("&bull; âœ… Malformed question replaced with proper content")
-            print("&bull; âœ… Export functionality tested and working")
-            print("&bull; âœ… Both student and instructor versions generated")
+            print("&bull; ✅ Malformed question replaced with proper content")
+            print("&bull; ✅ Export functionality tested and working")
+            print("&bull; ✅ Both student and instructor versions generated")
             print("\nðŸ’¡ Next Steps:")
             print("&bull; Open the generated HTML files to verify the fix")
             print("&bull; Use the web interface to view and export the fixed quiz")
             print(f"&bull; Visit: http://127.0.0.1:8000/ai-generator/view/{fixed_id}/")
         else:
-            print(f"\nâš Quiz {fixed_id} was fixed but export test failed")
+            print(f"\n⚠Quiz {fixed_id} was fixed but export test failed")
     else:
         print("\nâŒ Unable to fix the malformed quiz")
 

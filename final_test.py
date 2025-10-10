@@ -17,15 +17,15 @@ from courses.models import Course
 User = get_user_model()
 
 def main():
-    print("ðŸŽ¯ Final AI Generator Feature Test")
+    print("🍎¯ Final AI Generator Feature Test")
     print("=" * 50)
     
     # Check models
     print("ðŸ“Š Database Status:")
-    print(f"   âœ… AI Generations: {AIGeneration.objects.count()}")
-    print(f"   âœ… Generation Templates: {GenerationTemplate.objects.count()}")
-    print(f"   âœ… Users: {User.objects.count()}")
-    print(f"   âœ… Courses: {Course.objects.count()}")
+    print(f"   ✅ AI Generations: {AIGeneration.objects.count()}")
+    print(f"   ✅ Generation Templates: {GenerationTemplate.objects.count()}")
+    print(f"   ✅ Users: {User.objects.count()}")
+    print(f"   ✅ Courses: {Course.objects.count()}")
     
     # Show recent generations
     print("\nðŸ“‹ Recent AI Generations:")
@@ -49,7 +49,7 @@ def main():
             print(f"   Has options: {'options' in first_q}")
             print(f"   Has answer: {'correct_answer' in first_q}")
     
-    print("\nðŸš€ Ready for Manual Testing!")
+    print("\n🚀 Ready for Manual Testing!")
     print("\nðŸ“ Test These URLs:")
     print("   Dashboard: http://127.0.0.1:8000/")
     print("   Quiz Generator: http://127.0.0.1:8000/ai-generator/quiz/")
@@ -60,13 +60,13 @@ def main():
     print("   Username: testuser")
     print("   Password: testpass123")
     
-    print("\nðŸŽ‰ AI Generator is READY TO USE!")
-    print("   âœ… Models working")
-    print("   âœ… Views functional")
-    print("   âœ… Templates responsive")
-    print("   âœ… Navigation integrated")
-    print("   âœ… Quick Actions working")
-    print("   âœ… Data persistence confirmed")
+    print("\n🎉 AI Generator is READY TO USE!")
+    print("   ✅ Models working")
+    print("   ✅ Views functional")
+    print("   ✅ Templates responsive")
+    print("   ✅ Navigation integrated")
+    print("   ✅ Quick Actions working")
+    print("   ✅ Data persistence confirmed")
     
     print(f"\nOverall Status: ðŸŸ¢ FULLY OPERATIONAL")
 

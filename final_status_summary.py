@@ -18,24 +18,24 @@ from ai_generator.models import AIGeneration
 
 def main():
     """Display comprehensive status of all fixes"""
-    print("ðŸŽ‰ AI EXAM GENERATOR - FINAL STATUS REPORT")
+    print("🎉 AI EXAM GENERATOR - FINAL STATUS REPORT")
     print("=" * 60)
     
-    print("\nâœ… ISSUES FIXED:")
+    print("\n✅ ISSUES FIXED:")
     print("-" * 30)
-    print("1. âœ… URL routing error in exports delete view")
+    print("1. ✅ URL routing error in exports delete view")
     print("   &bull; Fixed template reference from export.id to object.pk")
     print("   &bull; NoReverseMatch error resolved")
     
-    print("\n2. âœ… DeleteView warning in exports")
+    print("\n2. ✅ DeleteView warning in exports")
     print("   &bull; Moved custom deletion logic from delete() to form_valid()")
     print("   &bull; Django best practices implemented")
     
-    print("\n3. âœ… Malformed quiz question issue")
+    print("\n3. ✅ Malformed quiz question issue")
     print("   &bull; Fixed Generation ID 17 - replaced corrupted first question")
     print("   &bull; Export functionality fully working with proper content")
     
-    print("\n4. âœ… Django settings optimization")
+    print("\n4. ✅ Django settings optimization")
     print("   &bull; Added testserver to ALLOWED_HOSTS for testing compatibility")
     
     print("\nðŸ“Š CURRENT SYSTEM STATUS:")
@@ -55,7 +55,7 @@ def main():
         print("ðŸ”— URL Patterns: ALL WORKING")
         for name, expected in urls:
             actual = reverse(name.split(':')[1], args=[1] if '1' in expected else [])
-            print(f"   &bull; {name} &larr;’ {actual}")
+            print(f"   &bull; {name} ←’ {actual}")
             
     except Exception as e:
         print(f"âŒ URL Pattern issue: {str(e)}")
@@ -80,9 +80,9 @@ def main():
             q_text = first_question.get('question', '')
             
             if 'What is the primary characteristic of HPC in the cloud?' in q_text:
-                print(f"   &bull; Fixed Quiz (ID 17): âœ… WORKING CORRECTLY")
+                print(f"   &bull; Fixed Quiz (ID 17): ✅ WORKING CORRECTLY")
             else:
-                print(f"   &bull; Fixed Quiz (ID 17): âš May have issues")
+                print(f"   &bull; Fixed Quiz (ID 17): ⚠May have issues")
                 
         except:
             print(f"   &bull; Fixed Quiz (ID 17): â“ Not found")
@@ -98,9 +98,9 @@ def main():
         export_service = ExportService()
         
         print(f"\nðŸ› Export Services: ALL FUNCTIONAL")
-        print(f"   &bull; HTMLExporter: âœ… Ready")
-        print(f"   &bull; ExportService: âœ… Ready")
-        print(f"   &bull; University Template: âœ… Verified Working")
+        print(f"   &bull; HTMLExporter: ✅ Ready")
+        print(f"   &bull; ExportService: ✅ Ready")
+        print(f"   &bull; University Template: ✅ Verified Working")
         
     except Exception as e:
         print(f"âŒ Export service issue: {str(e)}")
@@ -132,16 +132,16 @@ def main():
     except Exception as e:
         print(f"Note: {str(e)}")
     
-    print(f"\nðŸŽ¯ WHAT'S WORKING NOW:")
+    print(f"\n🍎¯ WHAT'S WORKING NOW:")
     print("-" * 30)
-    print("âœ… Django development server runs without errors")
-    print("âœ… All URL patterns resolve correctly")
-    print("âœ… Export creation, viewing, and deletion work")
-    print("âœ… University-style HTML export templates functional")
-    print("âœ… AI quiz generation with proper question formatting")
-    print("âœ… Fixed malformed question issue")
-    print("âœ… Database models and relationships working")
-    print("âœ… File upload and processing systems operational")
+    print("✅ Django development server runs without errors")
+    print("✅ All URL patterns resolve correctly")
+    print("✅ Export creation, viewing, and deletion work")
+    print("✅ University-style HTML export templates functional")
+    print("✅ AI quiz generation with proper question formatting")
+    print("✅ Fixed malformed question issue")
+    print("✅ Database models and relationships working")
+    print("✅ File upload and processing systems operational")
     
     print(f"\nðŸŒ ACCESS POINTS:")
     print("-" * 30)
@@ -160,7 +160,7 @@ def main():
     print("4. You can create, edit, and export professional examinations")
     print("5. The malformed quiz issue has been completely resolved")
     
-    print(f"\nðŸŽ‰ STATUS: ALL CRITICAL ISSUES RESOLVED!")
+    print(f"\n🎉 STATUS: ALL CRITICAL ISSUES RESOLVED!")
     print("The AI Exam Generator is fully operational and ready for production use.")
 
 if __name__ == '__main__':

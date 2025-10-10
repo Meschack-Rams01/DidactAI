@@ -76,22 +76,22 @@ def fix_courses_final():
                 try:
                     course = Course.objects.create(**course_data)
                     created_courses.append(course)
-                    print(f"âœ… Created: {course.title} ({course.course_code})")
+                    print(f"✅ Created: {course.title} ({course.course_code})")
                 except Exception as e:
                     print(f"âŒ Error creating {course_data['title']}: {e}")
             
-            print(f"\nðŸŽ‰ Successfully created {len(created_courses)} courses!")
+            print(f"\n🎉 Successfully created {len(created_courses)} courses!")
             print(f"   User {user_to_fix.get_full_name() or user_to_fix.username} now has {Course.objects.filter(instructor=user_to_fix).count()} courses")
             
         else:
-            print("âœ… All users already have courses!")
+            print("✅ All users already have courses!")
         
         # Test the view logic
-        print(f"\nðŸ§ª Testing exam generator view logic...")
+        print(f"\n🐧ª Testing exam generator view logic...")
         for user in users:
             user_courses = Course.objects.filter(instructor=user)
             if user_courses.count() > 0:
-                print(f"âœ… {user.get_full_name() or user.username}: {user_courses.count()} courses available")
+                print(f"✅ {user.get_full_name() or user.username}: {user_courses.count()} courses available")
                 for course in user_courses:
                     print(f"    - {course.full_course_name}")
         
@@ -102,7 +102,7 @@ def fix_courses_final():
         print(f"   Total courses: {all_courses.count()}")
         print(f"   Users with courses: {users.filter(courses__isnull=False).distinct().count()}")
         
-        print(f"\nâœ… Fix applied! The courses should now appear in the AI Exam Generator dropdown.")
+        print(f"\n✅ Fix applied! The courses should now appear in the AI Exam Generator dropdown.")
         print(f"   Please refresh the page: http://127.0.0.1:8000/ai-generator/exam/")
         
     except Exception as e:

@@ -47,7 +47,7 @@ def test_database_connectivity():
         for model, name in models_to_test:
             try:
                 count = model.objects.count()
-                print(f"âœ… {name}: {count} records")
+                print(f"✅ {name}: {count} records")
                 results[name] = {'status': 'success', 'count': count}
             except Exception as e:
                 print(f"âŒ {name}: Error - {str(e)}")
@@ -61,7 +61,7 @@ def test_database_connectivity():
 
 def test_ai_generation():
     """Test AI generation functionality"""
-    print("\nðŸ¤– Testing AI Generation System")
+    print("\n🤖 Testing AI Generation System")
     print("=" * 50)
     
     try:
@@ -89,14 +89,14 @@ def test_ai_generation():
         
         if result.get('success', True):  # Assume success if no explicit error
             questions = result.get('questions', [])
-            print(f"âœ… English quiz generated: {len(questions)} questions")
+            print(f"✅ English quiz generated: {len(questions)} questions")
             
             # Test Turkish generation
             turkish_content = """
-            Matematik sayÄ±lar, ÅŸekiller ve desenler Ã¼zerine bir bilim dalÄ±dÄ±r.
-            Temel aritmetik iÅŸlemler toplama, karma, Ã§arpma ve bÃ¶lmeyi iÃ§erir.
-            Geometri ÅŸekiller, bÃ¼yÃ¼klÃ¼kler ve uzay Ã¶zellikleri ile ilgilenir.
-            Cebir denklemlerde bilinmeyen nicelikleri temsil etmek iÃ§in harfler kullanÄ±r.
+            Matematik sayılar, ÅŸekiller ve desenler üzerine bir bilim dalıdır.
+            Temel aritmetik iÅŸlemler toplama, karma, çarpma ve bölmeyi içerir.
+            Geometri ÅŸekiller, büyüklükler ve uzay özellikleri ile ilgilenir.
+            Cebir denklemlerde bilinmeyen nicelikleri temsil etmek için harfler kullanır.
             """
             
             print("ðŸ“ Testing Turkish quiz generation...")
@@ -109,7 +109,7 @@ def test_ai_generation():
             
             if turkish_result.get('success', True):
                 turkish_questions = turkish_result.get('questions', [])
-                print(f"âœ… Turkish quiz generated: {len(turkish_questions)} questions")
+                print(f"✅ Turkish quiz generated: {len(turkish_questions)} questions")
                 return {'status': 'success', 'english_questions': len(questions), 'turkish_questions': len(turkish_questions)}
             else:
                 print(f"âŒ Turkish generation failed: {turkish_result.get('error', 'Unknown error')}")
@@ -170,7 +170,7 @@ def test_export_system():
             pdf_exporter = PDFExporter()
             pdf_buffer = pdf_exporter.export_quiz(sample_quiz, branding)
             pdf_size = len(pdf_buffer.getvalue())
-            print(f"âœ… PDF Export: {pdf_size:,} bytes generated")
+            print(f"✅ PDF Export: {pdf_size:,} bytes generated")
             results['pdf'] = {'status': 'success', 'size': pdf_size}
         except Exception as e:
             print(f"âŒ PDF Export failed: {str(e)}")
@@ -181,7 +181,7 @@ def test_export_system():
             docx_exporter = DOCXExporter()
             docx_buffer = docx_exporter.export_quiz(sample_quiz, branding)
             docx_size = len(docx_buffer.getvalue())
-            print(f"âœ… DOCX Export: {docx_size:,} bytes generated")
+            print(f"✅ DOCX Export: {docx_size:,} bytes generated")
             results['docx'] = {'status': 'success', 'size': docx_size}
         except Exception as e:
             print(f"âŒ DOCX Export failed: {str(e)}")
@@ -192,7 +192,7 @@ def test_export_system():
             html_exporter = HTMLExporter()
             html_content = html_exporter.export_quiz(sample_quiz, branding)
             html_size = len(html_content)
-            print(f"âœ… HTML Export: {html_size:,} characters generated")
+            print(f"✅ HTML Export: {html_size:,} characters generated")
             results['html'] = {'status': 'success', 'size': html_size}
         except Exception as e:
             print(f"âŒ HTML Export failed: {str(e)}")
@@ -221,12 +221,12 @@ def test_file_processing():
         try:
             from langdetect import detect
             detected_lang = detect(sample_text)
-            print(f"âœ… Language detection: {detected_lang}")
+            print(f"✅ Language detection: {detected_lang}")
         except Exception as e:
             print(f"âŒ Language detection failed: {e}")
         
         # Test text extraction simulation
-        print("âœ… Text processing: Functional")
+        print("✅ Text processing: Functional")
         
         return {'status': 'success', 'language_detection': True, 'text_processing': True}
         
@@ -250,14 +250,14 @@ def test_security_features():
     }
     
     for check, passed in security_checks.items():
-        status = "âœ…" if passed else "âš"
+        status = "✅" if passed else "âš"
         print(f"{status} {check}: {'Passed' if passed else 'Needs attention'}")
     
     return security_checks
 
 def test_template_rendering():
     """Test template rendering"""
-    print("\nðŸŽ¨ Testing Template System")
+    print("\n🍎¨ Testing Template System")
     print("=" * 50)
     
     try:
@@ -275,7 +275,7 @@ def test_template_rendering():
         for template_name in templates_to_test:
             try:
                 template = get_template(template_name)
-                print(f"âœ… {template_name}: Found and loadable")
+                print(f"✅ {template_name}: Found and loadable")
                 results[template_name] = 'success'
             except Exception as e:
                 print(f"âŒ {template_name}: Error - {str(e)}")
@@ -289,7 +289,7 @@ def test_template_rendering():
 
 def run_comprehensive_tests():
     """Run all tests and generate report"""
-    print("ðŸš€ DidactAI Comprehensive Test Suite")
+    print("🚀 DidactAI Comprehensive Test Suite")
     print("=" * 70)
     print(f"Started at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print()
@@ -315,14 +315,14 @@ def run_comprehensive_tests():
     for test_category, results in test_results.items():
         if isinstance(results, dict):
             if results.get('status') == 'success':
-                print(f"âœ… {test_category.title()}: PASSED")
+                print(f"✅ {test_category.title()}: PASSED")
                 passed_tests += 1
             elif results.get('status') == 'partial':
-                print(f"âš {test_category.title()}: PARTIAL")
+                print(f"⚠{test_category.title()}: PARTIAL")
             else:
                 print(f"âŒ {test_category.title()}: FAILED")
         else:
-            print(f"âœ… {test_category.title()}: COMPLETED")
+            print(f"✅ {test_category.title()}: COMPLETED")
             passed_tests += 1
         total_tests += 1
     
@@ -331,11 +331,11 @@ def run_comprehensive_tests():
     print(f"\nðŸ“Š Overall Success Rate: {success_rate:.1f}% ({passed_tests}/{total_tests} tests passed)")
     
     if success_rate >= 80:
-        print("ðŸŽ‰ EXCELLENT! Your DidactAI project is in great shape!")
+        print("🎉 EXCELLENT! Your DidactAI project is in great shape!")
     elif success_rate >= 60:
         print("ðŸ‘ GOOD! Most features are working, minor issues to address")
     else:
-        print("âš NEEDS ATTENTION! Several issues need to be fixed")
+        print("⚠NEEDS ATTENTION! Several issues need to be fixed")
     
     # Detailed recommendations
     print("\nðŸ“ RECOMMENDATIONS:")
@@ -358,7 +358,7 @@ def run_comprehensive_tests():
                 if not passed:
                     print(f"ðŸ”’ Address security issue: {check}")
     
-    print("\nðŸŽ¯ Next Steps:")
+    print("\n🍎¯ Next Steps:")
     print("1. Address any failed tests shown above")
     print("2. Test the web interface manually")
     print("3. Deploy to staging environment for final testing")

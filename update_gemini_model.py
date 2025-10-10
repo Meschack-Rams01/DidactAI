@@ -25,7 +25,7 @@ def main():
         print("   - Creating core migration...")
         execute_from_command_line(['manage.py', 'makemigrations', 'core', '--name=update_gemini_model'])
         
-        print("\nâœ… Migrations created successfully!")
+        print("\n✅ Migrations created successfully!")
         print("\nNext steps:")
         print("1. Run: python manage.py migrate")
         print("2. Update existing records if needed")
@@ -35,12 +35,12 @@ def main():
         if response.lower() in ['y', 'yes']:
             print("\nðŸ”„ Running migrations...")
             execute_from_command_line(['manage.py', 'migrate'])
-            print("âœ… Migrations applied successfully!")
+            print("✅ Migrations applied successfully!")
             
             # Update existing records
             print("\nðŸ”„ Updating existing records...")
             update_existing_records()
-            print("âœ… Existing records updated!")
+            print("✅ Existing records updated!")
         
     except Exception as e:
         print(f"âŒ Error: {e}")

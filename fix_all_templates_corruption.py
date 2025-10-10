@@ -40,14 +40,14 @@ def fix_all_corruptions(content):
         'â†'': '→',          # Right arrow corruption
         
         # Bullet point corruptions  
-        'â€¢': '•',          # Bullet point corruption
+        '"¢': '•',          # Bullet point corruption
         '&bull;': '•',       # HTML entity to actual bullet
         
         # Emoji corruptions - document/file icons
-        'ðŸ"„': '📄',        # Document emoji
-        'ðŸ"‹': '📋',        # Clipboard emoji
-        'Ã°Å¸â€œâ€ž': '📄',   # Complex document corruption
-        'Ã°Å¸â€œâ€‹': '📋',   # Complex clipboard corruption
+        '📈„': '📄',        # Document emoji
+        '📈‹': '📋',        # Clipboard emoji
+        'Ã°Å¸""ž': '📄',   # Complex document corruption
+        'Ã°Å¸""‹': '📋',   # Complex clipboard corruption
         
         # Enhanced Export button corruptions
         'öŸZ': '',           # Remove "öŸZ" corruption
@@ -56,26 +56,26 @@ def fix_all_corruptions(content):
         'öŸ" Enhanced': 'Enhanced',  # Clean Enhanced text
         
         # Quote corruptions
-        'â€œ': '"',          # Left double quote
-        'â€\x9d': '"',       # Right double quote
-        'â€™': "'",          # Right single quote
-        'â€˜': "'",          # Left single quote
+        '"': '"',          # Left double quote
+        '"\x9d': '"',       # Right double quote
+        ''': "'",          # Right single quote
+        '"˜': "'",          # Left single quote
         
         # Dash corruptions
-        'â€"': '—',          # Em dash
-        'â€"': '–',          # En dash
+        '""': '—',          # Em dash
+        '""': '–',          # En dash
         
         # Other common corruptions
-        'â€¦': '…',          # Ellipsis
-        'Â': '',             # Non-breaking space corruption
-        'Ã¶': 'ö',          # o with umlaut
+        '"¦': '…',          # Ellipsis
+        '': '',             # Non-breaking space corruption
+        'ö': 'ö',          # o with umlaut
         'Ã¢': 'â',          # a with circumflex
-        'Ã©': 'é',          # e with acute
+        'é': 'é',          # e with acute
         'Ã ': 'à',          # a with grave
-        'Ã¼': 'ü',          # u with umlaut
+        'ü': 'ü',          # u with umlaut
         
         # Remove corrupted sequences before common words
-        'ÃÂ': '',            # Double encoding corruption
+        'Ã': '',            # Double encoding corruption
         'Ã¢â‚¬': '',         # Complex corruption pattern
         'â‚¬': '',           # Euro symbol corruption
     }

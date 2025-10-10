@@ -251,7 +251,7 @@ def test_quiz_and_exam_functionality():
         """Test Turkish character support"""
         try:
             # Test Turkish content
-            turkish_text = "Bilgisayar bilimi, algoritmalarÄ± ve veri yapÄ±larÄ±nÄ± iÃ§erir."
+            turkish_text = "Bilgisayar bilimi, algoritmaları ve veri yapılarını içerir."
             
             # Test if we can handle Turkish characters in database
             test_user = CustomUser.objects.filter(username='testuser').first()
@@ -259,12 +259,12 @@ def test_quiz_and_exam_functionality():
                 test_course = Course.objects.filter(instructor=test_user).first()
                 if test_course:
                     # Update course title with Turkish characters
-                    test_course.title = "TÃ¼rkÃ§e Test Kursu"
+                    test_course.title = "Türkçe Test Kursu"
                     test_course.save()
                     
                     # Retrieve and verify
                     updated_course = Course.objects.get(id=test_course.id)
-                    turkish_saved = updated_course.title == "TÃ¼rkÃ§e Test Kursu"
+                    turkish_saved = updated_course.title == "Türkçe Test Kursu"
                     
                     print(f"\n    Turkish Support:")
                     print(f"    - Turkish text: {turkish_text[:30]}...")

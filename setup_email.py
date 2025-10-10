@@ -21,8 +21,8 @@ def setup_email_configuration():
     
     print("ðŸ“ Gmail Setup Instructions:")
     print("1. Go to your Google Account settings (myaccount.google.com)")
-    print("2. Security &larr;’ 2-Step Verification (must be enabled)")
-    print("3. Security &larr;’ App passwords")
+    print("2. Security ←’ 2-Step Verification (must be enabled)")
+    print("3. Security ←’ App passwords")
     print("4. Generate an app password for 'DidactAI'")
     print("5. Copy the 16-character password")
     print()
@@ -32,7 +32,7 @@ def setup_email_configuration():
     print(f"Current EMAIL_BACKEND: {current_backend}")
     
     if 'console' in current_backend:
-        print("âš  Currently using console backend (emails will only show in terminal)")
+        print("⚠ Currently using console backend (emails will only show in terminal)")
         print()
         
         choice = input("Would you like to set up Gmail SMTP? (y/n): ").lower().strip()
@@ -53,7 +53,7 @@ def setup_email_configuration():
             password = input("Enter your Gmail app password: ").strip()
             
             if email and password:
-                print(f"\nâœ… Configuration for {email}")
+                print(f"\n✅ Configuration for {email}")
                 print("Copy these lines to your .env file:")
                 print(f"EMAIL_HOST_USER={email}")
                 print(f"EMAIL_HOST_PASSWORD={password}")
@@ -67,7 +67,7 @@ def setup_email_configuration():
         else:
             print("ðŸ“§ For development, you can use console backend to see emails in terminal.")
     else:
-        print("âœ… SMTP backend configured")
+        print("✅ SMTP backend configured")
         test_choice = input("Test current email configuration? (y/n): ").lower().strip()
         if test_choice == 'y':
             email_user = config('EMAIL_HOST_USER', default='')
@@ -83,7 +83,7 @@ def test_email_configuration(email_user, email_pass):
         import smtplib
         from email.mime.text import MIMEText
         
-        print(f"\nðŸ§ª Testing SMTP connection to {email_user}...")
+        print(f"\n🐧ª Testing SMTP connection to {email_user}...")
         
         # Test SMTP connection
         server = smtplib.SMTP('smtp.gmail.com', 587)
@@ -99,7 +99,7 @@ def test_email_configuration(email_user, email_pass):
             msg['To'] = test_email
             
             server.send_message(msg)
-            print(f"âœ… Test email sent successfully to {test_email}")
+            print(f"✅ Test email sent successfully to {test_email}")
         
         server.quit()
         
@@ -139,7 +139,7 @@ if __name__ == "__main__":
         if alt_choice == 'y':
             show_alternative_options()
             
-        print("\nðŸŽ‰ Email setup guide completed!")
+        print("\n🎉 Email setup guide completed!")
         print("ðŸ’¡ Remember to restart your Django server after updating .env")
         
     except KeyboardInterrupt:

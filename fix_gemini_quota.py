@@ -31,7 +31,7 @@ def check_api_status():
         result = gemini.generate_content(test_prompt)
         
         if result['success']:
-            print("âœ… API is working correctly!")
+            print("✅ API is working correctly!")
             print(f"ðŸ“Š Processing time: {result['processing_time']:.2f}s")
             print(f"ðŸ”¢ Estimated tokens used: {result['tokens_used']}")
             print(f"ðŸ“ Response: {result['content'][:100]}...")
@@ -39,7 +39,7 @@ def check_api_status():
         else:
             print(f"âŒ API Error: {result['error']}")
             if '429' in str(result['error']):
-                print("\nâš  QUOTA EXCEEDED - See solutions below")
+                print("\n⚠ QUOTA EXCEEDED - See solutions below")
                 show_quota_solutions()
             return False
             
@@ -58,7 +58,7 @@ def show_quota_solutions():
     print("2. **New API Key**: Create a new Google Cloud project with fresh quota")
     print("3. **Upgrade Billing**: Enable Cloud Billing for higher limits")
     
-    print("\nðŸš€ **UPGRADE OPTIONS**:")
+    print("\n🚀 **UPGRADE OPTIONS**:")
     print("&bull; **Tier 1** (Billing enabled): 1,000-4,000 RPM, 1M-4M TPM")
     print("&bull; **Tier 2** ($250+ spent): 2,000-20,000 RPM, 3M-10M TPM") 
     print("&bull; **Tier 3** ($1000+ spent): 10,000-30,000 RPM, 8M-30M TPM")
@@ -90,11 +90,11 @@ def show_recent_usage():
     if recent_gens:
         print("\nðŸ•’ Recent generations:")
         for gen in recent_gens[:5]:
-            status_icon = "âœ…" if gen.status == 'completed' else "âŒ"
+            status_icon = "✅" if gen.status == 'completed' else "âŒ"
             print(f"   {status_icon} {gen.created_at.strftime('%H:%M:%S')} - {gen.title[:30]}...")
     
     if total_requests >= 45:
-        print("\nâš  WARNING: Approaching daily limit (50 requests)")
+        print("\n⚠ WARNING: Approaching daily limit (50 requests)")
     elif total_requests >= 50:
         print("\nðŸš« QUOTA EXCEEDED: You've used your daily limit")
 
@@ -162,7 +162,7 @@ class EnhancedGeminiService(GeminiService):
         }
 """
     
-    print("âœ… Enhanced error handling pattern available")
+    print("✅ Enhanced error handling pattern available")
     print("ðŸ“ This includes:")
     print("   &bull; Automatic retry logic")
     print("   &bull; Quota-aware delays") 
@@ -170,7 +170,7 @@ class EnhancedGeminiService(GeminiService):
     print("   &bull; Graceful fallback")
 
 def main():
-    print("ðŸŽ“ Gemini API Quota Fix Tool")
+    print("🍎“ Gemini API Quota Fix Tool")
     print("=" * 50)
     
     # Check current API status
@@ -190,8 +190,8 @@ def main():
         print("3. Wait for quota reset (midnight Pacific time)")
         print("4. Use enhanced retry logic in the application")
     else:
-        print("âœ… **ALL SYSTEMS OPERATIONAL**")
-        print("ðŸŽ¯ API is working correctly - you can continue using the system!")
+        print("✅ **ALL SYSTEMS OPERATIONAL**")
+        print("🍎¯ API is working correctly - you can continue using the system!")
 
 if __name__ == "__main__":
     main()

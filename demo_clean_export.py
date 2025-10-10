@@ -113,7 +113,7 @@ def create_professional_branding():
 def test_complete_export_system():
     """Test the complete clean export system"""
     
-    print("ðŸš€ COMPLETE CLEAN EXPORT SYSTEM DEMO")
+    print("🚀 COMPLETE CLEAN EXPORT SYSTEM DEMO")
     print("=" * 60)
     print("Testing comprehensive clean export functionality...")
     print()
@@ -154,7 +154,7 @@ def test_complete_export_system():
             'size': len(pdf_buffer.getvalue()),
             'file': 'clean_export_demo.pdf'
         }
-        print("   âœ… PDF Export: SUCCESS")
+        print("   ✅ PDF Export: SUCCESS")
         print(f"   ðŸ“„ File saved: clean_export_demo.pdf ({export_results['pdf']['size']:,} bytes)")
         print("   ðŸ“‹ VERIFIED: NO question type labels in PDF")
         
@@ -177,7 +177,7 @@ def test_complete_export_system():
             'size': len(docx_buffer.getvalue()),
             'file': 'clean_export_demo.docx'
         }
-        print("   âœ… DOCX Export: SUCCESS")
+        print("   ✅ DOCX Export: SUCCESS")
         print(f"   ðŸ“„ File saved: clean_export_demo.docx ({export_results['docx']['size']:,} bytes)")
         
     except Exception as e:
@@ -206,10 +206,10 @@ def test_complete_export_system():
         }
         
         if not has_labels:
-            print("   âœ… HTML Export: SUCCESS - CLEAN FORMAT")
+            print("   ✅ HTML Export: SUCCESS - CLEAN FORMAT")
             print("   ðŸ“‹ VERIFIED: NO question type labels in HTML")
         else:
-            print("   âš  HTML Export: Contains question type labels")
+            print("   ⚠ HTML Export: Contains question type labels")
             
         print(f"   ðŸ“„ File saved: clean_export_demo.html ({export_results['html']['size']:,} bytes)")
         
@@ -218,7 +218,7 @@ def test_complete_export_system():
         print(f"   âŒ HTML Export: FAILED - {e}")
     
     # 4. Test Main Export Service
-    print("\nðŸŽ¯ TESTING MAIN EXPORT SERVICE...")
+    print("\n🍎¯ TESTING MAIN EXPORT SERVICE...")
     try:
         export_service = ExportService()
         result = export_service.export_content(
@@ -230,7 +230,7 @@ def test_complete_export_system():
         
         if result.get('success'):
             export_results['service'] = {'status': 'SUCCESS'}
-            print("   âœ… Export Service: SUCCESS")
+            print("   ✅ Export Service: SUCCESS")
             print("   ðŸ“‹ Main service coordination working")
         else:
             export_results['service'] = {'status': 'FAILED', 'error': result.get('error')}
@@ -242,14 +242,14 @@ def test_complete_export_system():
     
     # Print final results
     print("\n" + "=" * 60)
-    print("ðŸŽ‰ COMPLETE SYSTEM TEST RESULTS")
+    print("🎉 COMPLETE SYSTEM TEST RESULTS")
     print("=" * 60)
     
     success_count = sum(1 for result in export_results.values() if result['status'] == 'SUCCESS')
     total_count = len(export_results)
     
     for format_name, result in export_results.items():
-        status_icon = "âœ…" if result['status'] == 'SUCCESS' else "âŒ"
+        status_icon = "✅" if result['status'] == 'SUCCESS' else "âŒ"
         print(f"{status_icon} {format_name.upper()}: {result['status']}")
         
         if 'file' in result:
@@ -262,10 +262,10 @@ def test_complete_export_system():
     print(f"\nðŸ“Š SUCCESS RATE: {success_count}/{total_count} ({success_count/total_count*100:.0f}%)")
     
     if success_count == total_count:
-        print("\nðŸŽ‰ PERFECT! ALL EXPORT FORMATS WORKING")
+        print("\n🎉 PERFECT! ALL EXPORT FORMATS WORKING")
         print("ðŸ“‹ Your Cloud Computing exam will export PERFECTLY CLEAN")
         print("âœ¨ NO question type labels anywhere!")
-        print("ðŸŽ“ Professional university formatting ready!")
+        print("🍎“ Professional university formatting ready!")
         
         print("\nðŸ“ GENERATED FILES:")
         print("   ðŸ“„ clean_export_demo.pdf - CLEAN PDF (no question types)")
@@ -273,9 +273,9 @@ def test_complete_export_system():
         print("   ðŸ“„ clean_export_demo.html - CLEAN HTML version")
         
     else:
-        print(f"\nâš  {total_count - success_count} format(s) need attention")
+        print(f"\n⚠ {total_count - success_count} format(s) need attention")
     
-    print("\nðŸš€ IMPLEMENTATION STATUS: COMPLETE")
+    print("\n🚀 IMPLEMENTATION STATUS: COMPLETE")
     return export_results
 
 if __name__ == '__main__':

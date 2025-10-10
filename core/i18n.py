@@ -25,8 +25,8 @@ class LanguageManager:
     # Supported languages with display names
     SUPPORTED_LANGUAGES = {
         'en': {'name': 'English', 'native_name': 'English', 'rtl': False},
-        'fr': {'name': 'French', 'native_name': 'FranÃ§ais', 'rtl': False},
-        'es': {'name': 'Spanish', 'native_name': 'EspaÃ±ol', 'rtl': False},
+        'fr': {'name': 'French', 'native_name': 'Français', 'rtl': False},
+        'es': {'name': 'Spanish', 'native_name': 'Español', 'rtl': False},
         'de': {'name': 'German', 'native_name': 'Deutsch', 'rtl': False},
         'pt': {'name': 'Portuguese', 'native_name': 'PortuguÃªs', 'rtl': False},
         'it': {'name': 'Italian', 'native_name': 'Italiano', 'rtl': False},

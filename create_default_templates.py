@@ -18,7 +18,7 @@ User = get_user_model()
 
 def create_default_templates():
     """Create default export templates"""
-    print("ðŸŽ¯ Creating Default Export Templates")
+    print("🍎¯ Creating Default Export Templates")
     print("=" * 50)
     
     # Get or create a system user
@@ -34,7 +34,7 @@ def create_default_templates():
     )
     
     if created:
-        print(f"âœ… Created system user: {system_user.username}")
+        print(f"✅ Created system user: {system_user.username}")
     else:
         print(f"ðŸ“‹ Using existing system user: {system_user.username}")
     
@@ -301,13 +301,13 @@ def create_default_templates():
         )
         
         if created:
-            print(f"âœ… Created template: {template.name}")
+            print(f"✅ Created template: {template.name}")
             created_count += 1
         else:
             print(f"ðŸ“‹ Template already exists: {template.name}")
     
     print("=" * 50)
-    print(f"ðŸŽ‰ Created {created_count} new templates")
+    print(f"🎉 Created {created_count} new templates")
     print(f"ðŸ“Š Total templates in system: {ExportTemplate.objects.count()}")
 
 if __name__ == "__main__":

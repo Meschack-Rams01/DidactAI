@@ -26,7 +26,7 @@ def fix_font_references():
     with open(file_path, 'w', encoding='utf-8') as f:
         f.write(content)
     
-    print("âœ… Font references updated for Turkish character support")
+    print("✅ Font references updated for Turkish character support")
 
 if __name__ == "__main__":
     fix_font_references()

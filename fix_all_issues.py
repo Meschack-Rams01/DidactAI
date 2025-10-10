@@ -70,8 +70,8 @@ SECURE_CONTENT_TYPE_NOSNIFF=True
         with open(env_file_path, 'w', encoding='utf-8') as f:
             f.write(env_content)
         
-        print("âœ… Generated new SECRET_KEY")
-        print("âœ… Added production security settings")
+        print("✅ Generated new SECRET_KEY")
+        print("✅ Added production security settings")
         return True
         
     except Exception as e:
@@ -154,7 +154,7 @@ social-auth-app-django==5.4.1
         with open('requirements-fixed.txt', 'w', encoding='utf-8') as f:
             f.write(fixed_requirements.strip())
         
-        print("âœ… Created requirements-fixed.txt with compatible versions")
+        print("✅ Created requirements-fixed.txt with compatible versions")
         print("ðŸ’¡ Run: pip install -r requirements-fixed.txt --upgrade")
         return True
         
@@ -318,7 +318,7 @@ class FileProcessor:
             with open(uploads_services_path, 'w', encoding='utf-8') as f:
                 f.write(uploads_services_content)
             
-            print("âœ… Created uploads/services.py")
+            print("✅ Created uploads/services.py")
         
         # Create missing HTMLExporter in exports
         html_exporter_exists = False
@@ -429,7 +429,7 @@ class HTMLExporter:
             with open(exports_services_path, 'w', encoding='utf-8') as f:
                 f.write(content)
             
-            print("âœ… Added HTMLExporter to exports/services.py")
+            print("✅ Added HTMLExporter to exports/services.py")
         
         return True
         
@@ -551,7 +551,7 @@ CACHES = {
         with open(production_settings_path, 'w', encoding='utf-8') as f:
             f.write(production_settings.strip())
         
-        print("âœ… Created production_settings.py")
+        print("✅ Created production_settings.py")
         return True
         
     except Exception as e:
@@ -560,7 +560,7 @@ CACHES = {
 
 def create_deployment_scripts():
     """Create deployment and maintenance scripts"""
-    print("\nðŸš€ Creating Deployment Scripts")
+    print("\n🚀 Creating Deployment Scripts")
     print("=" * 40)
     
     try:
@@ -568,7 +568,7 @@ def create_deployment_scripts():
         deploy_script = '''#!/bin/bash
 # DidactAI Deployment Script
 
-echo "ðŸš€ Starting DidactAI Deployment..."
+echo "🚀 Starting DidactAI Deployment..."
 
 # Update code
 git pull origin main
@@ -601,7 +601,7 @@ else:
 sudo systemctl restart DidactAI
 sudo systemctl restart nginx
 
-echo "âœ… Deployment completed!"
+echo "✅ Deployment completed!"
 '''
         
         with open('deploy.sh', 'w', encoding='utf-8') as f:
@@ -629,7 +629,7 @@ from analytics.models import ErrorLog
 
 def cleanup_old_files():
     """Clean up old export files and uploads"""
-    print("ðŸ§¹ Cleaning up old files...")
+    print("🐧¹ Cleaning up old files...")
     
     # Delete old export jobs (older than 30 days)
     cutoff_date = datetime.now() - timedelta(days=30)
@@ -684,14 +684,14 @@ if __name__ == "__main__":
     backup_database()
     generate_usage_report()
     
-    print("âœ… Maintenance completed!")
+    print("✅ Maintenance completed!")
 '''
         
         with open('maintenance.py', 'w', encoding='utf-8') as f:
             f.write(maintenance_script.strip())
         
-        print("âœ… Created deploy.sh")
-        print("âœ… Created maintenance.py")
+        print("✅ Created deploy.sh")
+        print("✅ Created maintenance.py")
         return True
         
     except Exception as e:
@@ -723,18 +723,18 @@ def run_comprehensive_fixes():
     successful_fixes = sum(1 for result in fixes_results.values() if result)
     
     for fix_name, success in fixes_results.items():
-        status = "âœ…" if success else "âŒ"
+        status = "✅" if success else "âŒ"
         print(f"{status} {fix_name.title()}: {'FIXED' if success else 'FAILED'}")
     
     success_rate = (successful_fixes / total_fixes) * 100
     print(f"\nðŸ“Š Fix Success Rate: {success_rate:.1f}% ({successful_fixes}/{total_fixes} fixes applied)")
     
     if success_rate == 100:
-        print("ðŸŽ‰ All fixes applied successfully!")
+        print("🎉 All fixes applied successfully!")
     elif success_rate >= 75:
         print("ðŸ‘ Most fixes applied successfully")
     else:
-        print("âš Some fixes failed - manual intervention may be required")
+        print("⚠Some fixes failed - manual intervention may be required")
     
     print("\nðŸ“ NEXT STEPS:")
     print("-" * 20)

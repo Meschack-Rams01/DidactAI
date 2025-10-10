@@ -15,15 +15,15 @@ def fix_corrupted_characters(content):
     """Fix corrupted Unicode characters in content."""
     replacements = {
         # Corrupted left arrow variations
-        '&larr;': '&larr;',      # &larr;
-        '&larr;': '&larr;',              # &larr; (different encoding)
-        '&larr;': '&larr;',             # &larr; (what user sees)
+        '←': '←',      # ←
+        '←': '←',              # ← (different encoding)
+        '←': '←',             # ← (what user sees)
         
         # Corrupted bullet points
         '&bull;': '&bull;',            # &bull; 
         
         # Common question mark corruptions (fallback)
-        '???': '&larr;',            # Sometimes shows as ???
+        '???': '←',            # Sometimes shows as ???
     }
     
     fixed_content = content

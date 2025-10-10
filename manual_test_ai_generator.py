@@ -19,7 +19,7 @@ User = get_user_model()
 
 def test_quiz_generation():
     """Test quiz generation via form submission"""
-    print("ðŸ§ª Testing Quiz Generation Form Submission...")
+    print("🐧ª Testing Quiz Generation Form Submission...")
     
     # Create Django test client
     client = Client()
@@ -38,7 +38,7 @@ def test_quiz_generation():
     
     # Get the quiz form page
     response = client.get('/ai-generator/quiz/')
-    print(f"âœ… Quiz form GET request: Status {response.status_code}")
+    print(f"✅ Quiz form GET request: Status {response.status_code}")
     
     # Submit quiz generation form
     form_data = {
@@ -49,24 +49,24 @@ def test_quiz_generation():
     }
     
     response = client.post('/ai-generator/quiz/', form_data)
-    print(f"âœ… Quiz form POST request: Status {response.status_code}")
+    print(f"✅ Quiz form POST request: Status {response.status_code}")
     
     if response.status_code == 302:  # Redirect after successful creation
-        print("âœ… Quiz generation successful - redirected to view page")
+        print("✅ Quiz generation successful - redirected to view page")
         
         # Check if generation was created
         latest_generation = AIGeneration.objects.filter(content_type='quiz').last()
         if latest_generation:
-            print(f"âœ… Generated quiz: {latest_generation.title}")
+            print(f"✅ Generated quiz: {latest_generation.title}")
             print(f"   Questions: {len(latest_generation.generated_content.get('questions', []))}")
             
             # Test viewing the generation
             view_response = client.get(f'/ai-generator/view/{latest_generation.id}/')
-            print(f"âœ… View generation: Status {view_response.status_code}")
+            print(f"✅ View generation: Status {view_response.status_code}")
             
             return True
     elif response.status_code == 200:
-        print("âš  Form returned to same page - check for validation errors")
+        print("⚠ Form returned to same page - check for validation errors")
         return False
     else:
         print(f"âŒ Unexpected status code: {response.status_code}")
@@ -74,7 +74,7 @@ def test_quiz_generation():
 
 def test_exam_generation():
     """Test exam generation via form submission"""
-    print("\nðŸ§ª Testing Exam Generation Form Submission...")
+    print("\n🐧ª Testing Exam Generation Form Submission...")
     
     client = Client()
     
@@ -84,7 +84,7 @@ def test_exam_generation():
     
     # Get the exam form page
     response = client.get('/ai-generator/exam/')
-    print(f"âœ… Exam form GET request: Status {response.status_code}")
+    print(f"✅ Exam form GET request: Status {response.status_code}")
     
     # Submit exam generation form
     form_data = {
@@ -97,15 +97,15 @@ def test_exam_generation():
     }
     
     response = client.post('/ai-generator/exam/', form_data)
-    print(f"âœ… Exam form POST request: Status {response.status_code}")
+    print(f"✅ Exam form POST request: Status {response.status_code}")
     
     if response.status_code == 302:  # Redirect after successful creation
-        print("âœ… Exam generation successful - redirected to view page")
+        print("✅ Exam generation successful - redirected to view page")
         
         # Check if generation was created
         latest_generation = AIGeneration.objects.filter(content_type='exam').last()
         if latest_generation:
-            print(f"âœ… Generated exam: {latest_generation.title}")
+            print(f"✅ Generated exam: {latest_generation.title}")
             sections = latest_generation.generated_content.get('sections', [])
             total_questions = sum(len(section.get('questions', [])) for section in sections)
             print(f"   Sections: {len(sections)}")
@@ -113,7 +113,7 @@ def test_exam_generation():
             
             return True
     elif response.status_code == 200:
-        print("âš  Form returned to same page - check for validation errors")
+        print("⚠ Form returned to same page - check for validation errors")
         return False
     else:
         print(f"âŒ Unexpected status code: {response.status_code}")
@@ -121,23 +121,23 @@ def test_exam_generation():
 
 def test_generation_history():
     """Test generation history page"""
-    print("\nðŸ§ª Testing Generation History...")
+    print("\n🐧ª Testing Generation History...")
     
     client = Client()
     user = User.objects.get(username='testuser')
     client.force_login(user)
     
     response = client.get('/ai-generator/history/')
-    print(f"âœ… History page: Status {response.status_code}")
+    print(f"✅ History page: Status {response.status_code}")
     
     if response.status_code == 200:
-        print("âœ… Generation history page loads successfully")
+        print("✅ Generation history page loads successfully")
         return True
     return False
 
 def main():
     """Run manual tests"""
-    print("ðŸš€ Starting Manual AI Generator Tests")
+    print("🚀 Starting Manual AI Generator Tests")
     print("=" * 50)
     
     # Count initial generations
@@ -163,7 +163,7 @@ def main():
     
     passed = 0
     for test_name, result in results:
-        status = "âœ… PASSED" if result else "âŒ FAILED"
+        status = "✅ PASSED" if result else "âŒ FAILED"
         print(f"{test_name:<20} {status}")
         if result:
             passed += 1
@@ -171,7 +171,7 @@ def main():
     print(f"\nOverall: {passed}/{len(results)} tests passed")
     
     if passed == len(results):
-        print("\nðŸŽ‰ All AI Generator features are working correctly!")
+        print("\n🎉 All AI Generator features are working correctly!")
         print("\nðŸ“ Ready for Browser Testing:")
         print("1. Open http://127.0.0.1:8000/")
         print("2. Login with testuser / testpass123")
@@ -184,7 +184,7 @@ def main():
         for gen in AIGeneration.objects.all().order_by('-created_at')[:5]:
             print(f"   - {gen.title} ({gen.content_type}) - {gen.status}")
     else:
-        print(f"\nâš  {len(results) - passed} test(s) failed")
+        print(f"\n⚠ {len(results) - passed} test(s) failed")
 
 if __name__ == '__main__':
     main()

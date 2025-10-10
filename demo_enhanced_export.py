@@ -23,7 +23,7 @@ from datetime import datetime
 def create_enhanced_demo_export():
     """Create a demonstration export with all enhanced features"""
     
-    print("ðŸŽ“ Creating Enhanced University Export Demo")
+    print("🍎“ Creating Enhanced University Export Demo")
     print("=" * 50)
     
     # Complete university branding configuration
@@ -195,7 +195,7 @@ def create_enhanced_demo_export():
                 with open(filename, 'wb') as f:
                     f.write(result_buffer.getvalue())
                 
-                print(f"   âœ… PDF exported successfully")
+                print(f"   ✅ PDF exported successfully")
                 print(f"   ðŸ“„ File: {filename} ({len(result_buffer.getvalue())} bytes)")
                 
             elif export_format == 'html':
@@ -206,7 +206,7 @@ def create_enhanced_demo_export():
                 with open(filename, 'w', encoding='utf-8') as f:
                     f.write(html_content)
                 
-                print(f"   âœ… HTML exported successfully")
+                print(f"   ✅ HTML exported successfully")
                 print(f"   ðŸ“„ File: {filename} ({len(html_content)} characters)")
                 
             elif export_format == 'docx' and 'DOCXExporter' in globals():
@@ -218,7 +218,7 @@ def create_enhanced_demo_export():
                 with open(filename, 'wb') as f:
                     f.write(result_buffer.getvalue())
                 
-                print(f"   âœ… DOCX exported successfully")
+                print(f"   ✅ DOCX exported successfully")
                 print(f"   ðŸ“„ File: {filename} ({len(result_buffer.getvalue())} bytes)")
                 
         except Exception as e:
@@ -240,7 +240,7 @@ def create_enhanced_demo_export():
             with open(zip_filename, 'wb') as f:
                 f.write(zip_result['file_data'])
             
-            print(f"   âœ… Multiple versions created successfully")
+            print(f"   ✅ Multiple versions created successfully")
             print(f"   ðŸ“¦ File: {zip_filename} ({len(zip_result['file_data'])} bytes)")
         else:
             print(f"   âŒ Multiple versions failed: {zip_result.get('error')}")
@@ -249,7 +249,7 @@ def create_enhanced_demo_export():
         print(f"   âŒ Multiple versions failed: {str(e)}")
     
     print(f"\n" + "=" * 50)
-    print("ðŸŽ‰ Enhanced Export Demo Complete!")
+    print("🎉 Enhanced Export Demo Complete!")
     print("\nðŸ“ Generated files:")
     print("   &bull; enhanced_demo_harvard_exam.pdf")
     print("   &bull; enhanced_demo_harvard_exam.html")
@@ -260,7 +260,7 @@ def create_enhanced_demo_export():
     print("   ðŸ« Complete university branding hierarchy")
     print("   ðŸ‘¤ Student information fields")
     print("   ðŸ“Š Professional exam formatting")
-    print("   ðŸŽ¨ Multiple export formats")
+    print("   🍎¨ Multiple export formats")
     print("   ðŸ“š A/B/C version generation")
     print("   ðŸ“‹ Mixed question types")
     print("   ðŸ” Watermark and security features")

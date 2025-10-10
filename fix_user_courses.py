@@ -80,9 +80,9 @@ def fix_user_courses():
                             **course_data
                         )
                         created_courses.append(course)
-                        print(f"âœ… Created course: {course.title} ({course.code})")
+                        print(f"✅ Created course: {course.title} ({course.code})")
                     
-                    print(f"\nðŸŽ‰ Successfully created {len(created_courses)} courses for {selected_user.get_full_name() or selected_user.username}!")
+                    print(f"\n🎉 Successfully created {len(created_courses)} courses for {selected_user.get_full_name() or selected_user.username}!")
                     print("   The courses should now appear in the AI Exam Generator dropdown.")
                     
                 elif choice_num == 0:
@@ -92,7 +92,7 @@ def fix_user_courses():
             except ValueError:
                 print("âŒ Invalid input. Please enter a number.")
         else:
-            print("âœ… All users have courses!")
+            print("✅ All users have courses!")
             
         # Show final state
         print(f"\nðŸ“Š Final course summary:")

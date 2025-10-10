@@ -60,7 +60,7 @@ def diagnose_generation_issues():
                     if issues:
                         print(f"     âŒ ISSUES: {', '.join(issues)}")
                     else:
-                        print(f"     âœ… Question looks good")
+                        print(f"     ✅ Question looks good")
         else:
             print("   âŒ No generated content found")
 
@@ -170,12 +170,12 @@ def create_fixed_quiz_sample():
 
 def test_ai_service():
     """Test the AI generator service"""
-    print("\nðŸ§ª TESTING AI GENERATOR SERVICE...")
+    print("\n🐧ª TESTING AI GENERATOR SERVICE...")
     print("=" * 50)
     
     try:
         quiz_generator = QuizGenerator()
-        print("âœ… Quiz Generator Service initialized successfully")
+        print("✅ Quiz Generator Service initialized successfully")
         
         # Test with a simple prompt
         test_content = "Cloud computing provides on-demand access to computing resources over the internet. It offers scalability, cost-effectiveness, and flexibility for businesses."
@@ -184,7 +184,7 @@ def test_ai_service():
         
         # This would normally call the AI service
         # result = quiz_generator.generate_quiz(test_content, num_questions=2)
-        print("âš Skipping actual AI call to avoid API costs")
+        print("⚠Skipping actual AI call to avoid API costs")
         
     except Exception as e:
         print(f"âŒ Error testing Quiz Generator service: {str(e)}")
@@ -206,7 +206,7 @@ def save_fixed_generation():
             status='completed'
         )
         
-        print(f"âœ… Fixed generation created with ID: {generation.id}")
+        print(f"✅ Fixed generation created with ID: {generation.id}")
         print(f"   Title: {generation.title}")
         print(f"   Questions: {len(fixed_data['questions'])}")
         print(f"   Total Points: {fixed_data['total_points']}")
@@ -219,7 +219,7 @@ def save_fixed_generation():
 
 def main():
     """Main function to run diagnostics and fixes"""
-    print("ðŸš€ AI GENERATION ISSUE DIAGNOSTIC & FIX TOOL")
+    print("🚀 AI GENERATION ISSUE DIAGNOSTIC & FIX TOOL")
     print("=" * 60)
     
     # Step 1: Diagnose existing issues
@@ -234,14 +234,14 @@ def main():
     # Step 4: Final recommendations
     print("\nðŸ’¡ RECOMMENDATIONS:")
     print("=" * 50)
-    print("1. âœ… Check AI prompt templates for malformed JSON generation")
-    print("2. âœ… Validate AI responses before saving to database")
-    print("3. âœ… Implement fallback generation for parsing failures")
-    print("4. âœ… Add better error handling in the AI generation pipeline")
-    print("5. âœ… Test the fixed generation for proper export functionality")
+    print("1. ✅ Check AI prompt templates for malformed JSON generation")
+    print("2. ✅ Validate AI responses before saving to database")
+    print("3. ✅ Implement fallback generation for parsing failures")
+    print("4. ✅ Add better error handling in the AI generation pipeline")
+    print("5. ✅ Test the fixed generation for proper export functionality")
     
     if fixed_gen:
-        print(f"\nðŸŽ¯ Next Steps:")
+        print(f"\n🍎¯ Next Steps:")
         print(f"   &bull; Visit: /ai-generator/view/{fixed_gen.id}/ to see the fixed quiz")
         print(f"   &bull; Test export functionality with the fixed generation")
         print(f"   &bull; Use this as a template for proper question formatting")

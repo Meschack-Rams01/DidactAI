@@ -18,7 +18,7 @@ import io
 User = get_user_model()
 
 def quick_setup():
-    print("ðŸš€ DidactAI QUICK SETUP")
+    print("🚀 DidactAI QUICK SETUP")
     print("=" * 40)
     
     # Check/create superuser
@@ -30,17 +30,17 @@ def quick_setup():
             email='admin@DidactAI.com', 
             password='admin123'
         )
-        print("âœ… Admin user created (admin/admin123)")
+        print("✅ Admin user created (admin/admin123)")
     else:
-        print(f"âœ… Admin user exists: {admin_user.username}")
+        print(f"✅ Admin user exists: {admin_user.username}")
     
     # Check courses
     course_count = Course.objects.count()
-    print(f"âœ… Found {course_count} courses")
+    print(f"✅ Found {course_count} courses")
     
     # Check files
     file_count = UploadedFile.objects.count()
-    print(f"âœ… Found {file_count} uploaded files")
+    print(f"✅ Found {file_count} uploaded files")
     
     if file_count == 0:
         print("Creating sample files...")
@@ -84,9 +84,9 @@ def quick_setup():
             status='ready',
             is_processed=True
         )
-        print("âœ… Sample file created")
+        print("✅ Sample file created")
     
-    print("\nðŸŽ‰ SETUP COMPLETE!")
+    print("\n🎉 SETUP COMPLETE!")
     print("=" * 40)
     print("Now you can:")
     print("1. Start the server: python manage.py runserver")

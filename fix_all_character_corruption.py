@@ -21,8 +21,8 @@ def fix_corrupted_characters(content):
     # First apply specific replacements for known issues
     replacements = {
         # Left arrow corruptions
-        '&larr;': '&larr;',         # Common left arrow corruption
-        '&larr;': '&larr;',         # Another left arrow variant
+        '←': '←',         # Common left arrow corruption
+        '←': '←',         # Another left arrow variant
         
         # Button text corruptions ( Enhanced Export)
         '': '',              # Remove corruption before "Enhanced Export"
@@ -58,7 +58,7 @@ def fix_corrupted_characters(content):
     # Apply general regex patterns for "" type corruptions in buttons/labels
     patterns = [
         # Pattern for " Enhanced Export" and similar button texts
-        (r'(ö|Ã¶|o)[\u0080-\u00FF][ZT"\']?\s*(Enhanced|Export)', r' \2'),
+        (r'(ö|ö|o)[\u0080-\u00FF][ZT"\']?\s*(Enhanced|Export)', r' \2'),
         
         # Pattern for other common corruption sequences (3+ non-ASCII chars together)
         (r'[\u0080-\u00FF]{3,}', ''),
