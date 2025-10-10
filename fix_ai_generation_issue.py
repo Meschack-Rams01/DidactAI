@@ -66,7 +66,7 @@ def diagnose_generation_issues():
 
 def create_fixed_quiz_sample():
     """Create a properly formatted quiz to test the system"""
-    print("\nðŸ› ï¸ CREATING FIXED QUIZ SAMPLE...")
+    print("\nðŸ› CREATING FIXED QUIZ SAMPLE...")
     print("=" * 50)
     
     # Proper quiz data structure
@@ -184,7 +184,7 @@ def test_ai_service():
         
         # This would normally call the AI service
         # result = quiz_generator.generate_quiz(test_content, num_questions=2)
-        print("âš ï¸ Skipping actual AI call to avoid API costs")
+        print("âš Skipping actual AI call to avoid API costs")
         
     except Exception as e:
         print(f"âŒ Error testing Quiz Generator service: {str(e)}")
@@ -242,9 +242,9 @@ def main():
     
     if fixed_gen:
         print(f"\nðŸŽ¯ Next Steps:")
-        print(f"   â€¢ Visit: /ai-generator/view/{fixed_gen.id}/ to see the fixed quiz")
-        print(f"   â€¢ Test export functionality with the fixed generation")
-        print(f"   â€¢ Use this as a template for proper question formatting")
+        print(f"   &bull; Visit: /ai-generator/view/{fixed_gen.id}/ to see the fixed quiz")
+        print(f"   &bull; Test export functionality with the fixed generation")
+        print(f"   &bull; Use this as a template for proper question formatting")
 
 if __name__ == '__main__':
     main()

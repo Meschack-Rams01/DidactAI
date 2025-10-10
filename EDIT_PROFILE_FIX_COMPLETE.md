@@ -1,4 +1,4 @@
-﻿# ðŸ› ï¸ Edit Profile Functionality - Fix Complete
+﻿# ðŸ› Edit Profile Functionality - Fix Complete
 
 **Date:** September 29, 2025  
 **Status:** âœ… FIXED & TESTED  
@@ -127,7 +127,7 @@ else:
 ## ðŸ“š Usage Instructions
 
 ### **For Users:**
-1. Navigate to Profile â†’ Edit Profile
+1. Navigate to Profile &larr;’ Edit Profile
 2. Update any field as needed
 3. Select preferred language from dropdown
 4. Upload avatar if desired

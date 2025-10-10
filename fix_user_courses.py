@@ -86,7 +86,7 @@ def fix_user_courses():
                     print("   The courses should now appear in the AI Exam Generator dropdown.")
                     
                 elif choice_num == 0:
-                    print("â­ï¸  Skipping course creation.")
+                    print("  Skipping course creation.")
                 else:
                     print("âŒ Invalid choice.")
             except ValueError:

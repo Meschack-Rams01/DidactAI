@@ -129,7 +129,7 @@ def test_complete_export_system():
     print(f"   Duration: {exam_data['estimated_duration']}")
     print()
     
-    print("ðŸ›ï¸  BRANDING INFORMATION:")
+    print("ðŸ›  BRANDING INFORMATION:")
     print(f"   University: {branding['university_name']}")
     print(f"   Department: {branding['department']}")
     print(f"   Course: {branding['course']}")
@@ -209,7 +209,7 @@ def test_complete_export_system():
             print("   âœ… HTML Export: SUCCESS - CLEAN FORMAT")
             print("   ðŸ“‹ VERIFIED: NO question type labels in HTML")
         else:
-            print("   âš ï¸  HTML Export: Contains question type labels")
+            print("   âš  HTML Export: Contains question type labels")
             
         print(f"   ðŸ“„ File saved: clean_export_demo.html ({export_results['html']['size']:,} bytes)")
         
@@ -273,7 +273,7 @@ def test_complete_export_system():
         print("   ðŸ“„ clean_export_demo.html - CLEAN HTML version")
         
     else:
-        print(f"\nâš ï¸  {total_count - success_count} format(s) need attention")
+        print(f"\nâš  {total_count - success_count} format(s) need attention")
     
     print("\nðŸš€ IMPLEMENTATION STATUS: COMPLETE")
     return export_results

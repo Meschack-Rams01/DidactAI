@@ -60,7 +60,7 @@ def verify_exam_fix():
         # Check if any user still has no courses
         users_without_courses = users.exclude(courses__isnull=False)
         if users_without_courses.exists():
-            print(f"\nâš ï¸  Users without courses:")
+            print(f"\nâš  Users without courses:")
             for user in users_without_courses:
                 print(f"   - {user.get_full_name() or user.username}")
             print(f"   These users will see an empty dropdown.")

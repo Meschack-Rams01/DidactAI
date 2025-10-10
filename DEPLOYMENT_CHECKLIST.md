@@ -44,7 +44,7 @@ Before deploying, gather these:
 
 | Platform | Free Tier | Ease | Best For |
 |----------|-----------|------|----------|
-| **Railway** â­ | Yes | Easy | Beginners |
+| **Railway**  | Yes | Easy | Beginners |
 | **Render** | Yes | Easy | Free hosting |
 | **Heroku** | Limited | Medium | Enterprise |
 | **DigitalOcean** | $5/month | Medium | Scalability |
@@ -83,7 +83,7 @@ railway up
 
 ---
 
-## âš™ï¸ Environment Variables Setup
+## âš™ Environment Variables Setup
 
 ### Essential Variables (Required)
 ```bash
@@ -120,7 +120,7 @@ DEFAULT_FROM_EMAIL=DidactAI <noreply@yourdomain.com>
 ### Gmail Setup (5 minutes)
 1. **Enable 2-Factor Authentication** on Gmail
 2. **Generate App Password:**
-   - Google Account â†’ Security â†’ App passwords
+   - Google Account &larr;’ Security &larr;’ App passwords
    - Create password for "DidactAI"
    - Use the 16-character password (not your Gmail password)
 3. **Add to environment variables** (shown above)
@@ -220,7 +220,7 @@ Once deployed successfully, you'll have:
 - Ensure all required files are committed to repository
 - Verify Python version compatibility
 
-**ðŸ—„ï¸ Database connection error**
+**ðŸ—„ Database connection error**
 - Verify DATABASE_URL format in environment variables
 - Check if database service is running on platform
 

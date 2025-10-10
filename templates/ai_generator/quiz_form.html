@@ -1,4 +1,4 @@
-﻿{% extends 'base.html' %}
+{% extends 'base.html' %}
 {% load static %}
 
 {% block title %}Generate Quiz - DidactAI{% endblock %}
@@ -311,7 +311,7 @@ function showFileSelector(files) {
                                 <input type="checkbox" value="${file.id}" class="file-checkbox rounded border-gray-300 text-primary-600">
                                 <div class="ml-3 flex-1">
                                     <div class="text-sm font-medium text-gray-900">${file.original_filename}</div>
-                                    <div class="text-xs text-gray-500">${file.file_type.toUpperCase()} â€¢ ${file.file_size_human}</div>
+                                    <div class="text-xs text-gray-500">${file.file_type.toUpperCase()} &bull; ${file.file_size_human}</div>
                                 </div>
                             </label>
                         `).join('')}

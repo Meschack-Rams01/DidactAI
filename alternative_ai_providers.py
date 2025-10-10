@@ -50,11 +50,11 @@ print("ðŸ¤– ALTERNATIVE AI PROVIDERS (When Gemini quota is full):\n")
 for key, provider in ALTERNATIVE_PROVIDERS.items():
     print(f"ðŸ“Š {provider['name']}")
     print(f"   ðŸ’° Cost: {provider['cost']}")
-    print(f"   â±ï¸  Setup: {provider['setup_time']}")
+    print(f"     Setup: {provider['setup_time']}")
     print(f"   ðŸ”‘ API Key: {'Required' if provider['api_key_required'] else 'Not required'}")
     print(f"   ðŸ“ {provider['description']}")
     print(f"   âœ… Pros: {', '.join(provider['pros'])}")
-    print(f"   âš ï¸  Cons: {', '.join(provider['cons'])}")
+    print(f"   âš  Cons: {', '.join(provider['cons'])}")
     print()
 
 print("""
@@ -62,10 +62,10 @@ print("""
 
 OPTION A: New Google Project (2 minutes)
 1. Open: https://console.cloud.google.com/
-2. Click "Select a project" â†’ "New Project" 
-3. Name it "DidactAI-2" â†’ Create
+2. Click "Select a project" &larr;’ "New Project" 
+3. Name it "DidactAI-2" &larr;’ Create
 4. Enable "Generative AI API"
-5. Create API key â†’ Copy it
+5. Create API key &larr;’ Copy it
 6. Replace GEMINI_API_KEY in your settings
 
 OPTION B: Ollama (Local AI - 5 minutes)
@@ -90,6 +90,6 @@ try:
     if hasattr(settings, 'GEMINI_API_KEY'):
         print(f"ðŸ“„ Current Gemini key found: {settings.GEMINI_API_KEY[:10]}...{settings.GEMINI_API_KEY[-4:]}")
     else:
-        print("âš ï¸ No GEMINI_API_KEY found in settings")
+        print("âš No GEMINI_API_KEY found in settings")
 except:
-    print("âš ï¸ Could not load Django settings")
+    print("âš Could not load Django settings")

@@ -208,12 +208,12 @@
                                 
                                 <div class="flex items-center space-x-4 text-sm text-gray-500">
                                     <span class="capitalize">{{ generation.get_content_type_display }}</span>
-                                    <span>â€¢</span>
+                                    <span>&bull;</span>
                                     <span>{{ generation.course.title }}</span>
-                                    <span>â€¢</span>
+                                    <span>&bull;</span>
                                     <span>{{ generation.created_at|timesince }} ago</span>
                                     {% if generation.questions.exists %}
-                                        <span>â€¢</span>
+                                        <span>&bull;</span>
                                         <span>{{ generation.questions.count }} questions</span>
                                     {% endif %}
                                 </div>
@@ -229,7 +229,7 @@
                             {% if generation.status == "completed" %}
                                 <a href="{% url 'exports:export_generation' generation.id %}" 
                                    class="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded text-white bg-green-600 hover:bg-green-700">
-                                    ðŸŽ“ Enhanced Export
+                                    📄 Enhanced Export
                                 </a>
                                 <a href="{% url 'ai_generator:view_generation' generation.id %}" 
                                    class="text-primary-600 hover:text-primary-500 text-sm font-medium">
@@ -320,3 +320,4 @@ function exportGeneration(generationId) {
 }
 </script>
 {% endblock %}
+

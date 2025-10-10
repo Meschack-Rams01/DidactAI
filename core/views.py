@@ -24,6 +24,10 @@ def home(request):
 def dashboard(request):
     """User dashboard view with real-time statistics"""
     
+    # Check if user is admin and show admin dashboard
+    if request.user.is_superuser:
+        return admin_dashboard(request)
+    
     # Get real data from database
     from courses.models import Course
     from uploads.models import UploadedFile
@@ -193,4 +197,82 @@ def health_check(request):
             'internationalization': True,
         }
     })
+
+
+@login_required
+def admin_dashboard(request):
+    """Admin dashboard view with system management features"""
+    from accounts.models import CustomUser
+    from courses.models import Course
+    from uploads.models import UploadedFile
+    from ai_generator.models import AIGeneration
+    from exports.models import ExportJob
+    from datetime import datetime, timedelta
+    from django.utils import timezone
+    from django.db.models import Count, Sum
+    
+    # Calculate admin statistics
+    total_users = CustomUser.objects.count()
+    total_courses = Course.objects.count()
+    total_files = UploadedFile.objects.count()
+    total_ai_generations = AIGeneration.objects.count()
+    total_exports = ExportJob.objects.count()
+    
+    # Time-based statistics
+    now = timezone.now()
+    today = now.date()
+    this_month = now.replace(day=1).date()
+    
+    # New users this month
+    new_users_this_month = CustomUser.objects.filter(
+        date_joined__gte=this_month
+    ).count()
+    
+    # Daily active users (users who logged in today)
+    daily_active_users = CustomUser.objects.filter(
+        last_login__date=today
+    ).count()
+    
+    # Today's activity
+    ai_generations_today = AIGeneration.objects.filter(
+        created_at__date=today
+    ).count()
+    
+    files_uploaded_today = UploadedFile.objects.filter(
+        created_at__date=today
+    ).count()
+    
+    # Storage calculation (rough estimate)
+    total_storage_mb = UploadedFile.objects.aggregate(
+        total_size=Sum('file_size')
+    )['total_size'] or 0
+    total_storage_mb = round(total_storage_mb / (1024 * 1024), 2)  # Convert to MB
+    
+    # Recent users (last 7 days)
+    recent_users = CustomUser.objects.filter(
+        date_joined__gte=now - timedelta(days=7)
+    ).order_by('-date_joined')[:5]
+    
+    # Admin statistics
+    admin_stats = {
+        'total_users': total_users,
+        'total_courses': total_courses,
+        'total_files': total_files,
+        'total_ai_generations': total_ai_generations,
+        'total_exports': total_exports,
+        'new_users_this_month': new_users_this_month,
+        'daily_active_users': daily_active_users,
+        'ai_generations_today': ai_generations_today,
+        'files_uploaded_today': files_uploaded_today,
+        'total_storage_mb': total_storage_mb,
+    }
+    
+    context = {
+        'title': 'Admin Dashboard',
+        'admin_stats': admin_stats,
+        'recent_users': recent_users,
+        'user': request.user,
+    }
+    
+    return render(request, 'admin_dashboard.html', context)
 

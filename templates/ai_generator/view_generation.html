@@ -20,9 +20,9 @@
                     <h1 class="text-3xl font-bold text-gray-900">{{ generation.title }}</h1>
                     <div class="mt-1 flex items-center space-x-4 text-sm text-gray-600">
                         <span class="capitalize">{{ generation.get_content_type_display }}</span>
-                        <span>â€¢</span>
+                        <span>&bull;</span>
                         <span>{{ generation.created_at|date:"M d, Y" }}</span>
-                        <span>â€¢</span>
+                        <span>&bull;</span>
                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
                             {% if generation.status == "completed" %}bg-green-100 text-green-800
                             {% elif generation.status == "processing" %}bg-yellow-100 text-yellow-800
@@ -48,7 +48,7 @@
                         <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
                         </svg>
-                        ðŸ“„ Export to PDF/Word
+                        📄 Export to PDF/Word
                     </a>
                 {% else %}
                     <div class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-500 bg-gray-100 cursor-not-allowed">
@@ -74,7 +74,7 @@
                         <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                         </svg>
-                        ðŸ“‹ Quick Export Options
+                        📋 Quick Export Options
                     </a>
                 {% endif %}
                 
@@ -272,7 +272,7 @@
                             <div class="flex items-center justify-between">
                                 <div class="flex-1 min-w-0">
                                     <p class="text-sm font-medium text-gray-900 truncate">{{ export.title }}</p>
-                                    <p class="text-xs text-gray-500">{{ export.get_export_format_display }} â€¢ {{ export.created_at|timesince }} ago</p>
+                                    <p class="text-xs text-gray-500">{{ export.get_export_format_display }} &bull; {{ export.created_at|timesince }} ago</p>
                                 </div>
                                 {% if export.status == "completed" %}
                                     <a href="{% url 'exports:download' export.id %}" 
@@ -287,7 +287,7 @@
                     </div>
                     <div class="mt-4">
                         <a href="{% url 'exports:list' %}" class="text-sm text-primary-600 hover:text-primary-500">
-                            View all exports â†’
+                            View all exports &larr;â€™
                         </a>
                     </div>
                 </div>
@@ -406,3 +406,7 @@ function startExport() {
 }
 </script>
 {% endblock %}
+
+
+
+

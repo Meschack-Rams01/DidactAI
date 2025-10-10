@@ -1,4 +1,4 @@
-﻿{% extends 'base.html' %}
+{% extends 'base.html' %}
 {% load static %}
 
 {% block title %}My Files - DidactAI{% endblock %}
@@ -180,9 +180,9 @@
                                     </h4>
                                     <div class="flex items-center mt-1 text-sm text-gray-500">
                                         <span>{{ file.course.title }}</span>
-                                        <span class="mx-2">â€¢</span>
+                                        <span class="mx-2">&bull;</span>
                                         <span>{{ file.file_size_human }}</span>
-                                        <span class="mx-2">â€¢</span>
+                                        <span class="mx-2">&bull;</span>
                                         <span>{{ file.created_at|date:"M d, Y" }}</span>
                                     </div>
                                     {% if file.description %}

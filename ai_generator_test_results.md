@@ -32,13 +32,13 @@
 ### Quiz Metadata:
 - **ðŸ“š Title**: "Machine Learning Fundamentals Examination"
 - **ðŸ“– Description**: Professional academic description
-- **â±ï¸ Duration**: 26 minutes (automatically calculated)
+- ** Duration**: 26 minutes (automatically calculated)
 
-## âš ï¸ **EXAM GENERATOR - QUOTA LIMIT REACHED**
+## âš **EXAM GENERATOR - QUOTA LIMIT REACHED**
 
 ### Test Status:
 - **âœ… Service Initialization**: Exam generator service loads correctly
-- **âš ï¸ API Quota**: Reached daily free tier limit (50 requests/day)
+- **âš API Quota**: Reached daily free tier limit (50 requests/day)
 - **âœ… Fallback Handling**: Proper quota exceeded error handling with retry logic
 - **âœ… Structure**: Exam generator follows correct multi-section approach
 

@@ -18,7 +18,7 @@ from ai_generator.models import AIGeneration
 
 def fix_malformed_quiz():
     """Fix the malformed quiz with ID 17"""
-    print("ðŸ› ï¸ FIXING MALFORMED QUIZ...")
+    print("ðŸ› FIXING MALFORMED QUIZ...")
     print("=" * 40)
     
     try:
@@ -126,8 +126,8 @@ def test_export_fixed_quiz(generation_id):
         
         print("   âœ… Export successful!")
         print("   ðŸ“ Files created:")
-        print("      â€¢ cloud_hpc_fixed_student.html")
-        print("      â€¢ cloud_hpc_fixed_instructor.html")
+        print("      &bull; cloud_hpc_fixed_student.html")
+        print("      &bull; cloud_hpc_fixed_instructor.html")
         
         # Validate the export
         if 'What is the primary characteristic of HPC in the cloud?' in student_html:
@@ -156,15 +156,15 @@ def main():
         if export_success:
             print(f"\nðŸŽ‰ SUCCESS! Quiz {fixed_id} has been fixed and exported successfully!")
             print("\nðŸ“‹ Summary:")
-            print("â€¢ âœ… Malformed question replaced with proper content")
-            print("â€¢ âœ… Export functionality tested and working")
-            print("â€¢ âœ… Both student and instructor versions generated")
+            print("&bull; âœ… Malformed question replaced with proper content")
+            print("&bull; âœ… Export functionality tested and working")
+            print("&bull; âœ… Both student and instructor versions generated")
             print("\nðŸ’¡ Next Steps:")
-            print("â€¢ Open the generated HTML files to verify the fix")
-            print("â€¢ Use the web interface to view and export the fixed quiz")
-            print(f"â€¢ Visit: http://127.0.0.1:8000/ai-generator/view/{fixed_id}/")
+            print("&bull; Open the generated HTML files to verify the fix")
+            print("&bull; Use the web interface to view and export the fixed quiz")
+            print(f"&bull; Visit: http://127.0.0.1:8000/ai-generator/view/{fixed_id}/")
         else:
-            print(f"\nâš ï¸ Quiz {fixed_id} was fixed but export test failed")
+            print(f"\nâš Quiz {fixed_id} was fixed but export test failed")
     else:
         print("\nâŒ Unable to fix the malformed quiz")
 

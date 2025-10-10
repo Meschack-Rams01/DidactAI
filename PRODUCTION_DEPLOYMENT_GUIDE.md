@@ -135,7 +135,7 @@ cp .env .env.production
 
 ---
 
-## ðŸ—„ï¸ Step 3: Database Setup
+## ðŸ—„ Step 3: Database Setup
 
 ### 3.1 PostgreSQL Database Setup
 
@@ -182,7 +182,7 @@ python manage.py createsuperuser --settings=DidactAI_project.production_settings
 1. **Enable 2-Factor Authentication** on your Gmail account
 2. **Generate App Password:**
    - Go to Google Account Settings
-   - Security â†’ App passwords
+   - Security &larr;’ App passwords
    - Generate password for "DidactAI"
    - Use this 16-character password (not your Gmail password)
 

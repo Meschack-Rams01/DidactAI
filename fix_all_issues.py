@@ -439,7 +439,7 @@ class HTMLExporter:
 
 def create_production_settings():
     """Create production-ready settings file"""
-    print("\nâš™ï¸ Creating Production Settings")
+    print("\nâš™ Creating Production Settings")
     print("=" * 40)
     
     try:
@@ -734,7 +734,7 @@ def run_comprehensive_fixes():
     elif success_rate >= 75:
         print("ðŸ‘ Most fixes applied successfully")
     else:
-        print("âš ï¸ Some fixes failed - manual intervention may be required")
+        print("âš Some fixes failed - manual intervention may be required")
     
     print("\nðŸ“ NEXT STEPS:")
     print("-" * 20)

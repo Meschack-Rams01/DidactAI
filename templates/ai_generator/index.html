@@ -1,4 +1,4 @@
-﻿{% extends 'base.html' %}
+{% extends 'base.html' %}
 {% load static %}
 
 {% block title %}AI Content Generator - DidactAI{% endblock %}
@@ -84,7 +84,7 @@
             <div class="flex items-center justify-between">
                 <h2 class="text-lg font-medium text-gray-900">Recent Generations</h2>
                 <a href="{% url 'ai_generator:history' %}" class="text-sm text-primary-600 hover:text-primary-700">
-                    View all â†’
+                    View all &larr;’
                 </a>
             </div>
         </div>
@@ -107,7 +107,7 @@
                             </span>
                         </div>
                         <p class="mt-1 text-sm text-gray-600">
-                            {{ generation.course.title }} â€¢ {{ generation.created_at|timesince }} ago
+                            {{ generation.course.title }} &bull; {{ generation.created_at|timesince }} ago
                         </p>
                     </div>
                     <div class="flex items-center space-x-2">

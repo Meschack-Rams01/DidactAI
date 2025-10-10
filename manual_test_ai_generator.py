@@ -66,7 +66,7 @@ def test_quiz_generation():
             
             return True
     elif response.status_code == 200:
-        print("âš ï¸  Form returned to same page - check for validation errors")
+        print("âš  Form returned to same page - check for validation errors")
         return False
     else:
         print(f"âŒ Unexpected status code: {response.status_code}")
@@ -113,7 +113,7 @@ def test_exam_generation():
             
             return True
     elif response.status_code == 200:
-        print("âš ï¸  Form returned to same page - check for validation errors")
+        print("âš  Form returned to same page - check for validation errors")
         return False
     else:
         print(f"âŒ Unexpected status code: {response.status_code}")
@@ -184,7 +184,7 @@ def main():
         for gen in AIGeneration.objects.all().order_by('-created_at')[:5]:
             print(f"   - {gen.title} ({gen.content_type}) - {gen.status}")
     else:
-        print(f"\nâš ï¸  {len(results) - passed} test(s) failed")
+        print(f"\nâš  {len(results) - passed} test(s) failed")
 
 if __name__ == '__main__':
     main()

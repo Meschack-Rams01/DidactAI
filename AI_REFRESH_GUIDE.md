@@ -8,7 +8,7 @@ Your current Gemini API key `AIzaSyAEEbJICNYIxxqUQiUpfFfH03UPQ_h0pSg` has exceed
 ### Option 1: Get a New Free API Key (Recommended)
 1. **Go to Google AI Studio**: https://aistudio.google.com/
 2. **Sign in** with a different Google account (or create new one)
-3. **Get API Key**: Click "Get API Key" â†’ "Create API Key" 
+3. **Get API Key**: Click "Get API Key" &larr;’ "Create API Key" 
 4. **Copy the new key** (starts with `AIzaSy...`)
 5. **Update your `.env` file** (see instructions below)
 
@@ -123,7 +123,7 @@ Exam Generation      âœ… PASS
 Once AI is refreshed, you can immediately use:
 
 ### In the Web Interface:
-- ðŸ“ **AI Generator** â†’ Create Quiz/Exam from uploaded files
+- ðŸ“ **AI Generator** &larr;’ Create Quiz/Exam from uploaded files
 - ðŸŽ¯ **Generate Questions** from any content
 - ðŸ“Š **Multi-language Support** (English, French, Spanish, etc.)
 - ðŸ”„ **Different Difficulty Levels** (Easy, Medium, Hard)
@@ -155,10 +155,10 @@ exam = exam_gen.generate_exam(
 
 ### If test still fails:
 
-**"Quota exceeded"** â†’ Need different Google account for API key
-**"Invalid API key"** â†’ Check key format (should start with `AIzaSy`)
-**"Permission denied"** â†’ Enable Gemini API in Google Cloud Console
-**"Import error"** â†’ Run `pip install google-generativeai`
+**"Quota exceeded"** &larr;’ Need different Google account for API key
+**"Invalid API key"** &larr;’ Check key format (should start with `AIzaSy`)
+**"Permission denied"** &larr;’ Enable Gemini API in Google Cloud Console
+**"Import error"** &larr;’ Run `pip install google-generativeai`
 
 ### Common Solutions:
 1. **Clear browser cache** and refresh

@@ -12,7 +12,7 @@ The DidactAI clean export system is now **fully implemented and tested**. Your C
 - **[Multiple Choice]** labels everywhere
 - **[True/False]** labels showing 
 - **[Essay]** and **[Short Answer]** type indicators
-- Unprofessional checkbox symbols: â˜, â€¢
+- Unprofessional checkbox symbols: â˜, &bull;
 - Poor formatting and spacing
 
 ### âœ… AFTER (Clean Export)

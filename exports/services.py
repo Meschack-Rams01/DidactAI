@@ -278,12 +278,12 @@ class PDFExporter:
         # Instructions in a professional box
         instructions_content = """
         <b>INSTRUCTIONS:</b><br/><br/>
-        â€¢ Read each question carefully and completely before answering<br/>
-        â€¢ For multiple choice questions, select the best answer<br/>
-        â€¢ Write clearly and legibly for all written responses<br/>
-        â€¢ Show all work for calculation problems where applicable<br/>
-        â€¢ Review your answers before submitting<br/>
-        â€¢ Ask the instructor if you have any questions
+        &bull; Read each question carefully and completely before answering<br/>
+        &bull; For multiple choice questions, select the best answer<br/>
+        &bull; Write clearly and legibly for all written responses<br/>
+        &bull; Show all work for calculation problems where applicable<br/>
+        &bull; Review your answers before submitting<br/>
+        &bull; Ask the instructor if you have any questions
         """
         
         # Add additional instructions if provided
@@ -922,12 +922,12 @@ class DOCXExporter:
         doc.add_heading('INSTRUCTIONS', level=2)
         
         instructions_content = [
-            'â€¢ Read each question carefully and completely before answering',
-            'â€¢ For multiple choice questions, select the best answer',
-            'â€¢ Write clearly and legibly for all written responses',
-            'â€¢ Show all work for calculation problems where applicable',
-            'â€¢ Review your answers before submitting',
-            'â€¢ Ask the instructor if you have any questions'
+            '&bull; Read each question carefully and completely before answering',
+            '&bull; For multiple choice questions, select the best answer',
+            '&bull; Write clearly and legibly for all written responses',
+            '&bull; Show all work for calculation problems where applicable',
+            '&bull; Review your answers before submitting',
+            '&bull; Ask the instructor if you have any questions'
         ]
         
         for instruction in instructions_content:
@@ -1677,7 +1677,7 @@ class HTMLExporter:
                         <div class="faculty-name">{{ branding.faculty|default:"FACULTY NAME" }}</div>
                         <div class="department-name">{{ branding.department|default:"DEPARTMENT NAME" }}</div>
                         <div class="course-info">{{ branding.course|default:"COURSE NAME" }}</div>
-                        <div class="academic-info">{{ branding.academic_year|default:"ACADEMIC YEAR" }} â€“ {{ branding.semester|default:"SEMESTER" }}</div>
+                        <div class="academic-info">{{ branding.academic_year|default:"ACADEMIC YEAR" }} "“ {{ branding.semester|default:"SEMESTER" }}</div>
                     </div>
                 </div>
                 
@@ -1735,7 +1735,7 @@ class HTMLExporter:
                         {{ branding.academic_year|default:"Academic Year" }} | {{ branding.semester|default:"Semester" }}
                     </div>
                     <div class="footer-center">
-                        {{ branding.university_name|default:"University" }} â€“ Official {{ quiz_data.content_type|default:"Exam" }}
+                        {{ branding.university_name|default:"University" }} "“ Official {{ quiz_data.content_type|default:"Exam" }}
                     </div>
                     <div class="footer-right">
                         {{ branding.department|default:"Department" }}

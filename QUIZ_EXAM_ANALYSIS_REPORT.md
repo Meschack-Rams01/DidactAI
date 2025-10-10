@@ -23,7 +23,7 @@ The DidactAI Quiz and Exam generation and export system has been thoroughly anal
 | ðŸ“ **DOCX Export** | âœ… EXCELLENT | python-docx with comprehensive formatting |
 | ðŸŒ **HTML Export** | âœ… EXCELLENT | Professional styling, instructor/student versions |
 | ðŸ‡¹ðŸ‡· **Turkish Support** | âœ… EXCELLENT | Full Unicode support in all export formats |
-| ðŸ—„ï¸ **Database Integration** | âœ… EXCELLENT | 15 generations, 158 questions working perfectly |
+| ðŸ—„ **Database Integration** | âœ… EXCELLENT | 15 generations, 158 questions working perfectly |
 | ðŸ“ **File Processing** | âœ… GOOD | OCR and text extraction working |
 
 ---
@@ -63,7 +63,7 @@ def generate_quiz(self, content: str, language: str = 'en',
     # Content validation
 ```
 
-**Rating:** â­â­â­â­â­ (5/5)
+**Rating:**  (5/5)
 
 ---
 
@@ -111,11 +111,11 @@ def _setup_custom_styles(self):
   - âœ… Answer highlighting for instructors
   - âœ… Clean, academic appearance
 
-**Export Quality Rating:** â­â­â­â­â­ (5/5)
+**Export Quality Rating:**  (5/5)
 
 ---
 
-## ðŸ—„ï¸ Database Architecture Analysis
+## ðŸ—„ Database Architecture Analysis
 
 ### **Models Structure**
 ```python
@@ -139,7 +139,7 @@ ExportJob
 - âœ… Version tracking and history
 - âœ… Metadata and analytics integration
 
-**Database Rating:** â­â­â­â­â­ (5/5)
+**Database Rating:**  (5/5)
 
 ---
 
@@ -165,7 +165,7 @@ language_instructions = {
 - **HTML:** âœ… UTF-8 encoding
 - **Filenames:** âœ… RFC 5987 compliant encoding
 
-**Turkish Support Rating:** â­â­â­â­â­ (5/5)
+**Turkish Support Rating:**  (5/5)
 
 ---
 
@@ -261,9 +261,9 @@ language_instructions = {
 ### **Export Features**
 | Format | Features | Quality |
 |--------|----------|---------|
-| **PDF** | University branding, Unicode fonts, Headers/footers | â­â­â­â­â­ |
-| **DOCX** | Professional structure, Student info, Formatting | â­â­â­â­â­ |
-| **HTML** | Responsive design, Print CSS, Dual versions | â­â­â­â­â­ |
+| **PDF** | University branding, Unicode fonts, Headers/footers |  |
+| **DOCX** | Professional structure, Student info, Formatting |  |
+| **HTML** | Responsive design, Print CSS, Dual versions |  |
 
 ---
 

@@ -160,25 +160,25 @@ def create_enhanced_demo_export():
     }
     
     print("ðŸ“Š Sample exam content prepared:")
-    print(f"   â€¢ Title: {enhanced_quiz_data['title']}")
-    print(f"   â€¢ Questions: {len(enhanced_quiz_data['questions'])}")
-    print(f"   â€¢ Total Points: {enhanced_quiz_data['total_points']}")
-    print(f"   â€¢ Duration: {enhanced_quiz_data['estimated_duration']}")
+    print(f"   &bull; Title: {enhanced_quiz_data['title']}")
+    print(f"   &bull; Questions: {len(enhanced_quiz_data['questions'])}")
+    print(f"   &bull; Total Points: {enhanced_quiz_data['total_points']}")
+    print(f"   &bull; Duration: {enhanced_quiz_data['estimated_duration']}")
     
     print(f"\nðŸ« University branding configured:")
-    print(f"   â€¢ University: {enhanced_branding['university_name']}")
-    print(f"   â€¢ Faculty: {enhanced_branding['faculty']}")
-    print(f"   â€¢ Department: {enhanced_branding['department']}")
-    print(f"   â€¢ Course: {enhanced_branding['course']}")
-    print(f"   â€¢ Academic Year: {enhanced_branding['academic_year']}")
-    print(f"   â€¢ Semester: {enhanced_branding['semester']}")
+    print(f"   &bull; University: {enhanced_branding['university_name']}")
+    print(f"   &bull; Faculty: {enhanced_branding['faculty']}")
+    print(f"   &bull; Department: {enhanced_branding['department']}")
+    print(f"   &bull; Course: {enhanced_branding['course']}")
+    print(f"   &bull; Academic Year: {enhanced_branding['academic_year']}")
+    print(f"   &bull; Semester: {enhanced_branding['semester']}")
     
     print(f"\nðŸ“‹ Student information fields:")
     student_info = enhanced_branding['student_info']
-    print(f"   â€¢ Student Name: {'âœ“' if student_info['include_student_name'] else 'âœ—'}")
-    print(f"   â€¢ Student ID: {'âœ“' if student_info['include_student_id'] else 'âœ—'}")
-    print(f"   â€¢ Signature: {'âœ“' if student_info['include_signature'] else 'âœ—'}")
-    print(f"   â€¢ Date Field: {'âœ“' if student_info['include_date_field'] else 'âœ—'}")
+    print(f"   &bull; Student Name: {'âœ“' if student_info['include_student_name'] else 'âœ—'}")
+    print(f"   &bull; Student ID: {'âœ“' if student_info['include_student_id'] else 'âœ—'}")
+    print(f"   &bull; Signature: {'âœ“' if student_info['include_signature'] else 'âœ—'}")
+    print(f"   &bull; Date Field: {'âœ“' if student_info['include_date_field'] else 'âœ—'}")
     
     # Generate exports in all formats
     formats_to_test = ['pdf', 'html', 'docx']
@@ -251,10 +251,10 @@ def create_enhanced_demo_export():
     print(f"\n" + "=" * 50)
     print("ðŸŽ‰ Enhanced Export Demo Complete!")
     print("\nðŸ“ Generated files:")
-    print("   â€¢ enhanced_demo_harvard_exam.pdf")
-    print("   â€¢ enhanced_demo_harvard_exam.html")
-    print("   â€¢ enhanced_demo_harvard_exam.docx")
-    print("   â€¢ enhanced_demo_harvard_versions.zip")
+    print("   &bull; enhanced_demo_harvard_exam.pdf")
+    print("   &bull; enhanced_demo_harvard_exam.html")
+    print("   &bull; enhanced_demo_harvard_exam.docx")
+    print("   &bull; enhanced_demo_harvard_versions.zip")
     
     print(f"\nâœ¨ Features demonstrated:")
     print("   ðŸ« Complete university branding hierarchy")

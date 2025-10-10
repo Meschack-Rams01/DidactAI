@@ -24,19 +24,19 @@ def main():
     print("\nâœ… ISSUES FIXED:")
     print("-" * 30)
     print("1. âœ… URL routing error in exports delete view")
-    print("   â€¢ Fixed template reference from export.id to object.pk")
-    print("   â€¢ NoReverseMatch error resolved")
+    print("   &bull; Fixed template reference from export.id to object.pk")
+    print("   &bull; NoReverseMatch error resolved")
     
     print("\n2. âœ… DeleteView warning in exports")
-    print("   â€¢ Moved custom deletion logic from delete() to form_valid()")
-    print("   â€¢ Django best practices implemented")
+    print("   &bull; Moved custom deletion logic from delete() to form_valid()")
+    print("   &bull; Django best practices implemented")
     
     print("\n3. âœ… Malformed quiz question issue")
-    print("   â€¢ Fixed Generation ID 17 - replaced corrupted first question")
-    print("   â€¢ Export functionality fully working with proper content")
+    print("   &bull; Fixed Generation ID 17 - replaced corrupted first question")
+    print("   &bull; Export functionality fully working with proper content")
     
     print("\n4. âœ… Django settings optimization")
-    print("   â€¢ Added testserver to ALLOWED_HOSTS for testing compatibility")
+    print("   &bull; Added testserver to ALLOWED_HOSTS for testing compatibility")
     
     print("\nðŸ“Š CURRENT SYSTEM STATUS:")
     print("-" * 30)
@@ -55,7 +55,7 @@ def main():
         print("ðŸ”— URL Patterns: ALL WORKING")
         for name, expected in urls:
             actual = reverse(name.split(':')[1], args=[1] if '1' in expected else [])
-            print(f"   â€¢ {name} â†’ {actual}")
+            print(f"   &bull; {name} &larr;’ {actual}")
             
     except Exception as e:
         print(f"âŒ URL Pattern issue: {str(e)}")
@@ -65,13 +65,13 @@ def main():
         export_count = ExportJob.objects.count()
         generation_count = AIGeneration.objects.count()
         
-        print(f"\nðŸ—„ï¸ Database Status: HEALTHY")
-        print(f"   â€¢ Export Jobs: {export_count} records")
-        print(f"   â€¢ AI Generations: {generation_count} records")
+        print(f"\nðŸ—„ Database Status: HEALTHY")
+        print(f"   &bull; Export Jobs: {export_count} records")
+        print(f"   &bull; AI Generations: {generation_count} records")
         
         if export_count > 0:
             recent_export = ExportJob.objects.first()
-            print(f"   â€¢ Latest Export: '{recent_export.title}' ({recent_export.status})")
+            print(f"   &bull; Latest Export: '{recent_export.title}' ({recent_export.status})")
             
         # Check fixed generation
         try:
@@ -80,12 +80,12 @@ def main():
             q_text = first_question.get('question', '')
             
             if 'What is the primary characteristic of HPC in the cloud?' in q_text:
-                print(f"   â€¢ Fixed Quiz (ID 17): âœ… WORKING CORRECTLY")
+                print(f"   &bull; Fixed Quiz (ID 17): âœ… WORKING CORRECTLY")
             else:
-                print(f"   â€¢ Fixed Quiz (ID 17): âš ï¸ May have issues")
+                print(f"   &bull; Fixed Quiz (ID 17): âš May have issues")
                 
         except:
-            print(f"   â€¢ Fixed Quiz (ID 17): â“ Not found")
+            print(f"   &bull; Fixed Quiz (ID 17): â“ Not found")
             
     except Exception as e:
         print(f"âŒ Database issue: {str(e)}")
@@ -97,10 +97,10 @@ def main():
         html_exporter = HTMLExporter()
         export_service = ExportService()
         
-        print(f"\nðŸ› ï¸ Export Services: ALL FUNCTIONAL")
-        print(f"   â€¢ HTMLExporter: âœ… Ready")
-        print(f"   â€¢ ExportService: âœ… Ready")
-        print(f"   â€¢ University Template: âœ… Verified Working")
+        print(f"\nðŸ› Export Services: ALL FUNCTIONAL")
+        print(f"   &bull; HTMLExporter: âœ… Ready")
+        print(f"   &bull; ExportService: âœ… Ready")
+        print(f"   &bull; University Template: âœ… Verified Working")
         
     except Exception as e:
         print(f"âŒ Export service issue: {str(e)}")
@@ -125,7 +125,7 @@ def main():
         if existing_files:
             print(f"\nðŸ“„ Generated Test Files: {len(existing_files)}/4 Available")
             for file in existing_files:
-                print(f"   â€¢ {file}")
+                print(f"   &bull; {file}")
         else:
             print(f"\nðŸ“„ Generated Test Files: None found (can be regenerated)")
             
@@ -145,12 +145,12 @@ def main():
     
     print(f"\nðŸŒ ACCESS POINTS:")
     print("-" * 30)
-    print("â€¢ Main Application: http://127.0.0.1:8000/")
-    print("â€¢ Dashboard: http://127.0.0.1:8000/dashboard/")
-    print("â€¢ AI Generator: http://127.0.0.1:8000/ai-generator/")
-    print("â€¢ Export Manager: http://127.0.0.1:8000/exports/")
-    print("â€¢ Fixed Quiz: http://127.0.0.1:8000/ai-generator/view/17/")
-    print("â€¢ File Upload: http://127.0.0.1:8000/uploads/upload/")
+    print("&bull; Main Application: http://127.0.0.1:8000/")
+    print("&bull; Dashboard: http://127.0.0.1:8000/dashboard/")
+    print("&bull; AI Generator: http://127.0.0.1:8000/ai-generator/")
+    print("&bull; Export Manager: http://127.0.0.1:8000/exports/")
+    print("&bull; Fixed Quiz: http://127.0.0.1:8000/ai-generator/view/17/")
+    print("&bull; File Upload: http://127.0.0.1:8000/uploads/upload/")
     
     print(f"\nðŸ’¡ NEXT STEPS:")
     print("-" * 30)

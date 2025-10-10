@@ -39,7 +39,7 @@ def check_api_status():
         else:
             print(f"âŒ API Error: {result['error']}")
             if '429' in str(result['error']):
-                print("\nâš ï¸  QUOTA EXCEEDED - See solutions below")
+                print("\nâš  QUOTA EXCEEDED - See solutions below")
                 show_quota_solutions()
             return False
             
@@ -49,7 +49,7 @@ def check_api_status():
 
 def show_quota_solutions():
     """Display solutions for quota issues"""
-    print("\nðŸ› ï¸  SOLUTIONS FOR QUOTA ISSUES")
+    print("\nðŸ›  SOLUTIONS FOR QUOTA ISSUES")
     print("=" * 50)
     
     print("ðŸ“Š **CURRENT STATUS**: Free Tier (50 requests/day)")
@@ -59,16 +59,16 @@ def show_quota_solutions():
     print("3. **Upgrade Billing**: Enable Cloud Billing for higher limits")
     
     print("\nðŸš€ **UPGRADE OPTIONS**:")
-    print("â€¢ **Tier 1** (Billing enabled): 1,000-4,000 RPM, 1M-4M TPM")
-    print("â€¢ **Tier 2** ($250+ spent): 2,000-20,000 RPM, 3M-10M TPM") 
-    print("â€¢ **Tier 3** ($1000+ spent): 10,000-30,000 RPM, 8M-30M TPM")
+    print("&bull; **Tier 1** (Billing enabled): 1,000-4,000 RPM, 1M-4M TPM")
+    print("&bull; **Tier 2** ($250+ spent): 2,000-20,000 RPM, 3M-10M TPM") 
+    print("&bull; **Tier 3** ($1000+ spent): 10,000-30,000 RPM, 8M-30M TPM")
     
     print("\nðŸ”— **HOW TO UPGRADE**:")
     print("1. Go to: https://aistudio.google.com/app/apikey")
     print("2. Click 'Upgrade' next to your project")
     print("3. Enable Cloud Billing if not already enabled")
     
-    print("\nâ° **QUOTA RESET**: Daily quotas reset at midnight Pacific time")
+    print("\n **QUOTA RESET**: Daily quotas reset at midnight Pacific time")
 
 def show_recent_usage():
     """Show recent API usage from database"""
@@ -94,7 +94,7 @@ def show_recent_usage():
             print(f"   {status_icon} {gen.created_at.strftime('%H:%M:%S')} - {gen.title[:30]}...")
     
     if total_requests >= 45:
-        print("\nâš ï¸  WARNING: Approaching daily limit (50 requests)")
+        print("\nâš  WARNING: Approaching daily limit (50 requests)")
     elif total_requests >= 50:
         print("\nðŸš« QUOTA EXCEEDED: You've used your daily limit")
 
@@ -131,13 +131,13 @@ class EnhancedGeminiService(GeminiService):
                         retry_match = re.search(r'retry in (\\d+)', str(result['error']))
                         if retry_match:
                             retry_delay = int(retry_match.group(1))
-                            print(f"â³ Quota exceeded. Waiting {retry_delay}s...")
+                            print(f" Quota exceeded. Waiting {retry_delay}s...")
                             time.sleep(min(retry_delay, 60))  # Cap at 60 seconds
                             continue
                 
                 # Exponential backoff for other errors
                 delay = self.base_delay * (2 ** attempt)
-                print(f"â³ Attempt {attempt + 1} failed. Retrying in {delay}s...")
+                print(f" Attempt {attempt + 1} failed. Retrying in {delay}s...")
                 time.sleep(delay)
                 
             except Exception as e:
@@ -164,10 +164,10 @@ class EnhancedGeminiService(GeminiService):
     
     print("âœ… Enhanced error handling pattern available")
     print("ðŸ“ This includes:")
-    print("   â€¢ Automatic retry logic")
-    print("   â€¢ Quota-aware delays") 
-    print("   â€¢ Exponential backoff")
-    print("   â€¢ Graceful fallback")
+    print("   &bull; Automatic retry logic")
+    print("   &bull; Quota-aware delays") 
+    print("   &bull; Exponential backoff")
+    print("   &bull; Graceful fallback")
 
 def main():
     print("ðŸŽ“ Gemini API Quota Fix Tool")

@@ -16,7 +16,7 @@ Your DidactAI project is **100% functional** and ready for production deployment
 ## ðŸ† **RECOMMENDED DEPLOYMENT OPTIONS**
 
 ### 1. ðŸ¥‡ **RENDER.COM** (Recommended - Easiest)
-**â±ï¸ Deploy Time: 5 minutes | ðŸ’° Cost: Free tier available**
+** Deploy Time: 5 minutes | ðŸ’° Cost: Free tier available**
 
 #### Why Render?
 - âœ… **Zero configuration** needed
@@ -29,7 +29,7 @@ Your DidactAI project is **100% functional** and ready for production deployment
 #### Quick Deploy:
 1. **Create account**: https://render.com
 2. **Connect GitHub** (push your project first)
-3. **Create Web Service** â†’ Select your repository
+3. **Create Web Service** &larr;’ Select your repository
 4. **Auto-detected Django** settings work perfectly
 5. **Add environment variables** (see below)
 6. **Deploy!** ðŸš€
@@ -37,7 +37,7 @@ Your DidactAI project is **100% functional** and ready for production deployment
 ---
 
 ### 2. ðŸ¥ˆ **RAILWAY** (Developer Friendly)
-**â±ï¸ Deploy Time: 3 minutes | ðŸ’° Cost: $5/month**
+** Deploy Time: 3 minutes | ðŸ’° Cost: $5/month**
 
 #### Why Railway?
 - âœ… **One-click Django** deployment
@@ -60,7 +60,7 @@ railway up
 ---
 
 ### 3. ðŸ¥‰ **HEROKU** (Traditional Choice)
-**â±ï¸ Deploy Time: 10 minutes | ðŸ’° Cost: $7/month**
+** Deploy Time: 10 minutes | ðŸ’° Cost: $7/month**
 
 #### Why Heroku?
 - âœ… **Django-optimized**
@@ -70,7 +70,7 @@ railway up
 ---
 
 ### 4. ðŸ’Ž **PYTHONANYWHERE** (Python Specialist)
-**â±ï¸ Deploy Time: 15 minutes | ðŸ’° Cost: $5/month**
+** Deploy Time: 15 minutes | ðŸ’° Cost: $5/month**
 
 #### Why PythonAnywhere?
 - âœ… **Python-focused hosting**
@@ -133,7 +133,7 @@ gunicorn==21.2.0
 2. **Create Render Account**: https://render.com
 
 3. **Create Web Service**:
-   - Click "New +" â†’ "Web Service"
+   - Click "New +" &larr;’ "Web Service"
    - Connect your GitHub repository
    - **Build Command**: `./build.sh`
    - **Start Command**: `gunicorn DidactAI_project.wsgi:application -c gunicorn_config.py`
@@ -188,7 +188,7 @@ SUPPORTED_LANGUAGES=en,fr,es,de,it,pt,ru,zh,ja,ar,he,tr
 
 ---
 
-## ðŸ—„ï¸ **DATABASE MIGRATION**
+## ðŸ—„ **DATABASE MIGRATION**
 
 Your project uses SQLite for development, but production needs PostgreSQL:
 
@@ -283,10 +283,10 @@ Your project includes:
 
 | Platform | Setup Time | Cost/Month | Ease | Best For |
 |----------|------------|------------|------|----------|
-| **Render** | 5 min | Free/$7 | â­â­â­â­â­ | **Recommended** |
-| **Railway** | 3 min | $5 | â­â­â­â­â­ | Developers |
-| **Heroku** | 10 min | $7 | â­â­â­â­ | Enterprise |
-| **PythonAnywhere** | 15 min | $5 | â­â­â­ | Beginners |
+| **Render** | 5 min | Free/$7 |  | **Recommended** |
+| **Railway** | 3 min | $5 |  | Developers |
+| **Heroku** | 10 min | $7 |  | Enterprise |
+| **PythonAnywhere** | 15 min | $5 |  | Beginners |
 
 ---
 

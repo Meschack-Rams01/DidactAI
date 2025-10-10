@@ -1,4 +1,4 @@
-﻿{% extends 'base.html' %}
+{% extends 'base.html' %}
 {% load static %}
 
 {% block title %}Export Templates - DidactAI{% endblock %}
@@ -122,9 +122,9 @@
                                     </div>
                                     <div class="flex items-center space-x-4 text-sm text-gray-500">
                                         <span class="capitalize">{{ template.get_template_type_display }}</span>
-                                        <span>â€¢</span>
+                                        <span>&bull;</span>
                                         <span class="capitalize">{{ template.get_content_type_display }}</span>
-                                        <span>â€¢</span>
+                                        <span>&bull;</span>
                                         <span>Used {{ template.usage_count }} time{{ template.usage_count|pluralize }}</span>
                                     </div>
                                     {% if template.description %}

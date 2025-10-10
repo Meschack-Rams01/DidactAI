@@ -63,7 +63,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'DidactAI_project.urls'
+ROOT_URLCONF = 'didactia_project.urls'
 
 TEMPLATES = [
     {
@@ -83,7 +83,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'DidactAI_project.wsgi.application'
+WSGI_APPLICATION = 'didactia_project.wsgi.application'
 
 # Database Configuration
 DATABASE_URL = config('DATABASE_URL', default=f'sqlite:///{BASE_DIR}/db.sqlite3')
@@ -110,12 +110,17 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Internationalization
+# Internationalization and Encoding
 LANGUAGE_CODE = 'en'  # Default to English interface
 TIME_ZONE = 'UTC'
 USE_I18N = True  # Enable internationalization
 USE_TZ = True
 
+# Character encoding settings
+DEFAULT_CHARSET = 'utf-8'
+FILE_CHARSET = 'utf-8'
+
+# Language settings
 LANGUAGES = [
     ('en', 'English'),
 ]

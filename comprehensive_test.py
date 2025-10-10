@@ -94,7 +94,7 @@ def test_ai_generation():
             # Test Turkish generation
             turkish_content = """
             Matematik sayÄ±lar, ÅŸekiller ve desenler Ã¼zerine bir bilim dalÄ±dÄ±r.
-            Temel aritmetik iÅŸlemler toplama, Ã§Ä±karma, Ã§arpma ve bÃ¶lmeyi iÃ§erir.
+            Temel aritmetik iÅŸlemler toplama, karma, Ã§arpma ve bÃ¶lmeyi iÃ§erir.
             Geometri ÅŸekiller, bÃ¼yÃ¼klÃ¼kler ve uzay Ã¶zellikleri ile ilgilenir.
             Cebir denklemlerde bilinmeyen nicelikleri temsil etmek iÃ§in harfler kullanÄ±r.
             """
@@ -250,7 +250,7 @@ def test_security_features():
     }
     
     for check, passed in security_checks.items():
-        status = "âœ…" if passed else "âš ï¸"
+        status = "âœ…" if passed else "âš"
         print(f"{status} {check}: {'Passed' if passed else 'Needs attention'}")
     
     return security_checks
@@ -318,7 +318,7 @@ def run_comprehensive_tests():
                 print(f"âœ… {test_category.title()}: PASSED")
                 passed_tests += 1
             elif results.get('status') == 'partial':
-                print(f"âš ï¸ {test_category.title()}: PARTIAL")
+                print(f"âš {test_category.title()}: PARTIAL")
             else:
                 print(f"âŒ {test_category.title()}: FAILED")
         else:
@@ -335,7 +335,7 @@ def run_comprehensive_tests():
     elif success_rate >= 60:
         print("ðŸ‘ GOOD! Most features are working, minor issues to address")
     else:
-        print("âš ï¸ NEEDS ATTENTION! Several issues need to be fixed")
+        print("âš NEEDS ATTENTION! Several issues need to be fixed")
     
     # Detailed recommendations
     print("\nðŸ“ RECOMMENDATIONS:")

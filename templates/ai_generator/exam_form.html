@@ -1,4 +1,4 @@
-﻿{% extends 'base.html' %}
+{% extends 'base.html' %}
 {% load static %}
 
 {% block title %}Generate Exam - DidactAI{% endblock %}
@@ -418,7 +418,7 @@ function showFileSelector(files) {
                             <input type="checkbox" value="${file.id}" class="file-checkbox" style="margin-right: 10px;">
                             <div>
                                 <div style="font-weight: bold; font-size: 14px;">${file.original_filename}</div>
-                                <div style="font-size: 12px; color: #666;">${file.file_type.toUpperCase()} â€¢ ${file.file_size_human} â€¢ ${file.created_at}</div>
+                                <div style="font-size: 12px; color: #666;">${file.file_type.toUpperCase()} &bull; ${file.file_size_human} &bull; ${file.created_at}</div>
                             </div>
                         </label>
                     `).join('')}

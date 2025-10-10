@@ -1,4 +1,4 @@
-﻿{% extends 'base.html' %}
+{% extends 'base.html' %}
 {% load static %}
 
 {% block title %}{{ generation.title }} - Version {{ version.version_letter }} - DidactAI{% endblock %}
@@ -20,7 +20,7 @@
                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800 mr-2">
                             Version {{ version.version_letter }}
                         </span>
-                        {{ generation.generation_type|title }} â€¢ {{ generation.difficulty|title }} Difficulty
+                        {{ generation.generation_type|title }} &bull; {{ generation.difficulty|title }} Difficulty
                     </p>
                 </div>
             </div>

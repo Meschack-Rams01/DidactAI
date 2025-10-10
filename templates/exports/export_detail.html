@@ -1,4 +1,4 @@
-﻿{% extends 'base.html' %}
+{% extends 'base.html' %}
 {% load static %}
 
 {% block title %}{{ export.title }} - Export Details - DidactAI{% endblock %}
@@ -18,9 +18,9 @@
                     <h1 class="text-3xl font-bold text-gray-900">{{ export.title }}</h1>
                     <div class="mt-1 flex items-center space-x-4 text-sm text-gray-600">
                         <span class="capitalize">{{ export.get_export_format_display }}</span>
-                        <span>â€¢</span>
+                        <span>&bull;</span>
                         <span>{{ export.created_at|date:"M d, Y H:i" }}</span>
-                        <span>â€¢</span>
+                        <span>&bull;</span>
                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
                             {% if export.status == "completed" %}bg-green-100 text-green-800
                             {% elif export.status == "processing" %}bg-yellow-100 text-yellow-800

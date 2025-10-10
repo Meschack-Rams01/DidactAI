@@ -3,14 +3,14 @@
 ## ðŸ“‹ Current Status
 âœ… **Your DidactAI app is 92.5% complete and fully functional** - only AI needs refresh!  
 âŒ **Current API key quota exceeded** (50 requests/day used)  
-â° **Quota will reset in ~24 hours**, but you can get immediate access with new key
+ **Quota will reset in ~24 hours**, but you can get immediate access with new key
 
 ## ðŸš€ INSTANT FIX (3 Easy Steps)
 
 ### Step 1: Get New API Key (2 minutes)
 1. **Open**: https://aistudio.google.com/ 
 2. **Sign in** with any Google account (can use different account)
-3. **Click**: "Get API Key" â†’ "Create API Key"
+3. **Click**: "Get API Key" &larr;’ "Create API Key"
 4. **Copy** the new key (starts with `AIzaSy...`)
 
 ### Step 2: Update Your App (30 seconds)
@@ -43,7 +43,7 @@ python test_ai_refresh.py
 - **ðŸ“‹ Exam Generator** - Generate comprehensive exams  
 - **ðŸŒ 12 Languages** - English, French, Spanish, German, etc.
 - **âš¡ 3 Difficulty Levels** - Easy, Medium, Hard
-- **ðŸŽ›ï¸ Multiple Question Types** - Multiple Choice, True/False, Short Answer
+- **ðŸŽ› Multiple Question Types** - Multiple Choice, True/False, Short Answer
 - **ðŸ“Š Content Analysis** - Language detection, difficulty assessment
 - **ðŸ“„ Professional Export** - PDF/DOCX with templates
 
@@ -62,7 +62,7 @@ python test_ai_refresh.py
 After updating API key, verify these work:
 
 ### In Web Interface:
-- [ ] Login to dashboard â†’ http://127.0.0.1:8000/
+- [ ] Login to dashboard &larr;’ http://127.0.0.1:8000/
 - [ ] Navigate to **AI Generator** section
 - [ ] Upload a file (PDF/DOCX/PPTX)
 - [ ] Click **"Generate Quiz"** 
@@ -118,11 +118,11 @@ exam = exam_gen.generate_exam(
 - **German** (de) - Deutsch
 - **Italian** (it) - Italiano
 - **Portuguese** (pt) - PortuguÃªs
-- **Russian** (ru) - Ð ÑƒÑÑÐºÐ¸Ð¹
-- **Chinese** (zh) - ä¸­æ–‡
-- **Japanese** (ja) - æ—¥æœ¬èªž
-- **Arabic** (ar) - Ø§Ù„Ø¹Ø±Ø¨ÙŠØ©
-- **Hebrew** (he) - ×¢×‘×¨×™×ª
+- **Russian** (ru) - ƒ
+- **Chinese** (zh) - –‡
+- **Japanese** (ja) - æ—¥æœž
+- **Arabic** (ar) - „ŠØ©
+- **Hebrew** (he) - ‘™×ª
 - **Turkish** (tr) - TÃ¼rkÃ§e
 
 ### Question Types Supported:
@@ -184,7 +184,7 @@ You'll know everything is working when you see:
 Once AI is refreshed, your **DidactAI application is 100% complete** and ready for:
 
 ### Educational Institutions:
-- **ðŸ‘¨â€ðŸ« Teachers** - Generate quizzes from lecture materials
+- **ðŸ‘¨"ðŸ« Teachers** - Generate quizzes from lecture materials
 - **ðŸ« Schools** - Create standardized exams quickly  
 - **ðŸŽ“ Universities** - Automate assessment creation
 - **ðŸ“š Training Centers** - Build certification tests

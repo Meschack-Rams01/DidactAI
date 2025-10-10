@@ -27,7 +27,7 @@ git push origin main
 1. **Create Render Account**: https://render.com (free)
 
 2. **Create Web Service**:
-   - Click "New +" â†’ "Web Service"
+   - Click "New +" &larr;’ "Web Service"
    - Connect your GitHub repository
    - Repository: Select your DidactAI repo
 
@@ -127,7 +127,7 @@ Replace `your-app-name` with your actual app name:
 - **ðŸ  Home**: https://your-app-name.onrender.com/
 - **ðŸ¤– AI Generator**: https://your-app-name.onrender.com/ai-generator/
 - **ðŸ“Š Dashboard**: https://your-app-name.onrender.com/dashboard/
-- **âš™ï¸ Admin**: https://your-app-name.onrender.com/admin/
+- **âš™ Admin**: https://your-app-name.onrender.com/admin/
 
 ---
 

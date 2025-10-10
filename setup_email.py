@@ -21,8 +21,8 @@ def setup_email_configuration():
     
     print("ðŸ“ Gmail Setup Instructions:")
     print("1. Go to your Google Account settings (myaccount.google.com)")
-    print("2. Security â†’ 2-Step Verification (must be enabled)")
-    print("3. Security â†’ App passwords")
+    print("2. Security &larr;’ 2-Step Verification (must be enabled)")
+    print("3. Security &larr;’ App passwords")
     print("4. Generate an app password for 'DidactAI'")
     print("5. Copy the 16-character password")
     print()
@@ -32,7 +32,7 @@ def setup_email_configuration():
     print(f"Current EMAIL_BACKEND: {current_backend}")
     
     if 'console' in current_backend:
-        print("âš ï¸  Currently using console backend (emails will only show in terminal)")
+        print("âš  Currently using console backend (emails will only show in terminal)")
         print()
         
         choice = input("Would you like to set up Gmail SMTP? (y/n): ").lower().strip()

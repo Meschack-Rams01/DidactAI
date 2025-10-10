@@ -30,11 +30,11 @@ class LanguageManager:
         'de': {'name': 'German', 'native_name': 'Deutsch', 'rtl': False},
         'pt': {'name': 'Portuguese', 'native_name': 'PortuguÃªs', 'rtl': False},
         'it': {'name': 'Italian', 'native_name': 'Italiano', 'rtl': False},
-        'ru': {'name': 'Russian', 'native_name': 'Ð ÑƒÑÑÐºÐ¸Ð¹', 'rtl': False},
-        'zh': {'name': 'Chinese', 'native_name': 'ä¸­æ–‡', 'rtl': False},
-        'ja': {'name': 'Japanese', 'native_name': 'æ—¥æœ¬èªž', 'rtl': False},
-        'ar': {'name': 'Arabic', 'native_name': 'Ø§Ù„Ø¹Ø±Ø¨ÙŠØ©', 'rtl': True},
-        'he': {'name': 'Hebrew', 'native_name': '×¢×‘×¨×™×ª', 'rtl': True},
+        'ru': {'name': 'Russian', 'native_name': 'ƒ', 'rtl': False},
+        'zh': {'name': 'Chinese', 'native_name': '–‡', 'rtl': False},
+        'ja': {'name': 'Japanese', 'native_name': 'æ—¥æœž', 'rtl': False},
+        'ar': {'name': 'Arabic', 'native_name': '„ŠØ©', 'rtl': True},
+        'he': {'name': 'Hebrew', 'native_name': '‘™×ª', 'rtl': True},
     }
     
     def __init__(self):
@@ -287,7 +287,7 @@ class LocalizationUtils:
         currency_formats = {
             'USD': {'en': f'${formatted_amount}', 'default': f'{formatted_amount} USD'},
             'EUR': {'fr': f'{formatted_amount} â‚¬', 'de': f'{formatted_amount} â‚¬', 'default': f'â‚¬{formatted_amount}'},
-            'GBP': {'en': f'Â£{formatted_amount}', 'default': f'{formatted_amount} GBP'},
+            'GBP': {'en': f'£{formatted_amount}', 'default': f'{formatted_amount} GBP'},
         }
         
         if currency in currency_formats:
