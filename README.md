@@ -1,4 +1,4 @@
-# DidactAI - Educational Content Management Platform
+# Didacta - Educational Assessment Platform
 
 [![Django](https://img.shields.io/badge/Django-4.2.24-092e20?logo=django&logoColor=white)](https://djangoproject.com/)
 [![Python](https://img.shields.io/badge/Python-3.13+-3776ab?logo=python&logoColor=white)](https://python.org/)
@@ -11,9 +11,9 @@
 
 **Production Status: Operational**
 
-DidactAI is an enterprise-grade educational content management platform that leverages artificial intelligence to automate the generation of academic assessments. Built with Django and modern web technologies, it provides educational institutions with tools for efficient content creation, management, and delivery.
+Didacta is a comprehensive educational assessment platform designed for academic institutions and educators. Built with Django and modern web technologies, it streamlines the creation, management, and distribution of educational content and assessments through intelligent automation and advanced content processing capabilities.
 
-**Architecture:** Microservices • **AI Engine:** Google Gemini • **Database:** PostgreSQL/SQLite • **Deployment:** Docker/Kubernetes Ready
+**Architecture:** Microservices • **Processing Engine:** Advanced NLP • **Database:** PostgreSQL/SQLite • **Deployment:** Docker/Kubernetes Ready
 
 ## Core Features
 
@@ -24,14 +24,14 @@ DidactAI is an enterprise-grade educational content management platform that lev
 - **Content Versioning**: Track changes and maintain version history
 - **Bulk Operations**: Batch processing capabilities for large datasets
 
-### AI-Powered Assessment Generation
+### Intelligent Assessment Creation
 
-- **Natural Language Processing**: Google Gemini API integration for content analysis
-- **Multi-Modal Question Generation**: Support for multiple choice, true/false, short answer, and essay questions
-- **Difficulty Calibration**: Automatic assessment of question complexity levels
-- **Language Detection**: Multi-language content processing and generation
-- **Quality Assurance**: Automated validation of generated content accuracy
-- **Scalable Generation**: Efficient processing of large question banks
+- **Content Analysis Engine**: Advanced text processing for educational material analysis
+- **Question Bank Generation**: Automated creation of multiple choice, true/false, short answer, and essay questions
+- **Adaptive Difficulty Scaling**: Dynamic assessment of question complexity and educational level
+- **Multi-Language Support**: Content processing and generation in 12+ languages
+- **Quality Control Systems**: Automated validation and review workflows
+- **Scalable Processing**: High-performance question bank creation and management
 
 ### Export and Distribution
 
@@ -69,9 +69,9 @@ DidactAI is an enterprise-grade educational content management platform that lev
 │ - Django 4.2.24 + Django REST Framework                │
 │ - Celery for Background Tasks                           │
 ├────────────────────────────────────────────────────────────┤
-│ AI Processing Layer                                     │
-│ - Google Gemini API Integration                         │
-│ - Natural Language Processing Pipeline                  │
+│ Content Processing Layer                                │
+│ - Advanced Text Analysis Engine                         │
+│ - Educational Content Processing Pipeline               │
 ├────────────────────────────────────────────────────────────┤
 │ Data Layer                                              │
 │ - PostgreSQL/SQLite Database                            │
@@ -86,7 +86,7 @@ DidactAI is an enterprise-grade educational content management platform that lev
 | `accounts` | User authentication, authorization, and profile management |
 | `courses` | Course hierarchy, module organization, and content structure |
 | `uploads` | File processing pipeline, format conversion, and storage |
-| `ai_generator` | AI integration, content generation, and quality control |
+| `content_generator` | Automated content creation, assessment generation, and quality control |
 | `exports` | Document generation, templating, and distribution |
 | `analytics` | Metrics collection, reporting, and performance monitoring |
 | `core` | Shared utilities, common functionality, and system configuration |
@@ -100,7 +100,7 @@ DidactAI is an enterprise-grade educational content management platform that lev
 | Python | 3.13+ | Required |
 | Django | 4.2.24 | Included |
 | Database | PostgreSQL/SQLite | Configurable |
-| Google Gemini API | Latest | Required for AI features |
+| Content Processing API | Latest | Required for advanced features |
 | Redis | 6.0+ | Optional (for caching) |
 
 ### Development Environment Setup
@@ -169,7 +169,7 @@ Once the development server is running, access the application at:
 | Component | URL | Description |
 |-----------|-----|-------------|
 | Main Application | http://localhost:8000 | Primary user interface |
-| AI Generator | http://localhost:8000/ai-generator/ | Assessment creation tools |
+| Content Generator | http://localhost:8000/content-generator/ | Assessment creation tools |
 | Admin Panel | http://localhost:8000/admin | Administrative interface |
 | Dashboard | http://localhost:8000/dashboard/ | Analytics and reporting |
 | API Documentation | http://localhost:8000/api/docs/ | REST API endpoints |
@@ -217,12 +217,12 @@ DEBUG=True
 ALLOWED_HOSTS=localhost,127.0.0.1
 
 # Database Configuration
-DATABASE_URL=postgresql://user:password@localhost:5432/didactai_db
+DATABASE_URL=postgresql://user:password@localhost:5432/didacta_db
 # Or for SQLite (default):
 # DATABASE_URL=sqlite:///db.sqlite3
 
-# AI Service Configuration
-GEMINI_API_KEY=your-gemini-api-key
+# Content Processing Configuration
+PROCESSING_API_KEY=your-processing-api-key
 
 # Email Configuration (Optional)
 EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
@@ -231,7 +231,7 @@ EMAIL_PORT=587
 EMAIL_USE_TLS=True
 EMAIL_HOST_USER=your-email@domain.com
 EMAIL_HOST_PASSWORD=your-app-password
-DEFAULT_FROM_EMAIL=DidactAI <noreply@yourdomain.com>
+DEFAULT_FROM_EMAIL=Didacta <noreply@yourdomain.com>
 
 # Cache Configuration (Optional)
 REDIS_URL=redis://localhost:6379/0
@@ -263,7 +263,7 @@ For Gmail integration:
 ### Cross-Platform Support
 
 | Platform | Python Command | Virtual Environment | Package Manager |
-|----------|----------------|--------------------|-----------------|
+|----------|----------------|--------------------|-----------------| 
 | Windows | `python` | `venv\Scripts\activate` | `pip` |
 | macOS | `python3` | `source venv/bin/activate` | `pip` |
 | Linux | `python3` | `source venv/bin/activate` | `pip` |
@@ -295,61 +295,28 @@ pytest --cov=. --cov-report=html
 - **Documentation**: Maintain comprehensive docstrings
 - **Testing**: Achieve minimum 90% test coverage
 
-### 🆕 **Latest Features (October 2025)**
-- **🔧 System Optimization**: Complete platform stability and performance verification
-- **📊 Live Dashboard Statistics**: Real-time data from database with enhanced metrics
-- **📧 Email Notifications**: Advanced login alerts with comprehensive security info
-- **🔒 Password Reset System**: Professional, mobile-responsive email templates
-- **🛡️ Enhanced Security**: Advanced IP tracking, secure recovery flows, and audit logging
-- **📱 Mobile-First Design**: Fully responsive UI across all devices and screen sizes
-- **🚀 Production Deployment**: Enterprise-ready configuration with performance optimization
-- **⚡ Performance Upgrades**: Improved loading times and resource management
+## Troubleshooting
 
-## 🔧 Recent Fixes & Updates
+### Common Issues
 
-### ✅ **System Status (October 2025)**
-- **🔧 System Verified**: All Django modules and configurations confirmed working
-- **🔄 Updated Dependencies**: Django upgraded to v4.2.24, Python 3.13.5 compatible
-- **⚙️ Configuration Validated**: All project settings, database, and core functionality operational
-- **📦 Production Status**: Platform fully functional and deployment-ready
-- **🛡️ Security Enhanced**: All authentication, permissions, and data protection systems active
-
-### 🔍 **System Verification Results**
-- **✅ Python Environment**: Version 3.13.5 confirmed and operational
-- **✅ Django Framework**: Version 4.2.24 with all security patches
-- **✅ Database Integration**: SQLite configured and migrations applied
-- **✅ AI Functionality**: Google Gemini API integration active and tested
-- **✅ File Processing**: PDF/DOCX/PPTX/Image handling verified
-- **✅ Export System**: Professional document generation working
-- **✅ User Authentication**: Login, registration, and security features active
-- **✅ Email System**: Notifications and password reset functionality confirmed
-- **✅ Admin Interface**: Full administrative access and management tools
-
-### 🚫 **Common Issues & Solutions**
-
-#### Issue: `ModuleNotFoundError: No module named 'DidactAI_project'`
-**Solution**: ✅ **RESOLVED!** All module references verified and working correctly.
-
-#### Issue: Django server won't start
-**Solution**:
+#### Django server won't start
 ```bash
-# 1. Check Python path
+# Check system configuration
 python manage.py check
 
-# 2. Run migrations if needed
+# Apply database migrations
 python manage.py migrate
 
-# 3. Start server
+# Start server
 python manage.py runserver
 ```
 
-#### Issue: Missing dependencies
-**Solution**:
+#### Missing dependencies
 ```bash
 # Install all requirements
 pip install -r requirements.txt
 
-# If specific package missing
+# Install core dependencies manually if needed
 pip install django python-decouple dj-database-url
 ```
 
@@ -360,7 +327,7 @@ pip install django python-decouple dj-database-url
 1. **Account Setup**: Register and configure user profile
 2. **Course Creation**: Define course structure and metadata
 3. **Content Upload**: Process educational materials (PDF, DOCX, PPTX)
-4. **Assessment Generation**: Create quizzes and exams using AI
+4. **Assessment Generation**: Create quizzes and exams using automated tools
 5. **Export and Distribution**: Generate professional documents
 
 ### Administrative Functions
@@ -400,10 +367,10 @@ Content-Type: application/json
 }
 ```
 
-### AI Generation
+### Content Generation
 ```bash
 # Generate quiz
-POST /api/ai-generator/quiz/
+POST /api/content-generator/quiz/
 Authorization: Token your-token-here
 Content-Type: application/json
 {
@@ -425,7 +392,7 @@ python manage.py test
 
 # Run specific application tests
 python manage.py test accounts
-python manage.py test ai_generator
+python manage.py test content_generator
 python manage.py test courses
 
 # Generate coverage report
@@ -494,7 +461,7 @@ gunicorn didactia_project.wsgi:application --bind 0.0.0.0:8000
 # render.yaml
 services:
   - type: web
-    name: DidactAI
+    name: Didacta
     env: python
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn didactia_project.wsgi:application
@@ -558,7 +525,7 @@ services:
       - "8000:8000"
     environment:
       - DEBUG=False
-      - DATABASE_URL=postgresql://postgres:password@db:5432/didactai
+      - DATABASE_URL=postgresql://postgres:password@db:5432/didacta
     depends_on:
       - db
       - redis
@@ -566,7 +533,7 @@ services:
   db:
     image: postgres:15
     environment:
-      - POSTGRES_DB=didactai
+      - POSTGRES_DB=didacta
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
     volumes:
@@ -608,16 +575,6 @@ volumes:
 
 Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
 
-## API Documentation
-
-Detailed API documentation is available at `/api/docs/` when running the development server. The API provides endpoints for:
-
-- User authentication and management
-- Course and content operations
-- AI-powered content generation
-- Document export and retrieval
-- Analytics and reporting
-
 ## Performance and Scalability
 
 ### System Requirements
@@ -626,7 +583,7 @@ Detailed API documentation is available at `/api/docs/` when running the develop
 - CPU: 2 cores, 2.0 GHz
 - RAM: 4 GB
 - Storage: 10 GB available space
-- Network: Stable internet connection for AI services
+- Network: Stable internet connection for advanced features
 
 **Recommended:**
 - CPU: 4 cores, 3.0 GHz
@@ -639,7 +596,7 @@ Detailed API documentation is available at `/api/docs/` when running the develop
 - **Database**: PostgreSQL recommended for production workloads
 - **Caching**: Redis implementation for improved response times
 - **Load Balancing**: Multiple application instances with reverse proxy
-- **Background Processing**: Celery workers for AI generation tasks
+- **Background Processing**: Celery workers for content generation tasks
 
 ## License
 
@@ -653,12 +610,11 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## Acknowledgments
 
-- Google Gemini API for natural language processing capabilities
 - Django community for the robust web framework
 - Open source contributors and maintainers
+- Educational technology community
 
 ---
 
-**DidactAI** - Educational Content Management Platform  
+**Didacta** - Educational Assessment Platform  
 Built with modern web technologies for educational institutions.
-
