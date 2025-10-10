@@ -109,8 +109,8 @@ Didacta is a comprehensive educational assessment platform designed for academic
 
 ```powershell
 # Clone repository
-git clone https://github.com/ramssurprise40-spec/DidactAI-.git
-cd DidactAI-
+git clone https://github.com/Meschack-Rams01/DidactAI-2025.git
+cd DidactAI-2025
 
 # Create and activate virtual environment
 python -m venv venv
@@ -139,8 +139,8 @@ python manage.py runserver
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
 # Clone repository
-git clone https://github.com/ramssurprise40-spec/DidactAI-.git
-cd DidactAI-
+git clone https://github.com/Meschack-Rams01/DidactAI-2025.git
+cd DidactAI-2025
 
 # Create and activate virtual environment
 python3 -m venv venv
@@ -604,9 +604,9 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## Support and Documentation
 
-- **Issue Tracking**: [GitHub Issues](https://github.com/ramssurprise40-spec/DidactAI-/issues)
+- **Issue Tracking**: [GitHub Issues](https://github.com/Meschack-Rams01/DidactAI-2025/issues)
 - **Documentation**: Available in the `docs/` directory
-- **Community**: [GitHub Discussions](https://github.com/ramssurprise40-spec/DidactAI-/discussions)
+- **Community**: [GitHub Discussions](https://github.com/Meschack-Rams01/DidactAI-2025/discussions)
 
 ## Acknowledgments
 
