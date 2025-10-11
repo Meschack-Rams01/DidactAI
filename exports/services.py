@@ -1628,7 +1628,7 @@ class HTMLExporter:
                 }
                 
                 .correct-answer .option-checkbox::after {
-                    content: 'âœ“';
+                    content: '✓';
                     color: white;
                     font-size: 10px;
                     position: absolute;
@@ -2473,7 +2473,7 @@ class ExportService:
                 }
                 
                 # Add options for multiple choice questions
-                if q.question_type == 'mcq' and q.options:
+                if q.question_type == 'multiple_choice' and q.options:
                     question_data['options'] = q.options
                 
                 questions.append(question_data)

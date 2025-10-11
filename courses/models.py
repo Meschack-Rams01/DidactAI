@@ -25,6 +25,16 @@ class Course(models.Model):
         ('fr', _('French')),
         ('es', _('Spanish')),
         ('de', _('German')),
+        ('it', _('Italian')),
+        ('pt', _('Portuguese')),
+        ('ru', _('Russian')),
+        ('ar', _('Arabic')),
+        ('zh', _('Chinese')),
+        ('ja', _('Japanese')),
+        ('ko', _('Korean')),
+        ('hi', _('Hindi')),
+        ('tr', _('Turkish')),
+        ('el', _('Greek')),
     ]
     
     instructor = models.ForeignKey(

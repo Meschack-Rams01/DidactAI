@@ -286,7 +286,7 @@ class LocalizationUtils:
         # Currency symbols and positioning
         currency_formats = {
             'USD': {'en': f'${formatted_amount}', 'default': f'{formatted_amount} USD'},
-            'EUR': {'fr': f'{formatted_amount} â‚¬', 'de': f'{formatted_amount} â‚¬', 'default': f'â‚¬{formatted_amount}'},
+            'EUR': {'fr': f'{formatted_amount} ✓‚¬', 'de': f'{formatted_amount} ✓‚¬', 'default': f'✓‚¬{formatted_amount}'},
             'GBP': {'en': f'£{formatted_amount}', 'default': f'{formatted_amount} GBP'},
         }
         

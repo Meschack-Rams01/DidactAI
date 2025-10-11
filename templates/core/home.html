@@ -11,8 +11,10 @@
     <div class="min-h-screen flex flex-col justify-center items-center">
         <div class="text-center">
             <div class="mb-8">
-                <i class="fas fa-graduation-cap text-6xl text-blue-600 mb-4"></i>
-                <h1 class="text-5xl font-bold text-gray-900 mb-4">DidactAI</h1>
+                {% load static %}
+                <div class="flex justify-center mb-6">
+                    <img src="{% static 'images/logo-professional.svg' %}" alt="DidactAI Logo" class="h-20 w-auto max-w-md">
+                </div>
                 <p class="text-xl text-gray-600 max-w-2xl mx-auto">
                     {{ description }}
                 </p>
@@ -44,23 +46,44 @@
                 {% endif %}
             </div>
             
-            <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+            <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
                 <div class="bg-white p-6 rounded-lg shadow-md">
                     <i class="fas fa-robot text-3xl text-blue-600 mb-4"></i>
                     <h3 class="text-lg font-semibold mb-2">AI-Powered Generation</h3>
-                    <p class="text-gray-600">Generate quizzes, exams, and educational content using advanced AI</p>
+                    <p class="text-gray-600">Generate quizzes, exams, and educational content using Gemini AI with advanced natural language processing</p>
                 </div>
                 
                 <div class="bg-white p-6 rounded-lg shadow-md">
                     <i class="fas fa-chart-line text-3xl text-green-600 mb-4"></i>
                     <h3 class="text-lg font-semibold mb-2">Advanced Analytics</h3>
-                    <p class="text-gray-600">Track usage, performance, and engagement with comprehensive analytics</p>
+                    <p class="text-gray-600">Track usage, performance, and engagement with comprehensive real-time analytics and reporting</p>
                 </div>
                 
                 <div class="bg-white p-6 rounded-lg shadow-md">
                     <i class="fas fa-globe text-3xl text-purple-600 mb-4"></i>
                     <h3 class="text-lg font-semibold mb-2">Multilingual Support</h3>
-                    <p class="text-gray-600">Support for 11 languages with automatic translation capabilities</p>
+                    <p class="text-gray-600">Support for 14 languages including Arabic, Chinese, Japanese, Korean, Hindi, Turkish, and Greek</p>
+                </div>
+            </div>
+            
+            <!-- Additional Features -->
+            <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                    <i class="fas fa-file-export text-3xl text-indigo-600 mb-4"></i>
+                    <h4 class="font-semibold text-gray-800 mb-2">Professional Exports</h4>
+                    <p class="text-sm text-gray-600">Export to PDF, DOCX, and HTML formats with custom university branding and watermarks</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                    <i class="fas fa-code-branch text-3xl text-orange-600 mb-4"></i>
+                    <h4 class="font-semibold text-gray-800 mb-2">Version Control</h4>
+                    <p class="text-sm text-gray-600">Generate multiple versions (A, B, C) with different question orders for secure assessment distribution</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                    <i class="fas fa-graduation-cap text-3xl text-teal-600 mb-4"></i>
+                    <h4 class="font-semibold text-gray-800 mb-2">Course Management</h4>
+                    <p class="text-sm text-gray-600">Organize courses, upload materials, and manage educational content with advanced file processing</p>
                 </div>
             </div>
         </div>

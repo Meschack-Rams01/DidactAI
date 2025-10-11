@@ -87,8 +87,6 @@ class ExportDownloadView(LoginRequiredMixin, DetailView):
             'docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
             'html': 'text/html; charset=utf-8',
             'txt': 'text/plain; charset=utf-8',
-            'zip': 'application/zip',
-            'json': 'application/json; charset=utf-8',
             'xml': 'application/xml; charset=utf-8'
         }
         
@@ -229,11 +227,11 @@ def export_generation(request, generation_id):
                 export_job.branding_settings['logo_filename'] = export_job.university_logo.name
             export_job.save()
             
-            if create_versions and export_format in ['pdf', 'zip']:
+            if create_versions and export_format == 'pdf':
                 # Create multiple versions for exams
                 result = export_service.export_content(
                     content_data=export_service._prepare_generation_data(generation),
-                    export_format='zip',
+                    export_format='pdf',
                     branding=export_job.branding_settings,
                     versions=['A', 'B', 'C']
                 )

@@ -11,7 +11,10 @@
     <div class="min-h-screen flex flex-col justify-center items-center">
         <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
             <div class="text-center mb-8">
-                <i class="fas fa-graduation-cap text-4xl text-blue-600 mb-4"></i>
+                {% load static %}
+                <div class="flex justify-center mb-4">
+                    <img src="{% static 'images/logo-compact-pro.svg' %}" alt="DidactAI Logo" class="h-16 w-auto">
+                </div>
                 <h1 class="text-2xl font-bold text-gray-900">Login to DidactAI</h1>
             </div>
             

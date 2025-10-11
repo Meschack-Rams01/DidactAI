@@ -264,10 +264,10 @@ class QuizQuestion(models.Model):
     """Model for individual quiz questions"""
     
     QUESTION_TYPE_CHOICES = [
-        ('mcq', _('Multiple Choice')),
+        ('multiple_choice', _('Multiple Choice')),
         ('true_false', _('True/False')),
         ('short_answer', _('Short Answer')),
-        ('long_answer', _('Long Answer')),
+        ('essay', _('Essay')),
         ('fill_blank', _('Fill in the Blank')),
         ('matching', _('Matching')),
         ('ordering', _('Ordering')),

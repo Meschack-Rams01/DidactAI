@@ -138,9 +138,9 @@
                                     <dt class="text-sm text-gray-500">Answer Key:</dt>
                                     <dd class="text-sm text-gray-900">
                                         {% if export.include_answer_key %}
-                                            <span class="text-green-600">✓ Included</span>
+                                            <span class="text-green-600">âœ“ Included</span>
                                         {% else %}
-                                            <span class="text-red-600">✗ Not included</span>
+                                            <span class="text-red-600">âœ— Not included</span>
                                         {% endif %}
                                     </dd>
                                 </div>
@@ -148,9 +148,9 @@
                                     <dt class="text-sm text-gray-500">Instructions:</dt>
                                     <dd class="text-sm text-gray-900">
                                         {% if export.include_instructions %}
-                                            <span class="text-green-600">✓ Included</span>
+                                            <span class="text-green-600">âœ“ Included</span>
                                         {% else %}
-                                            <span class="text-red-600">✗ Not included</span>
+                                            <span class="text-red-600">âœ— Not included</span>
                                         {% endif %}
                                     </dd>
                                 </div>

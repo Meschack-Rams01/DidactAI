@@ -137,8 +137,6 @@ class ExportJob(models.Model):
         ('pdf', _('PDF')),
         ('docx', _('Word Document')),
         ('html', _('HTML')),
-        ('zip', _('ZIP Archive')),
-        ('json', _('JSON')),
     ]
     
     course = models.ForeignKey(

@@ -420,8 +420,6 @@
                                 <li><strong>PDF:</strong> Professional document format</li>
                                 <li><strong>Word:</strong> Editable document</li>
                                 <li><strong>HTML:</strong> Web-ready format</li>
-                                <li><strong>JSON:</strong> Raw data export</li>
-                                <li><strong>ZIP:</strong> Multiple formats bundled</li>
                             </ul>
                         </div>
                     </div>
@@ -451,8 +449,8 @@ document.getElementById('format').addEventListener('change', function() {
     const versionsCheckbox = document.getElementById('create_versions');
     const format = this.value;
     
-    // Only enable versions for PDF and ZIP formats
-    if (format === "pdf" || format === "zip") {
+    // Only enable versions for PDF format
+    if (format === "pdf") {
         versionsCheckbox.disabled = false;
         versionsCheckbox.parentElement.classList.remove('opacity-50');
     } else {

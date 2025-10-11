@@ -94,6 +94,12 @@ DATABASES = {
 # Custom User Model
 AUTH_USER_MODEL = 'accounts.CustomUser'
 
+# Authentication Backends
+AUTHENTICATION_BACKENDS = [
+    'accounts.backends.EmailOrUsernameModelBackend',  # Custom backend for email/username login
+    'django.contrib.auth.backends.ModelBackend',     # Default Django backend
+]
+
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -120,9 +126,22 @@ USE_TZ = True
 DEFAULT_CHARSET = 'utf-8'
 FILE_CHARSET = 'utf-8'
 
-# Language settings
+# Language settings  
 LANGUAGES = [
     ('en', 'English'),
+    ('fr', 'French'),
+    ('es', 'Spanish'), 
+    ('de', 'German'),
+    ('it', 'Italian'),
+    ('pt', 'Portuguese'),
+    ('ru', 'Russian'),
+    ('ar', 'Arabic'),
+    ('zh', 'Chinese'),
+    ('ja', 'Japanese'),
+    ('ko', 'Korean'),
+    ('hi', 'Hindi'),
+    ('tr', 'Turkish'),
+    ('el', 'Greek'),
 ]
 
 LOCALE_PATHS = [
@@ -244,7 +263,7 @@ LOGGING = {
 DidactAI_SETTINGS = {
     'ALLOWED_FILE_EXTENSIONS': config('ALLOWED_FILE_EXTENSIONS', default='pdf,docx,pptx,png,jpg,jpeg', cast=lambda v: [s.strip() for s in v.split(',')]),
     'MAX_FILE_SIZE': config('MAX_UPLOAD_SIZE', default=50000000, cast=int),
-    'SUPPORTED_LANGUAGES': config('SUPPORTED_LANGUAGES', default='en,fr,es,de,it,tr', cast=lambda v: [s.strip() for s in v.split(',')]),
+    'SUPPORTED_LANGUAGES': config('SUPPORTED_LANGUAGES', default='en,fr,es,de,it,pt,ru,ar,zh,ja,ko,hi,tr,el', cast=lambda v: [s.strip() for s in v.split(',')]),
     'DEFAULT_AI_MODEL': 'gemini-2.5-flash',
     'EXAM_VERSIONS_COUNT': 3,  # A, B, C versions
     'AUTO_DELETE_DAYS': 90,  # Auto-delete old files after 90 days
