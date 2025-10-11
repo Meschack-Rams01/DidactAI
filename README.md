@@ -29,7 +29,7 @@ Didacta is a comprehensive educational assessment platform designed for academic
 - **Content Analysis Engine**: Advanced text processing for educational material analysis
 - **Question Bank Generation**: Automated creation of multiple choice, true/false, short answer, and essay questions
 - **Adaptive Difficulty Scaling**: Dynamic assessment of question complexity and educational level
-- **Multi-Language Support**: Content processing and generation in 12+ languages
+- **Multi-Language Support**: Content processing and generation in 14 languages including Arabic, Chinese, Japanese, Korean, Hindi, Turkish, and Greek
 - **Quality Control Systems**: Automated validation and review workflows
 - **Scalable Processing**: High-performance question bank creation and management
 
