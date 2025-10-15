@@ -1,4 +1,5 @@
 #!/bin/bash
+set -Eeuo pipefail
 
 echo "=== Starting DidactAI Deployment ==="
 
@@ -11,7 +12,9 @@ echo "RENDER_DISK_PATH: ${RENDER_DISK_PATH}"
 echo "Database will be at: ${RENDER_DISK_PATH}/db.sqlite3"
 
 echo "=== Running Database Migrations ==="
-python manage.py migrate --run-syncdb --verbosity=2
+python manage.py showmigrations accounts || true
+python manage.py migrate --noinput --run-syncdb --verbosity=2
+python manage.py migrate accounts --noinput --verbosity=2
 
 echo "=== Setting up Site ==="
 python manage.py setup_site
