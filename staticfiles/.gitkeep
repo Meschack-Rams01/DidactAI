@@ -1,0 +1,2 @@
+# This file ensures the staticfiles directory is tracked by git
+# Collected static files go here during deployment
