@@ -4,10 +4,10 @@ services:
     env: python
     buildCommand: |
       pip install -r requirements.txt
+      python manage.py migrate --run-syncdb
+      python manage.py setup_site
       python manage.py collectstatic --no-input --clear
     startCommand: gunicorn didactia_project.wsgi:application --bind 0.0.0.0:10000
-    preDeployCommand: |
-      python manage.py migrate --run-syncdb && python manage.py setup_site
     disks:
       - name: data
         mountPath: /var/data
