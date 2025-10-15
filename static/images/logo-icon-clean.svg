@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Blue gradient for graduation cap -->
+    <linearGradient id="capGradientIcon" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1d4ed8;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle for better visibility -->
+  <circle cx="20" cy="20" r="20" fill="white" opacity="0.1"/>
+  
+  <!-- Graduation Cap Icon -->
+  <g transform="translate(8, 12)">
+    <!-- Main cap base -->
+    <path d="M12 14L24 11L12 8L0 11L12 14Z" fill="url(#capGradientIcon)"/>
+    <!-- Cap board -->
+    <rect x="6" y="5" width="12" height="2" rx="1" fill="url(#capGradientIcon)"/>
+    <!-- Tassel -->
+    <circle cx="20" cy="6" r="1.5" fill="#f59e0b"/>
+    <!-- Tassel string -->
+    <path d="M20 7.5 L20 10 M19 10 L21 10 M19 11 L21 11" stroke="#f59e0b" stroke-width="0.8"/>
+    <!-- Cap shadow -->
+    <ellipse cx="12" cy="15.5" rx="11" ry="1.5" fill="#1d4ed8" opacity="0.3"/>
+  </g>
+</svg>

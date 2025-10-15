@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background Circle -->
+  <circle cx="20" cy="20" r="20" fill="url(#logoGradient)"/>
+  
+  <!-- Education Book Icon -->
+  <g transform="translate(8, 8)">
+    <!-- Book Pages -->
+    <path d="M4 6C4 5.44772 4.44772 5 5 5H11.5C12.0523 5 12.5 5.44772 12.5 6V18C12.5 18.5523 12.0523 19 11.5 19H5C4.44772 19 4 18.5523 4 18V6Z" 
+          fill="white" opacity="0.9"/>
+    <path d="M11.5 5C12.0523 5 12.5 5.44772 12.5 6V18C12.5 18.5523 12.0523 19 11.5 19H19C19.5523 19 20 18.5523 20 18V6C20 5.44772 19.5523 5 19 5H11.5Z" 
+          fill="white" opacity="0.7"/>
+    
+    <!-- AI Brain Circuit -->
+    <g transform="translate(6, 7)" opacity="0.8">
+      <circle cx="6" cy="3" r="1.5" fill="none" stroke="white" stroke-width="0.5"/>
+      <circle cx="3" cy="6" r="1" fill="none" stroke="white" stroke-width="0.5"/>
+      <circle cx="9" cy="6" r="1" fill="none" stroke="white" stroke-width="0.5"/>
+      <path d="M6 4.5 L3 5 L9 5" stroke="white" stroke-width="0.5" fill="none"/>
+      <path d="M3 7 L6 8.5 L9 7" stroke="white" stroke-width="0.5" fill="none"/>
+    </g>
+    
+    <!-- Graduation Cap -->
+    <g transform="translate(2, 2)" opacity="0.6">
+      <path d="M10 4L20 8L10 12L0 8L10 4Z" fill="white"/>
+      <path d="M18 10V14C18 15.1046 14.4183 16 10 16C5.58172 16 2 15.1046 2 14V10" 
+            stroke="white" stroke-width="0.8" fill="none"/>
+    </g>
+  </g>
+  
+  <!-- Text "AI" in corner -->
+  <text x="28" y="14" font-family="Arial, sans-serif" font-size="8" font-weight="bold" fill="white" opacity="0.8">AI</text>
+</svg>

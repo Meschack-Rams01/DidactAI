@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Main gradient from navy blue to orange -->
+    <linearGradient id="mainGradientApple" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e3a8a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ea580c;stop-opacity:1" />
+    </linearGradient>
+    <!-- Circuit gradient -->
+    <linearGradient id="circuitGradientApple" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#60a5fa;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#34d399;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Rounded Rectangle Background for iOS -->
+  <rect x="0" y="0" width="180" height="180" rx="40" ry="40" fill="url(#mainGradientApple)"/>
+  
+  <!-- Bridge Structure -->
+  <g transform="translate(30, 120)">
+    <!-- Bridge Base -->
+    <path d="M0 35 L120 35 L120 45 L0 45 Z" fill="white" opacity="0.9"/>
+    <!-- Bridge Towers -->
+    <rect x="35" y="10" width="8" height="35" fill="white" opacity="0.8"/>
+    <rect x="77" y="10" width="8" height="35" fill="white" opacity="0.8"/>
+    <!-- Bridge Cables -->
+    <path d="M39 10 Q60 30 81 10" stroke="white" stroke-width="4" fill="none" opacity="0.7"/>
+    <path d="M39 18 Q60 35 81 18" stroke="white" stroke-width="3" fill="none" opacity="0.6"/>
+    <!-- Support Cables -->
+    <path d="M39 10 L20 45 M39 10 L50 45 M81 10 L70 45 M81 10 L100 45" stroke="white" stroke-width="2" opacity="0.5"/>
+  </g>
+  
+  <!-- Open Book -->
+  <g transform="translate(50, 40)">
+    <!-- Left page -->
+    <path d="M0 8 C0 4 4 0 8 0 L35 0 C39 0 43 4 43 8 L43 55 C43 59 39 63 35 63 L8 63 C4 63 0 59 0 55 Z" 
+          fill="white" opacity="0.9"/>
+    <!-- Right page -->
+    <path d="M37 8 C37 4 41 0 45 0 L72 0 C76 0 80 4 80 8 L80 55 C80 59 76 63 72 63 L45 63 C41 63 37 59 37 55 Z" 
+          fill="white" opacity="0.7"/>
+    <!-- Book spine/binding -->
+    <path d="M40 0 L40 63" stroke="white" stroke-width="2" opacity="0.6"/>
+    <!-- Page lines -->
+    <g opacity="0.4">
+      <path d="M8 20 L32 20 M8 28 L32 28 M8 36 L32 36 M8 44 L32 44" stroke="#1e3a8a" stroke-width="1.5"/>
+      <path d="M48 20 L72 20 M48 28 L72 28 M48 36 L72 36 M48 44 L72 44" stroke="#1e3a8a" stroke-width="1.5"/>
+    </g>
+  </g>
+  
+  <!-- Circuit Pattern -->
+  <g transform="translate(20, 20)" opacity="0.6">
+    <!-- Circuit nodes -->
+    <circle cx="8" cy="8" r="4" fill="none" stroke="url(#circuitGradientApple)" stroke-width="2"/>
+    <circle cx="132" cy="8" r="4" fill="none" stroke="url(#circuitGradientApple)" stroke-width="2"/>
+    <circle cx="8" cy="132" r="4" fill="none" stroke="url(#circuitGradientApple)" stroke-width="2"/>
+    <circle cx="132" cy="132" r="4" fill="none" stroke="url(#circuitGradientApple)" stroke-width="2"/>
+    <!-- Circuit connections -->
+    <path d="M12 8 L55 8 L55 25 M85 25 L128 25 L128 8" stroke="url(#circuitGradientApple)" stroke-width="2" fill="none"/>
+    <path d="M8 12 L8 55 L25 55 M25 85 L25 128 L8 128" stroke="url(#circuitGradientApple)" stroke-width="2" fill="none"/>
+    <path d="M128 12 L128 55 L115 55 M115 85 L115 128 L132 128" stroke="url(#circuitGradientApple)" stroke-width="2" fill="none"/>
+  </g>
+  
+  <!-- Gears -->
+  <g transform="translate(120, 120)" opacity="0.5">
+    <g transform="scale(1.2)">
+      <path d="M20 2 L24 6 L28 2 L32 6 L28 10 L32 14 L28 18 L24 14 L20 18 L16 14 L20 10 L16 6 Z" 
+            fill="none" stroke="white" stroke-width="3"/>
+      <circle cx="24" cy="10" r="6" fill="none" stroke="white" stroke-width="2"/>
+    </g>
+  </g>
+  
+  <!-- Small gear -->
+  <g transform="translate(140, 25)" opacity="0.4">
+    <g transform="scale(0.8)">
+      <path d="M10 1 L12 3 L14 1 L16 3 L14 5 L16 7 L14 9 L12 7 L10 9 L8 7 L10 5 L8 3 Z" 
+            fill="none" stroke="white" stroke-width="2"/>
+      <circle cx="12" cy="5" r="3" fill="none" stroke="white" stroke-width="1.5"/>
+    </g>
+  </g>
+</svg>

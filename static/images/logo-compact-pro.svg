@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="280" height="80" viewBox="0 0 280 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Main brand gradient -->
+    <linearGradient id="brandGradientCompact" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1e3a8a;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#06b6d4;stop-opacity:1" />
+    </linearGradient>
+    <!-- AI accent gradient -->
+    <linearGradient id="accentGradientCompact" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#f59e0b;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ea580c;stop-opacity:1" />
+    </linearGradient>
+    <!-- Shadow filter -->
+    <filter id="dropshadowCompact" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="1" dy="1" stdDeviation="1" flood-color="#000000" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+  
+  <!-- Logo Icon Container -->
+  <g transform="translate(15, 15)">
+    <!-- Main circular background -->
+    <circle cx="25" cy="25" r="23" fill="url(#brandGradientCompact)" filter="url(#dropshadowCompact)"/>
+    
+    <!-- Educational book -->
+    <g transform="translate(12, 15)">
+      <!-- Open book base -->
+      <path d="M3 6 C3 5 4 4 6 4 L16 4 C18 4 19 5 19 6 L19 16 C19 17 18 18 16 18 L6 18 C4 18 3 17 3 16 Z" 
+            fill="white" opacity="0.95"/>
+      <!-- Book spine -->
+      <path d="M11 4 L11 18" stroke="white" stroke-width="0.8" opacity="0.8"/>
+      <!-- Page lines -->
+      <path d="M5 8 L9 8 M5 10 L9 10 M5 12 L9 12" stroke="#1e3a8a" stroke-width="0.6" opacity="0.6"/>
+      <path d="M13 8 L17 8 M13 10 L17 10 M13 12 L17 12" stroke="#1e3a8a" stroke-width="0.6" opacity="0.6"/>
+    </g>
+    
+    <!-- AI circuit elements -->
+    <g opacity="0.6">
+      <!-- Neural nodes -->
+      <circle cx="8" cy="8" r="1.5" fill="none" stroke="white" stroke-width="1"/>
+      <circle cx="42" cy="8" r="1.5" fill="none" stroke="white" stroke-width="1"/>
+      <circle cx="8" cy="42" r="1.5" fill="none" stroke="white" stroke-width="1"/>
+      <circle cx="42" cy="42" r="1.5" fill="none" stroke="white" stroke-width="1"/>
+      <!-- Connecting lines -->
+      <path d="M10 8 L15 13 M35 13 L40 8" stroke="white" stroke-width="0.8" opacity="0.8"/>
+      <path d="M10 42 L15 37 M35 37 L40 42" stroke="white" stroke-width="0.8" opacity="0.8"/>
+    </g>
+    
+    <!-- Graduation cap accent -->
+    <g transform="translate(35, 6)">
+      <path d="M6 5 L12 3 L6 1 L0 3 L6 5 Z" fill="url(#accentGradientCompact)"/>
+      <circle cx="10" cy="2" r="0.8" fill="url(#accentGradientCompact)"/>
+    </g>
+  </g>
+  
+  <!-- Main Text: DidactAI -->
+  <text x="75" y="38" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="bold" fill="#1f2937">
+    Didact<tspan fill="url(#brandGradientCompact)">AI</tspan>
+  </text>
+  
+  <!-- Tagline -->
+  <text x="75" y="58" font-family="Arial, Helvetica, sans-serif" font-size="12" fill="#6b7280">
+    Intelligent, Adaptive Platform
+  </text>
+</svg>
