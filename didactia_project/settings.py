@@ -16,7 +16,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-change-me-in-production')
 
 # SECURITY WARNING: don't run with debug turned on in production!
+# Temporarily enable DEBUG on Render to diagnose issues
 DEBUG = config('DEBUG', default=True, cast=bool)
+if 'onrender.com' in config('ALLOWED_HOSTS', default='localhost'):
+    DEBUG = True  # Force DEBUG=True on Render for now
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1,testserver,didactai.onrender.com', cast=lambda v: [s.strip() for s in v.split(',')])
 

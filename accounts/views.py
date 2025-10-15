@@ -24,18 +24,30 @@ class RegisterView(CreateView):
     success_url = reverse_lazy('core:dashboard')
 
     def form_valid(self, form):
-        response = super().form_valid(form)
-        # Log the user in after successful registration
-        username = form.cleaned_data.get('username')
-        password = form.cleaned_data.get('password1')
-        user = authenticate(username=username, password=password)
-        if user is not None:
-            login(self.request, user)
-            messages.success(self.request, _('Welcome to DidactAI! Your account has been created successfully.'))
-        return response
+        try:
+            response = super().form_valid(form)
+            # Log the user in after successful registration
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(self.request, user)
+                messages.success(self.request, _('Welcome to DidactAI! Your account has been created successfully.'))
+            return response
+        except Exception as e:
+            messages.error(self.request, _('An error occurred during registration. Please try again.'))
+            import traceback
+            traceback.print_exc()
+            return self.form_invalid(form)
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        try:
+            context = super().get_context_data(**kwargs)
+        except Exception as e:
+            # If Site lookup fails, create basic context without site
+            context = {
+                'form': kwargs.get('form', self.form_class()),
+            }
         context['title'] = 'Create Account'
         return context
 
@@ -47,17 +59,24 @@ class CustomLoginView(LoginView):
     redirect_authenticated_user = True
 
     def form_valid(self, form):
-        # Log login activity
-        from .models import log_user_activity
-        log_user_activity(
-            user=form.get_user(),
-            activity_type='login',
-            description=f'Logged in from {form.get_user().get_full_name()}',
-            request=self.request
-        )
-        
-        messages.success(self.request, _('Welcome back!'))
-        return super().form_valid(form)
+        try:
+            # Log login activity
+            from .models import log_user_activity
+            log_user_activity(
+                user=form.get_user(),
+                activity_type='login',
+                description=f'Logged in from {form.get_user().get_full_name()}',
+                request=self.request
+            )
+            
+            messages.success(self.request, _('Welcome back!'))
+            return super().form_valid(form)
+        except Exception as e:
+            # If logging activity fails, still allow login
+            import traceback
+            traceback.print_exc()
+            messages.success(self.request, _('Welcome back!'))
+            return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
         try:
