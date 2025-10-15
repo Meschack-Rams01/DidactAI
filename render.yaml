@@ -4,16 +4,8 @@ services:
     env: python
     buildCommand: |
       pip install -r requirements.txt
-      echo "=== Running migrations ==="
-      python manage.py migrate --run-syncdb
-      echo "=== Setting up site ==="
-      python manage.py setup_site
-      echo "=== Collecting static files ==="
-      python manage.py collectstatic --no-input
-      echo "=== Verifying static files ==="
-      ls -la /var/data/staticfiles/images/ || echo "Static images directory not found"
-      echo "=== Build complete ==="
-    startCommand: gunicorn didactia_project.wsgi:application
+      python manage.py collectstatic --no-input --clear
+    startCommand: gunicorn didactia_project.wsgi:application --bind 0.0.0.0:10000
     disks:
       - name: data
         mountPath: /var/data

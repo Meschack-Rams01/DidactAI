@@ -60,7 +60,14 @@ class CustomLoginView(LoginView):
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        try:
+            context = super().get_context_data(**kwargs)
+        except Exception as e:
+            # If Site lookup fails, create basic context without site
+            from django.contrib.auth.forms import AuthenticationForm
+            context = {
+                'form': kwargs.get('form', self.form_class()),
+            }
         context['title'] = 'Login'
         return context
 
