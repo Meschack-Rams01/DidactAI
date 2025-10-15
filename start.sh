@@ -13,6 +13,7 @@ echo "Database will be at: ${RENDER_DISK_PATH}/db.sqlite3"
 
 echo "=== Running Database Migrations ==="
 python manage.py showmigrations accounts || true
+python manage.py makemigrations accounts --noinput || true
 python manage.py migrate --noinput --run-syncdb --verbosity=2
 python manage.py migrate accounts --noinput --verbosity=2
 
