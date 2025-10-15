@@ -2,7 +2,7 @@ services:
   - type: web
     name: didactai
     env: python
-    buildCommand: pip install -r requirements-deploy.txt && python manage.py migrate && python manage.py collectstatic --noinput --clear && ls -la staticfiles/images/
+    buildCommand: pip install -r requirements-deploy.txt && python manage.py setup_deployment
     startCommand: gunicorn didactia_project.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120
     envVars:
       - key: PYTHON_VERSION
@@ -15,15 +15,3 @@ services:
         value: didactai.onrender.com,localhost,127.0.0.1
       - key: SECURE_SSL_REDIRECT
         value: False
-        value: didactia_project.production_settings
-      - key: DEBUG
-        value: False
-      - key: SECRET_KEY
-        generateValue: true
-    
-  - type: pserv
-    name: didactia-db
-    env: postgresql
-    plan: free
-    databaseName: didactia_prod
-    databaseUser: didactia_user
