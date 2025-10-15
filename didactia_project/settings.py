@@ -310,8 +310,8 @@ if not DEBUG:
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     
-    # Static file serving in production
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+    # Static file serving in production - Use simple storage temporarily
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
     
     # CORS settings for production
     CORS_ALLOWED_ORIGINS = [
