@@ -3,7 +3,7 @@ services:
     name: didactai
     env: python
     buildCommand: pip install -r requirements-deploy.txt
-    startCommand: python prestart.py && gunicorn didactia_project.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120
+    startCommand:
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.9
