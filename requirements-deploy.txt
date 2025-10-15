@@ -1,0 +1,44 @@
+# Ultra-minimal requirements for successful deployment
+# Core Django only
+Django==4.2.16
+djangorestframework==3.14.0
+django-cors-headers==4.3.1
+python-decouple==3.8
+dj-database-url==2.1.0
+
+# Database
+psycopg2-binary==2.9.9
+
+# Authentication - Essential only
+django-allauth==0.57.2
+django-crispy-forms==2.1
+crispy-tailwind==0.5.0
+
+# File handling - Basic only
+Pillow>=10.4.0
+django-storages==1.14.4
+
+# AI - Core only (no heavy packages)
+google-generativeai>=0.8.0
+langchain-core>=0.2.0
+langchain-google-genai>=1.0.8
+
+# Document processing - Basic only
+PyPDF2==3.0.1
+python-docx==1.1.0
+reportlab>=4.2.0
+
+# Production server
+gunicorn>=22.0.0
+whitenoise>=6.6.0
+
+# Utilities - Essential only
+requests>=2.32.0
+celery>=5.4.0
+redis>=5.0.8
+
+# Basic monitoring
+sentry-sdk>=2.0.0
+
+# Internationalization
+django-rosetta==0.9.9
