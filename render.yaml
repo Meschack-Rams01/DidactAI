@@ -4,11 +4,15 @@ services:
     env: python
     buildCommand: |
       pip install -r requirements.txt
-      python manage.py migrate
+      echo "=== Running migrations ==="
+      python manage.py migrate --run-syncdb
+      echo "=== Setting up site ==="
+      python manage.py setup_site
+      echo "=== Collecting static files ==="
       python manage.py collectstatic --no-input
-      echo "=== Static files collected ==="
+      echo "=== Verifying static files ==="
       ls -la /var/data/staticfiles/images/ || echo "Static images directory not found"
-      echo "=== End static files check ==="
+      echo "=== Build complete ==="
     startCommand: gunicorn didactia_project.wsgi:application
     disks:
       - name: data
@@ -18,7 +22,7 @@ services:
       - key: RENDER_DISK_PATH
         value: /var/data
       - key: PYTHON_VERSION
-        value: 3.11.9
+        value: 3.11
       - key: DJANGO_SETTINGS_MODULE
         value: didactia_project.settings
       - key: DEBUG
