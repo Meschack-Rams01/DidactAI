@@ -86,10 +86,11 @@ TEMPLATES = [
 WSGI_APPLICATION = 'didactia_project.wsgi.application'
 
 # Database Configuration
-DATABASE_URL = config('DATABASE_URL', default=f'sqlite:///{BASE_DIR}/db.sqlite3')
-
-# Handle database configuration with fallback to SQLite
-try:
+DATA_DIR = Path(config('RENDER_DISK_PATH', default=BASE_DIR))
+DATABASE_URL = config('DATABASE_URL', default=f'sqlite:///{DATA_DIR / "db.sqlite3"}')
+DATABASES = {
+    'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600)
+}
     DATABASES = {
         'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600)
     }
@@ -173,7 +174,7 @@ LOCALE_PATHS = [
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_ROOT = DATA_DIR / 'staticfiles'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
