@@ -617,4 +617,5 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 ---
 
 **Didacta** - Educational Assessment Platform  
-Built with modern web technologies for educational institutions.
+Built with modern web technologies for educational institutions.#   D i d a c t A I  
+ 
