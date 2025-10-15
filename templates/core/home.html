@@ -13,7 +13,24 @@
             <div class="mb-8">
                 {% load static %}
                 <div class="flex justify-center mb-6">
-                    <img src="{% static 'images/logo-professional.svg' %}" alt="DidactAI Logo" class="h-24 w-auto max-w-md">
+                    <img src="{% static 'images/logo-professional.svg' %}" alt="DidactAI Logo" class="h-24 w-auto max-w-md" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div style="display: none;" class="flex items-center justify-center p-6 bg-gradient-to-r from-blue-800 via-blue-600 to-cyan-500 rounded-xl shadow-lg max-w-md">
+                        <!-- Icon-like visual element -->
+                        <div class="flex items-center">
+                            <div class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center mr-4">
+                                <div class="w-10 h-8 bg-white rounded-sm opacity-90 flex items-center justify-center">
+                                    <div class="w-8 h-6 bg-blue-600 rounded-sm flex">
+                                        <div class="w-1/2 border-r border-white border-opacity-50"></div>
+                                        <div class="w-1/2"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <h1 class="text-3xl font-bold text-white mb-1">Didact<span class="text-orange-300">AI</span></h1>
+                                <p class="text-blue-100 text-xs">Intelligent, Adaptive Educational Platform</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <p class="text-xl text-gray-600 max-w-2xl mx-auto">
                     {{ description }}
