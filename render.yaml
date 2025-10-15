@@ -2,8 +2,11 @@ services:
   - type: web
     name: didactai
     env: python
-    buildCommand: pip install -r requirements-deploy.txt
-    startCommand:
+    buildCommand: |
+      pip install -r requirements.txt
+      python manage.py migrate
+      python manage.py collectstatic --no-input
+    startCommand: gunicorn didactia_project.wsgi:application
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.9
