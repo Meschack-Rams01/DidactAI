@@ -1,14 +1,15 @@
-# Ultra-minimal requirements for successful deployment
-# Core Django only
+# DidactAI Requirements with PostgreSQL Support
+# Use this file when you want to add PostgreSQL database support
+
+# Core Django Dependencies
 Django==4.2.16
 djangorestframework==3.14.0
 django-cors-headers==4.3.1
 python-decouple==3.8
 dj-database-url==2.1.0
 
-# Database - Using SQLite for initial deployment
-# psycopg2-binary==2.9.9  # Commented out due to Python 3.13 compatibility issues
-# Use SQLite for now, can upgrade to PostgreSQL later
+# Database with PostgreSQL support
+psycopg2-binary==2.9.7  # Using older version compatible with Python 3.11
 
 # Authentication - Essential only
 django-allauth==0.57.2

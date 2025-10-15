@@ -87,9 +87,32 @@ WSGI_APPLICATION = 'didactia_project.wsgi.application'
 
 # Database Configuration
 DATABASE_URL = config('DATABASE_URL', default=f'sqlite:///{BASE_DIR}/db.sqlite3')
-DATABASES = {
-    'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600)
-}
+
+# Handle database configuration with fallback to SQLite
+try:
+    DATABASES = {
+        'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600)
+    }
+    # Test if this is a PostgreSQL URL but psycopg2 is not available
+    if 'postgresql' in DATABASE_URL.lower():
+        try:
+            import psycopg2
+        except ImportError:
+            print("WARNING: PostgreSQL URL provided but psycopg2 not available. Falling back to SQLite.")
+            DATABASES = {
+                'default': {
+                    'ENGINE': 'django.db.backends.sqlite3',
+                    'NAME': BASE_DIR / 'db.sqlite3',
+                }
+            }
+except Exception as e:
+    print(f"Database configuration error: {e}. Using SQLite fallback.")
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 # Custom User Model
 AUTH_USER_MODEL = 'accounts.CustomUser'
