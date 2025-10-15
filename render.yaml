@@ -1,14 +1,16 @@
 services:
   - type: web
-    name: didactia
+    name: didactai
     env: python
-    buildCommand: pip install -r requirements-fixed.txt
-    startCommand: gunicorn didactia_project.wsgi:application
-    plan: free
+    buildCommand: pip install -r requirements-deploy.txt
+    startCommand: gunicorn didactia_project.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120
     envVars:
       - key: PYTHON_VERSION
-        value: 3.11.0
+        value: 3.12.7
       - key: DJANGO_SETTINGS_MODULE
+        value: didactia_project.settings
+      - key: DEBUG
+        value: False
         value: didactia_project.production_settings
       - key: DEBUG
         value: False
