@@ -56,6 +56,7 @@ SITE_ID = 1
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'didactia_project.middleware.DatabaseInitializationMiddleware',  # Initialize database on first request
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',  # For i18n
     # 'core.i18n.LanguageMiddleware',  # Custom language detection - keep disabled to stay in English
