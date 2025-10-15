@@ -18,7 +18,7 @@ SECRET_KEY = config('SECRET_KEY', default='django-insecure-change-me-in-producti
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1,testserver', cast=lambda v: [s.strip() for s in v.split(',')])
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1,testserver,didactai.onrender.com', cast=lambda v: [s.strip() for s in v.split(',')])
 
 # Application definition
 INSTALLED_APPS = [
@@ -31,12 +31,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     
-    # Third-party apps (will be enabled after installation)
-    # 'rest_framework',
-    # 'corsheaders', 
-    # 'crispy_forms',
-    # 'crispy_tailwind',
-    # 'rosetta',  # For translations
+    # Third-party apps
+    'rest_framework',
+    'corsheaders', 
+    'crispy_forms',
+    'crispy_tailwind',
+    'rosetta',  # For translations
     
     # Local apps
     'accounts',
@@ -51,7 +51,7 @@ INSTALLED_APPS = [
 SITE_ID = 1
 
 MIDDLEWARE = [
-    # 'corsheaders.middleware.CorsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',  # For i18n
@@ -275,4 +275,28 @@ DidactAI_SETTINGS = {
 }
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Production configurations
+if not DEBUG:
+    # Security settings for production
+    SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=True, cast=bool)
+    SECURE_HSTS_SECONDS = 31536000  # 1 year
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    
+    # Static file serving in production
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+    
+    # CORS settings for production
+    CORS_ALLOWED_ORIGINS = [
+        'https://didactai.onrender.com',
+    ]
+    CORS_ALLOW_CREDENTIALS = True
+
+# Crispy Forms Configuration  
+CRISPY_ALLOWED_TEMPLATE_PACKS = 'tailwind'
+CRISPY_TEMPLATE_PACK = 'tailwind'
 
