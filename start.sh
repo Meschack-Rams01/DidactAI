@@ -37,8 +37,10 @@ else:
 "
 
 echo "=== Starting Gunicorn Server ==="
+PORT=${PORT:-10000}
+echo "Gunicorn will bind to 0.0.0.0:${PORT}"
 exec gunicorn didactia_project.wsgi:application \
-    --bind 0.0.0.0:10000 \
+    --bind 0.0.0.0:${PORT} \
     --workers 2 \
     --timeout 120 \
     --access-logfile - \

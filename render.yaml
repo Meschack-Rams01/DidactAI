@@ -5,8 +5,7 @@ services:
     buildCommand: |
       pip install -r requirements.txt
       python manage.py collectstatic --no-input --clear
-      chmod +x start.sh
-    startCommand: ./start.sh
+    startCommand: bash start.sh
     disks:
       - name: data
         mountPath: /var/data
