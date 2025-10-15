@@ -151,7 +151,7 @@ exam = exam_gen.generate_exam(
 )
 ```
 
-## â“ Troubleshooting
+## ✓“ Troubleshooting
 
 ### If test still fails:
 

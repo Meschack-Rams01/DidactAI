@@ -34,4 +34,4 @@ else:
 sudo systemctl restart DidactAI
 sudo systemctl restart nginx
 
-echo "âœ… Deployment completed!"
+echo "✓œ… Deployment completed!"

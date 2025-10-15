@@ -7,9 +7,9 @@ Write-Host "=" * 50
 # Check if Node.js is installed
 try {
     $nodeVersion = node --version
-    Write-Host "âœ… Node.js found: $nodeVersion" -ForegroundColor Green
+    Write-Host "✓œ… Node.js found: $nodeVersion" -ForegroundColor Green
 } catch {
-    Write-Host "âŒ Node.js not found. Please install Node.js first." -ForegroundColor Red
+    Write-Host "✓Œ Node.js not found. Please install Node.js first." -ForegroundColor Red
     Write-Host "   Download from: https://nodejs.org" -ForegroundColor Yellow
     exit 1
 }
@@ -18,9 +18,9 @@ try {
 Write-Host "ðŸ“¦ Installing Railway CLI..." -ForegroundColor Yellow
 try {
     npm install -g @railway/cli
-    Write-Host "âœ… Railway CLI installed" -ForegroundColor Green
+    Write-Host "✓œ… Railway CLI installed" -ForegroundColor Green
 } catch {
-    Write-Host "âŒ Failed to install Railway CLI" -ForegroundColor Red
+    Write-Host "✓Œ Failed to install Railway CLI" -ForegroundColor Red
     exit 1
 }
 
@@ -32,7 +32,7 @@ if ($loginCheck -like "*not logged in*" -or $LASTEXITCODE -ne 0) {
     railway login
     
     # Wait for login completion
-    Write-Host "â³ Waiting for login completion..." -ForegroundColor Yellow
+    Write-Host "✓³ Waiting for login completion..." -ForegroundColor Yellow
     Start-Sleep -Seconds 3
 }
 
@@ -48,7 +48,7 @@ Write-Host ""
 # Confirm deployment
 $confirmation = Read-Host "ðŸ¤” Do you want to deploy '$projectName' to Railway? (y/N)"
 if ($confirmation -ne 'y' -and $confirmation -ne 'Y') {
-    Write-Host "âŒ Deployment cancelled" -ForegroundColor Red
+    Write-Host "✓Œ Deployment cancelled" -ForegroundColor Red
     exit 0
 }
 
@@ -56,22 +56,22 @@ if ($confirmation -ne 'y' -and $confirmation -ne 'Y') {
 Write-Host "ðŸ—ï¸ Creating Railway project..." -ForegroundColor Yellow
 try {
     railway new $projectName
-    Write-Host "âœ… Railway project created" -ForegroundColor Green
+    Write-Host "✓œ… Railway project created" -ForegroundColor Green
 } catch {
-    Write-Host "âš ï¸ Project might already exist, continuing..." -ForegroundColor Yellow
+    Write-Host "✓š ï¸ Project might already exist, continuing..." -ForegroundColor Yellow
 }
 
 # Add PostgreSQL database
 Write-Host "ðŸ—„ï¸ Adding PostgreSQL database..." -ForegroundColor Yellow
 try {
     railway add postgresql
-    Write-Host "âœ… PostgreSQL database added" -ForegroundColor Green
+    Write-Host "✓œ… PostgreSQL database added" -ForegroundColor Green
 } catch {
-    Write-Host "âš ï¸ Database might already exist, continuing..." -ForegroundColor Yellow
+    Write-Host "✓š ï¸ Database might already exist, continuing..." -ForegroundColor Yellow
 }
 
 # Set essential environment variables
-Write-Host "âš™ï¸ Setting environment variables..." -ForegroundColor Yellow
+Write-Host "✓š™ï¸ Setting environment variables..." -ForegroundColor Yellow
 
 # Generate a secure SECRET_KEY
 $secretKey = [System.Web.Security.Membership]::GeneratePassword(50, 10)
@@ -87,13 +87,13 @@ Write-Host "   Your current Gemini API key from .env will be used."
 $geminiKey = (Get-Content .env | Select-String "GEMINI_API_KEY=(.+)" | ForEach-Object { $_.Matches.Groups[1].Value })
 if ($geminiKey) {
     railway variables set GEMINI_API_KEY="$geminiKey"
-    Write-Host "âœ… Gemini API key configured" -ForegroundColor Green
+    Write-Host "✓œ… Gemini API key configured" -ForegroundColor Green
 } else {
-    Write-Host "âš ï¸ No Gemini API key found in .env file" -ForegroundColor Yellow
+    Write-Host "✓š ï¸ No Gemini API key found in .env file" -ForegroundColor Yellow
     $manualGeminiKey = Read-Host "Enter your Gemini API key (or press Enter to skip)"
     if ($manualGeminiKey) {
         railway variables set GEMINI_API_KEY="$manualGeminiKey"
-        Write-Host "âœ… Gemini API key configured" -ForegroundColor Green
+        Write-Host "✓œ… Gemini API key configured" -ForegroundColor Green
     }
 }
 
@@ -103,9 +103,9 @@ Write-Host "ðŸŒ Domain Configuration" -ForegroundColor Cyan
 $domain = Read-Host "Enter your domain (e.g., myschool-DidactAI.com) or press Enter for Railway domain"
 if ($domain) {
     railway variables set ALLOWED_HOSTS="$domain,www.$domain"
-    Write-Host "âœ… Domain configured: $domain" -ForegroundColor Green
+    Write-Host "✓œ… Domain configured: $domain" -ForegroundColor Green
 } else {
-    Write-Host "âœ… Using Railway's provided domain" -ForegroundColor Green
+    Write-Host "✓œ… Using Railway's provided domain" -ForegroundColor Green
 }
 
 # Deploy the application
@@ -115,9 +115,9 @@ Write-Host "   This may take a few minutes..." -ForegroundColor Gray
 
 try {
     railway up --detach
-    Write-Host "âœ… Deployment initiated successfully!" -ForegroundColor Green
+    Write-Host "✓œ… Deployment initiated successfully!" -ForegroundColor Green
 } catch {
-    Write-Host "âŒ Deployment failed" -ForegroundColor Red
+    Write-Host "✓Œ Deployment failed" -ForegroundColor Red
     Write-Host "   Check the Railway dashboard for details" -ForegroundColor Yellow
     exit 1
 }

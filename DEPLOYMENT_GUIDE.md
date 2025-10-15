@@ -79,7 +79,7 @@ railway up
 
 ---
 
-## âš¡ **FASTEST DEPLOYMENT: RENDER.COM**
+## ✓š¡ **FASTEST DEPLOYMENT: RENDER.COM**
 
 Let's deploy your project to Render in **5 minutes**:
 

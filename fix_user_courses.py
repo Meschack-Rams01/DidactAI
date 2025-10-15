@@ -28,7 +28,7 @@ def fix_user_courses():
                 print(f"      - {course.title}")
         
         if not users.exists():
-            print("âŒ No users found!")
+            print("✓Œ No users found!")
             return False
         
         # Find users without courses
@@ -88,9 +88,9 @@ def fix_user_courses():
                 elif choice_num == 0:
                     print("  Skipping course creation.")
                 else:
-                    print("âŒ Invalid choice.")
+                    print("✓Œ Invalid choice.")
             except ValueError:
-                print("âŒ Invalid input. Please enter a number.")
+                print("✓Œ Invalid input. Please enter a number.")
         else:
             print("✅ All users have courses!")
             
@@ -104,7 +104,7 @@ def fix_user_courses():
                 print(f"   {user.get_full_name() or user.username}: {user_courses.count()} courses")
         
     except Exception as e:
-        print(f"âŒ Error: {e}")
+        print(f"✓Œ Error: {e}")
         import traceback
         traceback.print_exc()
         return False

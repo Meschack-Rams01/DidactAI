@@ -1127,54 +1127,45 @@ def export_generation(request, generation_id):
                 'total_points': sum(q.get('points', 1) for q in questions)
             }
             
-            # Generate professional export
-            if export_format == 'html':
-                # Render HTML template
-                html_content = render_to_string('exports/professional_exam.html', context)
+            # Import the new ZIP export functionality
+            from exports.services import ZipExporter
+            
+            # Create ZIP package with all formats
+            try:
+                zip_exporter = ZipExporter()
+                
+                # Determine available formats based on what's installed
+                available_formats = ['html']  # HTML is always available
+                
+                from exports.services import REPORTLAB_AVAILABLE, DOCX_AVAILABLE
+                if REPORTLAB_AVAILABLE:
+                    available_formats.append('pdf')
+                if DOCX_AVAILABLE:
+                    available_formats.append('docx')
+                
+                # Create the multi-format export ZIP
+                zip_buffer = zip_exporter.create_multi_format_export(
+                    quiz_data=context['generation'].generated_content,
+                    branding=branding,
+                    formats=available_formats,
+                    include_answer_key=include_answers
+                )
                 
                 # Generate filename
                 clean_title = "".join(c for c in generation.title if c.isalnum() or c in (' ', '-', '_')).rstrip()
                 clean_title = clean_title.replace(' ', '_')[:50]
                 timestamp = time.strftime("%Y%m%d_%H%M")
-                filename = f"{clean_title}_{timestamp}.html"
+                filename = f"{clean_title}_Complete_Export_{timestamp}.zip"
                 
-                # Return HTML response
-                response = HttpResponse(html_content, content_type='text/html; charset=utf-8')
+                # Return ZIP response
+                response = HttpResponse(zip_buffer.getvalue(), content_type='application/zip')
                 response['Content-Disposition'] = f'attachment; filename="{filename}"'
                 return response
-            
-            elif export_format == 'pdf':
-                try:
-                    # Try to use WeasyPrint for PDF generation
-                    from weasyprint import HTML, CSS
-                    
-                    html_content = render_to_string('exports/professional_exam.html', context)
-                    
-                    # Generate PDF
-                    pdf_content = HTML(string=html_content, encoding='utf-8').write_pdf()
-                    
-                    # Generate filename
-                    clean_title = "".join(c for c in generation.title if c.isalnum() or c in (' ', '-', '_')).rstrip()
-                    clean_title = clean_title.replace(' ', '_')[:50]
-                    timestamp = time.strftime("%Y%m%d_%H%M")
-                    filename = f"{clean_title}_{timestamp}.pdf"
-                    
-                    # Return PDF response
-                    response = HttpResponse(pdf_content, content_type='application/pdf')
-                    response['Content-Disposition'] = f'attachment; filename="{filename}"'
-                    return response
-                    
-                except ImportError:
-                    messages.warning(request, 'PDF export not available. Using HTML instead.')
-                    # Fall back to HTML
-                    html_content = render_to_string('exports/professional_exam.html', context)
-                    filename = f"{clean_title}_{timestamp}.html"
-                    response = HttpResponse(html_content, content_type='text/html; charset=utf-8')
-                    response['Content-Disposition'] = f'attachment; filename="{filename}"'
-                    return response
-            
-            else:
-                messages.error(request, f'Unsupported export format: {export_format}')
+                
+            except Exception as e:
+                logger.error(f"ZIP export failed: {e}")
+                messages.error(request, 'Export failed. Please try again or contact support.')
+                return redirect('ai_generator:view_generation', generation_id=generation.id)
                 
         except Exception as e:
             import traceback

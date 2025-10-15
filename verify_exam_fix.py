@@ -81,7 +81,7 @@ def verify_exam_fix():
         return True
         
     except Exception as e:
-        print(f"âŒ Error during verification: {e}")
+        print(f"✓Œ Error during verification: {e}")
         import traceback
         traceback.print_exc()
         return False

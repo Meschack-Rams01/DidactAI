@@ -1,0 +1,130 @@
+﻿import os
+import sys
+import django
+
+# Setup Django
+sys.path.append('.')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'DidactAI.settings')
+django.setup()
+
+from django.contrib.auth import get_user_model
+from django.test import Client
+from django.urls import reverse
+from courses.models import Course
+from uploads.models import UploadedFile
+from ai_generator.models import AIGeneration
+from exports.models import ExportJob
+
+User = get_user_model()
+
+def test_dashboard():
+    print("Testing Dashboard Real Data...")
+    
+    # Create/get test user
+    user, created = User.objects.get_or_create(
+        username='dashboard_test_user',
+        defaults={
+            'email': 'dashboard@test.com',
+            'first_name': 'Dashboard',
+            'last_name': 'Tester'
+        }
+    )
+    
+    if created:
+        user.set_password('testpass123')
+        user.save()
+    
+    # Create test data
+    course, _ = Course.objects.get_or_create(
+        title="Dashboard Test Course",
+        instructor=user,
+        defaults={'description': 'Test course', 'category': 'technology'}
+    )
+    
+    file_obj, _ = UploadedFile.objects.get_or_create(
+        original_filename="test.pdf",
+        uploaded_by=user,
+        course=course,
+        defaults={
+            'file_path': '/test/path.pdf',
+            'file_size': 1024,
+            'content_type': 'application/pdf',
+            'is_processed': True
+        }
+    )
+    
+    generation, _ = AIGeneration.objects.get_or_create(
+        course=course,
+        content_type='quiz',
+        title="Test Quiz",
+        defaults={
+            'input_prompt': 'Test',
+            'generated_content': {'title': 'Test Quiz'},
+            'status': 'completed'
+        }
+    )
+    
+    export_job, _ = ExportJob.objects.get_or_create(
+        generation=generation,
+        course=course,
+        title="Test Export",
+        defaults={
+            'export_format': 'pdf',
+            'status': 'completed'
+        }
+    )
+    
+    # Test dashboard view
+    client = Client()
+    client.force_login(user)
+    response = client.get(reverse('core:dashboard'))
+    
+    if response.status_code == 200:
+        print("SUCCESS: Dashboard loaded")
+        
+        # Check context data
+        stats = response.context.get('stats', {})
+        print(f"Total Courses: {stats.get('total_courses', 'MISSING')}")
+        print(f"Files Uploaded: {stats.get('total_files', 'MISSING')}")  
+        print(f"AI Generations: {stats.get('total_generations', 'MISSING')}")
+        print(f"Exports Created: {stats.get('total_exports', 'MISSING')}")
+        
+        # Verify actual data
+        actual_courses = Course.objects.filter(instructor=user).count()
+        actual_files = UploadedFile.objects.filter(uploaded_by=user).count()
+        actual_generations = AIGeneration.objects.filter(course__instructor=user).count()
+        actual_exports = ExportJob.objects.filter(course__instructor=user).count()
+        
+        print(f"\nActual Database Counts:")
+        print(f"Courses: {actual_courses}")
+        print(f"Files: {actual_files}")
+        print(f"Generations: {actual_generations}")
+        print(f"Exports: {actual_exports}")
+        
+        # Check if dashboard shows real data
+        success = (
+            stats.get('total_courses') == actual_courses and
+            stats.get('total_files') == actual_files and
+            stats.get('total_generations') == actual_generations and
+            stats.get('total_exports') == actual_exports and
+            actual_courses > 0  # Ensure we have test data
+        )
+        
+        if success:
+            print("\n*** SUCCESS: Dashboard shows REAL DATA automatically! ***")
+            print("âœ“ All statistics match database counts")
+            print("âœ“ No more hardcoded zeros")
+        else:
+            print("\n*** ISSUE: Dashboard data mismatch ***")
+            
+        return success
+    else:
+        print(f"FAILED: Dashboard HTTP {response.status_code}")
+        return False
+
+if __name__ == "__main__":
+    success = test_dashboard()
+    if success:
+        print("\nDashboard is working correctly with real data!")
+    else:
+        print("\nDashboard needs more work.")

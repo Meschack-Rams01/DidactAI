@@ -127,7 +127,7 @@ Replace `your-app-name` with your actual app name:
 - **ðŸ  Home**: https://your-app-name.onrender.com/
 - **🤖 AI Generator**: https://your-app-name.onrender.com/ai-generator/
 - **ðŸ“Š Dashboard**: https://your-app-name.onrender.com/dashboard/
-- **âš™ Admin**: https://your-app-name.onrender.com/admin/
+- **✓š™ Admin**: https://your-app-name.onrender.com/admin/
 
 ---
 

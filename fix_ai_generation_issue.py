@@ -58,11 +58,11 @@ def diagnose_generation_issues():
                         issues.append("Missing correct answer")
                     
                     if issues:
-                        print(f"     âŒ ISSUES: {', '.join(issues)}")
+                        print(f"     ✓Œ ISSUES: {', '.join(issues)}")
                     else:
                         print(f"     ✅ Question looks good")
         else:
-            print("   âŒ No generated content found")
+            print("   ✓Œ No generated content found")
 
 def create_fixed_quiz_sample():
     """Create a properly formatted quiz to test the system"""
@@ -187,7 +187,7 @@ def test_ai_service():
         print("⚠Skipping actual AI call to avoid API costs")
         
     except Exception as e:
-        print(f"âŒ Error testing Quiz Generator service: {str(e)}")
+        print(f"✓Œ Error testing Quiz Generator service: {str(e)}")
 
 def save_fixed_generation():
     """Save a properly formatted generation to the database"""
@@ -214,7 +214,7 @@ def save_fixed_generation():
         return generation
         
     except Exception as e:
-        print(f"âŒ Error saving fixed generation: {str(e)}")
+        print(f"✓Œ Error saving fixed generation: {str(e)}")
         return None
 
 def main():

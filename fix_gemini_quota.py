@@ -37,14 +37,14 @@ def check_api_status():
             print(f"ðŸ“ Response: {result['content'][:100]}...")
             return True
         else:
-            print(f"âŒ API Error: {result['error']}")
+            print(f"✓Œ API Error: {result['error']}")
             if '429' in str(result['error']):
                 print("\n⚠ QUOTA EXCEEDED - See solutions below")
                 show_quota_solutions()
             return False
             
     except Exception as e:
-        print(f"âŒ Exception: {str(e)}")
+        print(f"✓Œ Exception: {str(e)}")
         return False
 
 def show_quota_solutions():
@@ -90,7 +90,7 @@ def show_recent_usage():
     if recent_gens:
         print("\nðŸ•’ Recent generations:")
         for gen in recent_gens[:5]:
-            status_icon = "✅" if gen.status == 'completed' else "âŒ"
+            status_icon = "✅" if gen.status == 'completed' else "✓Œ"
             print(f"   {status_icon} {gen.created_at.strftime('%H:%M:%S')} - {gen.title[:30]}...")
     
     if total_requests >= 45:

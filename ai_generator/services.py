@@ -228,11 +228,14 @@ EXAMINATION SPECIFICATIONS:
 
 CRITICAL QUALITY STANDARDS:
 1. MULTIPLE CHOICE QUESTIONS:
-   - Create 1 CORRECT answer and 3 REALISTIC FALSE ANSWERS (distractors)
+   - Create 1 CORRECT answer and 4 REALISTIC FALSE ANSWERS (distractors)
+   - Generate options as PLAIN TEXT without any letter prefixes (A, B, C, D, E)
+   - Each option must be COMPLETELY UNIQUE with no duplicates or similar wording
    - False answers must be plausible but clearly incorrect
    - Avoid obviously wrong options like "None of the above" or nonsensical choices
    - Base all options on actual concepts from the content
    - Make distractors challenging but fair
+   - DO NOT include A., B., C., D., E. in the option text - these will be added automatically
 
 2. CONTENT ACCURACY:
    - All questions must directly relate to the provided content
@@ -255,10 +258,11 @@ RESPONSE FORMAT (STRICT JSON):
             "type": "multiple_choice",
             "question": "[Clear, specific question testing key concepts]",
             "options": [
-                "[Correct answer - factually accurate]",
-                "[Realistic false answer - plausible but wrong]",
-                "[Realistic false answer - plausible but wrong]",
-                "[Realistic false answer - plausible but wrong]"
+                "Correct answer text without letter prefix",
+                "First false answer text without letter prefix",
+                "Second false answer text without letter prefix", 
+                "Third false answer text without letter prefix",
+                "Fourth false answer text without letter prefix"
             ],
             "correct_answer": "A",
             "explanation": "[Detailed explanation of why the correct answer is right and why others are wrong]",
@@ -281,12 +285,27 @@ RESPONSE FORMAT (STRICT JSON):
 
 EXAMPLE OF EXCELLENT MULTIPLE CHOICE QUESTION:
 Question: "What is the primary advantage of cloud computing's elasticity feature?"
-A. "Resources can automatically scale up or down based on demand" (CORRECT)
-B. "Resources are always allocated at maximum capacity" (FALSE - opposite concept)
-C. "Resources are physically located in multiple data centers" (FALSE - that's distribution, not elasticity)
-D. "Resources are shared among multiple tenants" (FALSE - that's multi-tenancy, not elasticity)
+Options (generate WITHOUT letters):
+"Resources can automatically scale up or down based on demand" (CORRECT)
+"Resources are always allocated at maximum capacity" (FALSE - opposite concept)
+"Resources are physically located in multiple data centers" (FALSE - that's distribution, not elasticity)
+"Resources are shared among multiple tenants" (FALSE - that's multi-tenancy, not elasticity)
+"Resources require manual intervention for capacity changes" (FALSE - contradicts elasticity automation)
 
 Generate questions that match this quality standard. Every multiple choice option must be based on real concepts from the content.
+
+IMPORTANT: For EVERY multiple choice question, provide EXACTLY 5 options. Each option must be completely unique and distinct from the others.
+
+CRITICAL: DO NOT include letter prefixes (A., B., C., D., E.) in your option text. Generate only the option content. Letters will be added automatically during formatting.
+
+Example of CORRECT format:
+"options": [
+  "Infrastructure as a Service provides virtualized resources",
+  "Platform as a Service offers development environments", 
+  "Software as a Service delivers applications via browser",
+  "Network as a Service provides virtual networking",
+  "Storage as a Service offers data storage solutions"
+]
 """
         
         return prompt.strip()
@@ -350,6 +369,32 @@ Generate questions that match this quality standard. Every multiple choice optio
         # Do NOT escape quotes globally; assume model outputs valid JSON
         return json_str
     
+    def _remove_similar_options(self, options: List[str]) -> List[str]:
+        """Advanced duplicate removal that checks for similar content"""
+        if not options:
+            return []
+        
+        # First remove exact duplicates
+        unique_options = list(dict.fromkeys(options))
+        
+        # Then check for similar options (same words, different order, etc.)
+        final_options = []
+        for option in unique_options:
+            option_words = set(option.lower().split())
+            is_similar = False
+            
+            for existing_option in final_options:
+                existing_words = set(existing_option.lower().split())
+                # If more than 70% of words are the same, consider it similar
+                if len(option_words & existing_words) / max(len(option_words), len(existing_words)) > 0.7:
+                    is_similar = True
+                    break
+            
+            if not is_similar:
+                final_options.append(option)
+        
+        return final_options
+    
     def _validate_and_fix_quiz_data(self, quiz_data: Dict[str, Any]) -> Dict[str, Any]:
         """Validate and fix quiz data structure"""
         # Ensure required fields exist
@@ -379,11 +424,14 @@ Generate questions that match this quality standard. Every multiple choice optio
                 # Handle options for multiple choice
                 if fixed_question['type'] == 'multiple_choice':
                     options = question.get('options', [])
-                    if len(options) < 4:
-                        # Add default options if missing
-                        while len(options) < 4:
-                            options.append(f'Option {chr(65 + len(options))}')
-                    fixed_question['options'] = options[:4]  # Limit to 4 options
+                    # Advanced duplicate removal - check for similar content
+                    unique_options = self._remove_similar_options(options) if options else []
+                    
+                    # Ensure we have exactly 5 options for A-E format
+                    while len(unique_options) < 5:
+                        unique_options.append(f'Additional Option {chr(65 + len(unique_options))}')
+                    
+                    fixed_question['options'] = unique_options[:5]  # Always use 5 options (A-E)
                 
                 fixed_questions.append(fixed_question)
         
@@ -415,7 +463,7 @@ Generate questions that match this quality standard. Every multiple choice optio
                     'id': question_counter,
                     'type': 'multiple_choice',
                     'question': line,
-                    'options': ['Option A', 'Option B', 'Option C', 'Option D'],
+                    'options': ['Option A', 'Option B', 'Option C', 'Option D', 'Option E'][:4],  # Support A-E but default to 4
                     'correct_answer': 'A',
                     'explanation': 'This is a generated question from the course content.',
                     'difficulty': 'medium',
@@ -467,7 +515,8 @@ Generate questions that match this quality standard. Every multiple choice optio
                         'On-demand access to computing resources',
                         'Local data storage only',
                         'Fixed hardware configuration',
-                        'Single-user access'
+                        'Single-user access',
+                        'Manual server provisioning required'
                     ],
                     'correct_answer': 'A',
                     'explanation': 'Cloud computing provides on-demand access to scalable computing resources over the internet.',
@@ -483,7 +532,8 @@ Generate questions that match this quality standard. Every multiple choice optio
                         'Supervised learning',
                         'Database management',
                         'Network protocols',
-                        'File compression'
+                        'File compression',
+                        'Web page design'
                     ],
                     'correct_answer': 'A',
                     'explanation': 'Supervised learning is a fundamental type of machine learning where models learn from labeled training data.',
@@ -522,7 +572,8 @@ Generate questions that match this quality standard. Every multiple choice optio
                     'The content requires careful analysis',
                     'The information is not relevant',
                     'No conclusions can be drawn',
-                    'The content is purely fictional'
+                    'The content is purely fictional',
+                    'The material lacks academic value'
                 ],
                 'correct_answer': 'A',
                 'explanation': 'Academic content requires careful analysis and understanding.',

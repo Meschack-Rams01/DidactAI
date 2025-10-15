@@ -39,7 +39,7 @@ def fix_malformed_quiz():
             
             # Check if it's the malformed one with '"questions": ['
             if '"questions"' in str(first_question.get('question', '')):
-                print("   âŒ Found malformed first question - fixing...")
+                print("   ✓Œ Found malformed first question - fixing...")
                 
                 # Replace with a proper question
                 questions[0] = {
@@ -70,10 +70,10 @@ def fix_malformed_quiz():
         return generation.id
         
     except AIGeneration.DoesNotExist:
-        print("âŒ Generation with ID 17 not found")
+        print("✓Œ Generation with ID 17 not found")
         return None
     except Exception as e:
-        print(f"âŒ Error fixing quiz: {str(e)}")
+        print(f"✓Œ Error fixing quiz: {str(e)}")
         return None
 
 def test_export_fixed_quiz(generation_id):
@@ -133,12 +133,12 @@ def test_export_fixed_quiz(generation_id):
         if 'What is the primary characteristic of HPC in the cloud?' in student_html:
             print("   ✅ Fixed question appears in export")
         else:
-            print("   âŒ Fixed question not found in export")
+            print("   ✓Œ Fixed question not found in export")
             
         return True
         
     except Exception as e:
-        print(f"   âŒ Export test failed: {str(e)}")
+        print(f"   ✓Œ Export test failed: {str(e)}")
         return False
 
 def main():
@@ -166,7 +166,7 @@ def main():
         else:
             print(f"\n⚠Quiz {fixed_id} was fixed but export test failed")
     else:
-        print("\nâŒ Unable to fix the malformed quiz")
+        print("\n✓Œ Unable to fix the malformed quiz")
 
 if __name__ == '__main__':
     main()

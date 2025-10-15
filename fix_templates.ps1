@@ -27,24 +27,24 @@ foreach ($file in $templateFiles) {
         
         # Fix specific corruptions
         $replacements = @{
-            'â†' = '←'                    # Left arrow corruption
+            '✓†' = '←'                    # Left arrow corruption
             'à¤' = '←'                    # Another left arrow variant
-            'â€¢' = '•'                   # Bullet point corruption
+            '✓€¢' = '•'                   # Bullet point corruption
             'öŸZ' = ''                    # Remove öŸZ corruption
             'öŸ"' = ''                    # Remove öŸ" corruption
-            'Ã°Å¸â€œâ€ž' = '📄'           # Document emoji corruption
-            'Ã°Å¸â€œâ€‹' = '📋'           # Clipboard emoji corruption
-            'â€œ' = '"'                   # Left double quote
-            'â€' = '"'                    # Right double quote variant
-            'â€™' = "'"                   # Right single quote
-            'â€˜' = "'"                   # Left single quote
-            'â€"' = '—'                   # Em dash
-            'â€"' = '–'                   # En dash
-            'â€¦' = '…'                   # Ellipsis
-            'Â' = ''                      # Non-breaking space corruption
-            'ÃÂ' = ''                     # Double encoding corruption
-            'Ã¢â‚¬' = ''                  # Complex corruption pattern
-            'â‚¬' = ''                    # Euro symbol corruption
+            'Ã°Å¸✓€œ✓€ž' = '📄'           # Document emoji corruption
+            'Ã°Å¸✓€œ✓€‹' = '📋'           # Clipboard emoji corruption
+            '✓€œ' = '"'                   # Left double quote
+            '✓€' = '"'                    # Right double quote variant
+            '✓€™' = "'"                   # Right single quote
+            '✓€˜' = "'"                   # Left single quote
+            '✓€"' = '—'                   # Em dash
+            '✓€"' = '–'                   # En dash
+            '✓€¦' = '…'                   # Ellipsis
+            '' = ''                      # Non-breaking space corruption
+            'Ã' = ''                     # Double encoding corruption
+            'Ã¢✓‚¬' = ''                  # Complex corruption pattern
+            '✓‚¬' = ''                    # Euro symbol corruption
         }
         
         # Apply replacements

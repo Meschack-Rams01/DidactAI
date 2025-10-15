@@ -1,0 +1,935 @@
+﻿#!/usr/bin/env python
+"""
+Comprehensive Test Suite for Quiz and Exam Generation and Export Functionality
+
+This script tests all aspects of the quiz and exam generation system including:
+1. Quiz generation with AI
+2. Exam generation with AI
+3. PDF, DOCX, and HTML export
+4. Turkish character support
+5. File processing and OCR
+6. Download functionality
+"""
+
+import os
+import sys
+import django
+import json
+import time
+from datetime import datetime
+
+# Setup Django environment
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'DidactAI_project.settings')
+django.setup()
+
+from django.contrib.auth.models import User
+from django.test import Client
+from django.core.files.uploadedfile import SimpleUploadedFile
+from courses.models import Course
+from ai_generator.models import AIGeneration, QuizQuestion
+from ai_generator.services import QuizGenerator, ExamGenerator
+from exports.services import PDFExporter, DOCXExporter, HTMLExporter
+from exports.models import ExportJob
+from uploads.models import UploadedFile
+import logging
+
+# Setup logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+class QuizExamTester:
+    """Comprehensive tester for quiz and exam functionality"""
+    
+    def __init__(self):
+        self.client = Client()
+        self.test_user = None
+        self.test_course = None
+        self.test_results = {}
+        
+    def setup_test_environment(self):
+        """Setup test user and course"""
+        logger.info("ðŸ”§ Setting up test environment...")
+        
+        # Create test user
+        self.test_user, created = User.objects.get_or_create(
+            username='testuser',
+            defaults={
+                'email': 'test@example.com',
+                'first_name': 'Test',
+                'last_name': 'User',
+                'is_staff': True
+            }
+        )
+        if created:
+            self.test_user.set_password('testpass')
+            self.test_user.save()
+        
+        # Create test course
+        self.test_course, created = Course.objects.get_or_create(
+            title='Test Course for AI Generation',
+            defaults={
+                'instructor': self.test_user,
+                'description': 'Test course for quiz and exam generation',
+                'course_code': 'TEST-101'
+            }
+        )
+        
+        logger.info(f"✅ Test environment ready - User: {self.test_user.username}, Course: {self.test_course.title}")
+        
+    def test_file_upload_and_processing(self):
+        """Test file upload and OCR processing"""
+        logger.info("ðŸ“ Testing file upload and processing...")
+        
+        # Create test content
+        test_content = """
+        Cloud Computing Fundamentals
+        
+        Cloud computing is a model for enabling ubiquitous, convenient, on-demand network access 
+        to a shared pool of configurable computing resources. These resources include networks, 
+        servers, storage, applications, and services.
+        
+        Key Characteristics:
+        1. On-demand self-service
+        2. Broad network access
+        3. Resource pooling
+        4. Rapid elasticity
+        5. Measured service
+        
+        Service Models:
+        - Infrastructure as a Service (IaaS)
+        - Platform as a Service (PaaS) 
+        - Software as a Service (SaaS)
+        
+        Deployment Models:
+        - Public cloud
+        - Private cloud
+        - Hybrid cloud
+        - Community cloud
+        """
+        
+        try:
+            # Create test file
+            test_file = SimpleUploadedFile(
+                "test_content.txt",
+                test_content.encode('utf-8'),
+                content_type="text/plain"
+            )
+            
+            # Create uploaded file record
+            uploaded_file = UploadedFile.objects.create(
+                course=self.test_course,
+                original_filename='test_content.txt',
+                file_type='text/plain',
+                file_size=len(test_content),
+                uploaded_file=test_file,
+                is_processed=True,
+                extracted_text=test_content
+            )
+            
+            self.test_results['file_upload'] = {
+                'status': 'SUCCESS',
+                'file_id': uploaded_file.id,
+                'content_length': len(test_content),
+                'message': 'File uploaded and processed successfully'
+            }
+            logger.info("✅ File upload and processing: SUCCESS")
+            return uploaded_file
+            
+        except Exception as e:
+            self.test_results['file_upload'] = {
+                'status': 'ERROR',
+                'error': str(e),
+                'message': 'File upload failed'
+            }
+            logger.error(f"âŒ File upload failed: {e}")
+            return None
+    
+    def test_quiz_generation(self, source_file):
+        """Test AI quiz generation"""
+        logger.info("🐧  Testing quiz generation...")
+        
+        if not source_file:
+            logger.error("âŒ Cannot test quiz generation without source file")
+            return None
+            
+        try:
+            quiz_generator = QuizGenerator()
+            
+            # Generate quiz with AI
+            result = quiz_generator.generate_quiz(
+                content=source_file.extracted_text,
+                language='en',
+                num_questions=5,
+                difficulty='medium',
+                question_types=['multiple_choice', 'true_false', 'short_answer']
+            )
+            
+            if result.get('success'):
+                # Save to database
+                generation = AIGeneration.objects.create(
+                    course=self.test_course,
+                    content_type='quiz',
+                    title=result.get('title', 'Test Quiz'),
+                    input_prompt='Test quiz generation',
+                    input_parameters={
+                        'num_questions': 5,
+                        'difficulty': 'medium',
+                        'question_types': ['multiple_choice', 'true_false', 'short_answer']
+                    },
+                    generated_content=result,
+                    status='completed'
+                )
+                generation.source_files.add(source_file)
+                
+                # Create questions in database
+                questions_data = result.get('questions', [])
+                for i, q_data in enumerate(questions_data):
+                    QuizQuestion.objects.create(
+                        generation=generation,
+                        question_type=q_data.get('type', 'multiple_choice'),
+                        question_text=q_data.get('question', ''),
+                        options=q_data.get('options', []),
+                        correct_answer=q_data.get('correct_answer', ''),
+                        explanation=q_data.get('explanation', ''),
+                        difficulty=q_data.get('difficulty', 'medium'),
+                        points=q_data.get('points', 1),
+                        order=i + 1
+                    )
+                
+                self.test_results['quiz_generation'] = {
+                    'status': 'SUCCESS',
+                    'generation_id': generation.id,
+                    'num_questions': len(questions_data),
+                    'title': generation.title,
+                    'message': 'Quiz generated successfully'
+                }
+                logger.info(f"✅ Quiz generation: SUCCESS - {len(questions_data)} questions generated")
+                return generation
+            else:
+                self.test_results['quiz_generation'] = {
+                    'status': 'ERROR',
+                    'error': result.get('error', 'Unknown error'),
+                    'message': 'Quiz generation failed'
+                }
+                logger.error(f"âŒ Quiz generation failed: {result.get('error')}")
+                return None
+                
+        except Exception as e:
+            self.test_results['quiz_generation'] = {
+                'status': 'ERROR',
+                'error': str(e),
+                'message': 'Quiz generation exception'
+            }
+            logger.error(f"âŒ Quiz generation exception: {e}")
+            return None
+    
+    def test_exam_generation(self, source_file):
+        """Test AI exam generation"""
+        logger.info("ðŸ“ Testing exam generation...")
+        
+        if not source_file:
+            logger.error("âŒ Cannot test exam generation without source file")
+            return None
+            
+        try:
+            exam_generator = ExamGenerator()
+            
+            # Generate exam with AI
+            result = exam_generator.generate_exam(
+                content=source_file.extracted_text,
+                language='en',
+                num_questions=10,
+                duration=120,
+                question_types=['multiple_choice', 'short_answer']
+            )
+            
+            if result.get('success'):
+                # Save to database
+                generation = AIGeneration.objects.create(
+                    course=self.test_course,
+                    content_type='exam',
+                    title=result.get('title', 'Test Exam'),
+                    input_prompt='Test exam generation',
+                    input_parameters={
+                        'num_questions': 10,
+                        'duration': 120,
+                        'question_types': ['multiple_choice', 'short_answer']
+                    },
+                    generated_content=result,
+                    status='completed'
+                )
+                generation.source_files.add(source_file)
+                
+                # Extract questions from sections
+                questions_data = []
+                if 'sections' in result:
+                    for section in result['sections']:
+                        questions_data.extend(section.get('questions', []))
+                else:
+                    questions_data = result.get('questions', [])
+                
+                # Create questions in database
+                for i, q_data in enumerate(questions_data):
+                    QuizQuestion.objects.create(
+                        generation=generation,
+                        question_type=q_data.get('type', 'multiple_choice'),
+                        question_text=q_data.get('question', ''),
+                        options=q_data.get('options', []),
+                        correct_answer=q_data.get('correct_answer', ''),
+                        explanation=q_data.get('explanation', ''),
+                        difficulty=q_data.get('difficulty', 'medium'),
+                        points=q_data.get('points', 1),
+                        order=i + 1
+                    )
+                
+                self.test_results['exam_generation'] = {
+                    'status': 'SUCCESS',
+                    'generation_id': generation.id,
+                    'num_questions': len(questions_data),
+                    'num_sections': len(result.get('sections', [])),
+                    'title': generation.title,
+                    'message': 'Exam generated successfully'
+                }
+                logger.info(f"✅ Exam generation: SUCCESS - {len(questions_data)} questions in {len(result.get('sections', []))} sections")
+                return generation
+            else:
+                self.test_results['exam_generation'] = {
+                    'status': 'ERROR',
+                    'error': result.get('error', 'Unknown error'),
+                    'message': 'Exam generation failed'
+                }
+                logger.error(f"âŒ Exam generation failed: {result.get('error')}")
+                return None
+                
+        except Exception as e:
+            self.test_results['exam_generation'] = {
+                'status': 'ERROR',
+                'error': str(e),
+                'message': 'Exam generation exception'
+            }
+            logger.error(f"âŒ Exam generation exception: {e}")
+            return None
+    
+    def test_turkish_generation(self, source_file):
+        """Test Turkish quiz generation"""
+        logger.info("ðŸ‡¹ðŸ‡· Testing Turkish quiz generation...")
+        
+        if not source_file:
+            logger.error("âŒ Cannot test Turkish generation without source file")
+            return None
+            
+        try:
+            quiz_generator = QuizGenerator()
+            
+            # Turkish content for testing
+            turkish_content = """
+            Bilgisayar Bilimi Temelleri
+            
+            Bilgisayar bilimi, bilgisayarlar ve hesaplama sistemleri ile ilgili algoritmalar, 
+            veri yapıları ve sistem tasarımı çalŸmalarını içeren bir disiplindir.
+            
+            Temel Konular:
+            1. Programlama dilleri ve yazılım geliÅŸtirme
+            2. Veri tabanı sistemleri ve yönetimi
+            3. Yapay zeka ve makine Ÿrenmesi
+            4. Bilgisayar aÄŸları ve güvenlik
+            5. İnsan-bilgisayar etkileÅŸimi
+            
+            Algoritma Analizi:
+            Algoritmaların zaman ve bellek karmaÅŸıklŸı analizi önemlidir.
+            Big O notasyonu kullanılarak algoritmaların etkinliÄŸi deÄŸerlendirilir.
+            
+            Veri Yapıları:
+            - Diziler ve listeler
+            - AÄŸaçlar ve grafikler  
+            - YŸınlar ve kuyruklar
+            - Hash tabloları
+            """
+            
+            # Generate Turkish quiz
+            result = quiz_generator.generate_quiz(
+                content=turkish_content,
+                language='tr',
+                num_questions=4,
+                difficulty='medium',
+                question_types=['multiple_choice', 'true_false']
+            )
+            
+            if result.get('success'):
+                # Save to database
+                generation = AIGeneration.objects.create(
+                    course=self.test_course,
+                    content_type='quiz',
+                    title='Türkçe Test Quiz',
+                    input_prompt='Turkish quiz generation test',
+                    input_parameters={
+                        'language': 'tr',
+                        'num_questions': 4,
+                        'difficulty': 'medium'
+                    },
+                    generated_content=result,
+                    status='completed'
+                )
+                
+                questions_data = result.get('questions', [])
+                
+                self.test_results['turkish_generation'] = {
+                    'status': 'SUCCESS',
+                    'generation_id': generation.id,
+                    'num_questions': len(questions_data),
+                    'language': 'Turkish',
+                    'message': 'Turkish quiz generated successfully'
+                }
+                logger.info(f"✅ Turkish generation: SUCCESS - {len(questions_data)} Turkish questions")
+                return generation
+            else:
+                self.test_results['turkish_generation'] = {
+                    'status': 'ERROR',
+                    'error': result.get('error', 'Unknown error'),
+                    'message': 'Turkish quiz generation failed'
+                }
+                logger.error(f"âŒ Turkish generation failed: {result.get('error')}")
+                return None
+                
+        except Exception as e:
+            self.test_results['turkish_generation'] = {
+                'status': 'ERROR',
+                'error': str(e),
+                'message': 'Turkish generation exception'
+            }
+            logger.error(f"âŒ Turkish generation exception: {e}")
+            return None
+    
+    def test_pdf_export(self, generation):
+        """Test PDF export functionality"""
+        logger.info("ðŸ“„ Testing PDF export...")
+        
+        if not generation:
+            logger.error("âŒ Cannot test PDF export without generation")
+            return None
+            
+        try:
+            from exports.services import REPORTLAB_AVAILABLE
+            if not REPORTLAB_AVAILABLE:
+                self.test_results['pdf_export'] = {
+                    'status': 'SKIPPED',
+                    'message': 'ReportLab not available for PDF export'
+                }
+                logger.warning("⚠PDF export skipped - ReportLab not available")
+                return None
+            
+            pdf_exporter = PDFExporter()
+            
+            # Test branding
+            branding = {
+                'university_name': 'Test University',
+                'faculty': 'Faculty of Computer Science',
+                'department': 'Computer Engineering Department',
+                'course': 'CS 101 - Introduction to Programming',
+                'instructor': 'Dr. Test Instructor',
+                'academic_year': '2024-2025',
+                'semester': 'Fall Semester',
+                'exam_date': datetime.now().strftime('%B %d, %Y'),
+                'student_info': {
+                    'include_student_name': True,
+                    'include_student_id': True,
+                    'include_signature': True
+                }
+            }
+            
+            # Export to PDF
+            pdf_buffer = pdf_exporter.export_quiz(generation.generated_content, branding)
+            
+            # Save to file for testing
+            pdf_filename = f"test_{generation.content_type}_{generation.id}.pdf"
+            with open(pdf_filename, 'wb') as f:
+                f.write(pdf_buffer.getvalue())
+            
+            file_size = os.path.getsize(pdf_filename)
+            
+            self.test_results['pdf_export'] = {
+                'status': 'SUCCESS',
+                'filename': pdf_filename,
+                'file_size': file_size,
+                'file_size_kb': round(file_size / 1024, 1),
+                'message': f'PDF exported successfully ({round(file_size / 1024, 1)} KB)'
+            }
+            logger.info(f"✅ PDF export: SUCCESS - {pdf_filename} ({round(file_size / 1024, 1)} KB)")
+            return pdf_filename
+            
+        except Exception as e:
+            self.test_results['pdf_export'] = {
+                'status': 'ERROR',
+                'error': str(e),
+                'message': 'PDF export failed'
+            }
+            logger.error(f"âŒ PDF export failed: {e}")
+            return None
+    
+    def test_docx_export(self, generation):
+        """Test DOCX export functionality"""
+        logger.info("ðŸ“ Testing DOCX export...")
+        
+        if not generation:
+            logger.error("âŒ Cannot test DOCX export without generation")
+            return None
+            
+        try:
+            from exports.services import DOCX_AVAILABLE
+            if not DOCX_AVAILABLE:
+                self.test_results['docx_export'] = {
+                    'status': 'SKIPPED',
+                    'message': 'python-docx not available for DOCX export'
+                }
+                logger.warning("⚠DOCX export skipped - python-docx not available")
+                return None
+            
+            docx_exporter = DOCXExporter()
+            
+            # Test branding
+            branding = {
+                'university_name': 'Test University',
+                'faculty': 'Faculty of Computer Science',
+                'department': 'Computer Engineering Department',
+                'course': 'CS 101 - Introduction to Programming',
+                'instructor': 'Dr. Test Instructor',
+                'academic_year': '2024-2025',
+                'semester': 'Fall Semester',
+                'exam_date': datetime.now().strftime('%B %d, %Y'),
+                'student_info': {
+                    'include_student_name': True,
+                    'include_student_id': True,
+                    'include_signature': True
+                }
+            }
+            
+            # Export to DOCX
+            docx_buffer = docx_exporter.export_quiz(generation.generated_content, branding)
+            
+            # Save to file for testing
+            docx_filename = f"test_{generation.content_type}_{generation.id}.docx"
+            with open(docx_filename, 'wb') as f:
+                f.write(docx_buffer.getvalue())
+            
+            file_size = os.path.getsize(docx_filename)
+            
+            self.test_results['docx_export'] = {
+                'status': 'SUCCESS',
+                'filename': docx_filename,
+                'file_size': file_size,
+                'file_size_kb': round(file_size / 1024, 1),
+                'message': f'DOCX exported successfully ({round(file_size / 1024, 1)} KB)'
+            }
+            logger.info(f"✅ DOCX export: SUCCESS - {docx_filename} ({round(file_size / 1024, 1)} KB)")
+            return docx_filename
+            
+        except Exception as e:
+            self.test_results['docx_export'] = {
+                'status': 'ERROR',
+                'error': str(e),
+                'message': 'DOCX export failed'
+            }
+            logger.error(f"âŒ DOCX export failed: {e}")
+            return None
+    
+    def test_html_export(self, generation):
+        """Test HTML export functionality"""
+        logger.info("ðŸŒ Testing HTML export...")
+        
+        if not generation:
+            logger.error("âŒ Cannot test HTML export without generation")
+            return None
+            
+        try:
+            html_exporter = HTMLExporter()
+            
+            # Test branding
+            branding = {
+                'university_name': 'Test University',
+                'faculty': 'Faculty of Computer Science',
+                'department': 'Computer Engineering Department',
+                'course': 'CS 101 - Introduction to Programming',
+                'instructor': 'Dr. Test Instructor',
+                'academic_year': '2024-2025',
+                'semester': 'Fall Semester',
+                'exam_date': datetime.now().strftime('%B %d, %Y')
+            }
+            
+            # Export to HTML (student version)
+            html_content_student = html_exporter.export_quiz(
+                generation.generated_content, 
+                branding, 
+                show_answers=False
+            )
+            
+            # Export to HTML (instructor version with answers)
+            html_content_instructor = html_exporter.export_quiz(
+                generation.generated_content, 
+                branding, 
+                show_answers=True
+            )
+            
+            # Save student version
+            student_filename = f"test_{generation.content_type}_{generation.id}_student.html"
+            with open(student_filename, 'w', encoding='utf-8') as f:
+                f.write(html_content_student)
+            
+            # Save instructor version
+            instructor_filename = f"test_{generation.content_type}_{generation.id}_instructor.html"
+            with open(instructor_filename, 'w', encoding='utf-8') as f:
+                f.write(html_content_instructor)
+            
+            student_size = os.path.getsize(student_filename)
+            instructor_size = os.path.getsize(instructor_filename)
+            
+            self.test_results['html_export'] = {
+                'status': 'SUCCESS',
+                'student_filename': student_filename,
+                'instructor_filename': instructor_filename,
+                'student_size_kb': round(student_size / 1024, 1),
+                'instructor_size_kb': round(instructor_size / 1024, 1),
+                'message': f'HTML exported successfully (Student: {round(student_size / 1024, 1)} KB, Instructor: {round(instructor_size / 1024, 1)} KB)'
+            }
+            logger.info(f"✅ HTML export: SUCCESS - Student & Instructor versions created")
+            return [student_filename, instructor_filename]
+            
+        except Exception as e:
+            self.test_results['html_export'] = {
+                'status': 'ERROR',
+                'error': str(e),
+                'message': 'HTML export failed'
+            }
+            logger.error(f"âŒ HTML export failed: {e}")
+            return None
+    
+    def test_turkish_character_support(self, turkish_generation):
+        """Test Turkish character support in exports"""
+        logger.info("ðŸ‡¹ðŸ‡· Testing Turkish character support in exports...")
+        
+        if not turkish_generation:
+            logger.error("âŒ Cannot test Turkish character support without Turkish generation")
+            return
+        
+        try:
+            # Test Turkish characters in different exports
+            turkish_tests = {}
+            
+            # Test PDF with Turkish characters
+            try:
+                from exports.services import REPORTLAB_AVAILABLE
+                if REPORTLAB_AVAILABLE:
+                    pdf_exporter = PDFExporter()
+                    branding = {
+                        'university_name': 'İstanbul Üniversitesi',
+                        'faculty': 'Mühendislik Fakültesi',
+                        'department': 'Bilgisayar MühendisliÄŸi Bölümü',
+                        'course': 'BM 101 - Programlamaya GiriÅŸ',
+                        'instructor': 'Prof. Dr. Türkçe ÖÄŸretim Üyesi'
+                    }
+                    
+                    pdf_buffer = pdf_exporter.export_quiz(turkish_generation.generated_content, branding)
+                    
+                    turkish_pdf_filename = f"turkish_test_{turkish_generation.id}.pdf"
+                    with open(turkish_pdf_filename, 'wb') as f:
+                        f.write(pdf_buffer.getvalue())
+                    
+                    turkish_tests['pdf'] = {
+                        'status': 'SUCCESS',
+                        'filename': turkish_pdf_filename,
+                        'size_kb': round(os.path.getsize(turkish_pdf_filename) / 1024, 1)
+                    }
+                else:
+                    turkish_tests['pdf'] = {'status': 'SKIPPED', 'reason': 'ReportLab not available'}
+            except Exception as e:
+                turkish_tests['pdf'] = {'status': 'ERROR', 'error': str(e)}
+            
+            # Test DOCX with Turkish characters
+            try:
+                from exports.services import DOCX_AVAILABLE
+                if DOCX_AVAILABLE:
+                    docx_exporter = DOCXExporter()
+                    branding = {
+                        'university_name': 'İstanbul Üniversitesi',
+                        'faculty': 'Mühendislik Fakültesi',
+                        'department': 'Bilgisayar MühendisliÄŸi Bölümü',
+                        'course': 'BM 101 - Programlamaya GiriÅŸ',
+                        'instructor': 'Prof. Dr. Türkçe ÖÄŸretim Üyesi'
+                    }
+                    
+                    docx_buffer = docx_exporter.export_quiz(turkish_generation.generated_content, branding)
+                    
+                    turkish_docx_filename = f"turkish_test_{turkish_generation.id}.docx"
+                    with open(turkish_docx_filename, 'wb') as f:
+                        f.write(docx_buffer.getvalue())
+                    
+                    turkish_tests['docx'] = {
+                        'status': 'SUCCESS',
+                        'filename': turkish_docx_filename,
+                        'size_kb': round(os.path.getsize(turkish_docx_filename) / 1024, 1)
+                    }
+                else:
+                    turkish_tests['docx'] = {'status': 'SKIPPED', 'reason': 'python-docx not available'}
+            except Exception as e:
+                turkish_tests['docx'] = {'status': 'ERROR', 'error': str(e)}
+            
+            # Test HTML with Turkish characters
+            try:
+                html_exporter = HTMLExporter()
+                branding = {
+                    'university_name': 'İstanbul Üniversitesi',
+                    'faculty': 'Mühendislik Fakültesi',
+                    'department': 'Bilgisayar MühendisliÄŸi Bölümü',
+                    'course': 'BM 101 - Programlamaya GiriÅŸ',
+                    'instructor': 'Prof. Dr. Türkçe ÖÄŸretim Üyesi'
+                }
+                
+                html_content = html_exporter.export_quiz(
+                    turkish_generation.generated_content,
+                    branding,
+                    show_answers=False
+                )
+                
+                turkish_html_filename = f"turkish_test_{turkish_generation.id}.html"
+                with open(turkish_html_filename, 'w', encoding='utf-8') as f:
+                    f.write(html_content)
+                
+                turkish_tests['html'] = {
+                    'status': 'SUCCESS',
+                    'filename': turkish_html_filename,
+                    'size_kb': round(os.path.getsize(turkish_html_filename) / 1024, 1)
+                }
+            except Exception as e:
+                turkish_tests['html'] = {'status': 'ERROR', 'error': str(e)}
+            
+            # Determine overall status
+            success_count = sum(1 for test in turkish_tests.values() if test.get('status') == 'SUCCESS')
+            total_tests = len(turkish_tests)
+            
+            self.test_results['turkish_character_support'] = {
+                'status': 'SUCCESS' if success_count > 0 else 'ERROR',
+                'successful_formats': success_count,
+                'total_formats': total_tests,
+                'details': turkish_tests,
+                'message': f'Turkish character support: {success_count}/{total_tests} formats successful'
+            }
+            
+            logger.info(f"✅ Turkish character support: {success_count}/{total_tests} formats successful")
+            
+        except Exception as e:
+            self.test_results['turkish_character_support'] = {
+                'status': 'ERROR',
+                'error': str(e),
+                'message': 'Turkish character support test failed'
+            }
+            logger.error(f"âŒ Turkish character support test failed: {e}")
+    
+    def test_database_integration(self):
+        """Test database integration"""
+        logger.info("ðŸ—„ Testing database integration...")
+        
+        try:
+            # Count generations
+            quiz_count = AIGeneration.objects.filter(content_type='quiz').count()
+            exam_count = AIGeneration.objects.filter(content_type='exam').count()
+            total_generations = AIGeneration.objects.count()
+            
+            # Count questions
+            total_questions = QuizQuestion.objects.count()
+            
+            # Count uploaded files
+            total_files = UploadedFile.objects.count()
+            
+            self.test_results['database_integration'] = {
+                'status': 'SUCCESS',
+                'quiz_generations': quiz_count,
+                'exam_generations': exam_count,
+                'total_generations': total_generations,
+                'total_questions': total_questions,
+                'uploaded_files': total_files,
+                'message': f'Database integration successful - {total_generations} generations, {total_questions} questions'
+            }
+            logger.info(f"✅ Database integration: SUCCESS - {total_generations} generations, {total_questions} questions")
+            
+        except Exception as e:
+            self.test_results['database_integration'] = {
+                'status': 'ERROR',
+                'error': str(e),
+                'message': 'Database integration test failed'
+            }
+            logger.error(f"âŒ Database integration failed: {e}")
+    
+    def run_all_tests(self):
+        """Run all tests"""
+        start_time = time.time()
+        logger.info("🚀 Starting comprehensive quiz and exam functionality tests...")
+        
+        # Setup
+        self.setup_test_environment()
+        
+        # Test file upload and processing
+        uploaded_file = self.test_file_upload_and_processing()
+        
+        # Test AI generation
+        quiz_generation = self.test_quiz_generation(uploaded_file)
+        exam_generation = self.test_exam_generation(uploaded_file)
+        turkish_generation = self.test_turkish_generation(uploaded_file)
+        
+        # Test exports
+        if quiz_generation:
+            self.test_pdf_export(quiz_generation)
+            self.test_docx_export(quiz_generation)
+            self.test_html_export(quiz_generation)
+        
+        # Test Turkish character support
+        self.test_turkish_character_support(turkish_generation)
+        
+        # Test database integration
+        self.test_database_integration()
+        
+        # Calculate summary
+        end_time = time.time()
+        total_time = end_time - start_time
+        
+        # Generate test report
+        self.generate_test_report(total_time)
+    
+    def generate_test_report(self, total_time):
+        """Generate comprehensive test report"""
+        logger.info("ðŸ“Š Generating test report...")
+        
+        # Count results
+        total_tests = len(self.test_results)
+        successful_tests = sum(1 for result in self.test_results.values() if result.get('status') == 'SUCCESS')
+        failed_tests = sum(1 for result in self.test_results.values() if result.get('status') == 'ERROR')
+        skipped_tests = sum(1 for result in self.test_results.values() if result.get('status') == 'SKIPPED')
+        
+        # Calculate success rate
+        success_rate = (successful_tests / total_tests) * 100 if total_tests > 0 else 0
+        
+        # Generate report
+        report = f"""
+{'='*80}
+               DidactAI QUIZ AND EXAM FUNCTIONALITY TEST REPORT
+{'='*80}
+
+TEST SUMMARY:
+✅ Successful Tests: {successful_tests}/{total_tests} ({success_rate:.1f}%)
+âŒ Failed Tests: {failed_tests}
+⚠ Skipped Tests: {skipped_tests}
+  Total Time: {total_time:.2f} seconds
+
+DETAILED RESULTS:
+{'='*80}
+"""
+        
+        for test_name, result in self.test_results.items():
+            status_icon = {
+                'SUCCESS': '✅',
+                'ERROR': 'âŒ',
+                'SKIPPED': 'âš'
+            }.get(result.get('status', 'UNKNOWN'), 'â“')
+            
+            report += f"\n{status_icon} {test_name.upper().replace('_', ' ')}:\n"
+            report += f"   Status: {result.get('status', 'UNKNOWN')}\n"
+            report += f"   Message: {result.get('message', 'No message')}\n"
+            
+            if result.get('status') == 'ERROR' and result.get('error'):
+                report += f"   Error: {result['error']}\n"
+            
+            # Add specific details
+            if test_name == 'quiz_generation' and result.get('status') == 'SUCCESS':
+                report += f"   Generation ID: {result.get('generation_id')}\n"
+                report += f"   Questions Generated: {result.get('num_questions')}\n"
+                report += f"   Title: {result.get('title')}\n"
+            
+            elif test_name == 'exam_generation' and result.get('status') == 'SUCCESS':
+                report += f"   Generation ID: {result.get('generation_id')}\n"
+                report += f"   Questions Generated: {result.get('num_questions')}\n"
+                report += f"   Sections: {result.get('num_sections')}\n"
+                report += f"   Title: {result.get('title')}\n"
+            
+            elif test_name in ['pdf_export', 'docx_export'] and result.get('status') == 'SUCCESS':
+                report += f"   Filename: {result.get('filename')}\n"
+                report += f"   File Size: {result.get('file_size_kb')} KB\n"
+            
+            elif test_name == 'html_export' and result.get('status') == 'SUCCESS':
+                report += f"   Student Version: {result.get('student_filename')} ({result.get('student_size_kb')} KB)\n"
+                report += f"   Instructor Version: {result.get('instructor_filename')} ({result.get('instructor_size_kb')} KB)\n"
+            
+            elif test_name == 'turkish_character_support' and result.get('status') == 'SUCCESS':
+                report += f"   Successful Formats: {result.get('successful_formats')}/{result.get('total_formats')}\n"
+                for format_name, format_result in result.get('details', {}).items():
+                    if format_result.get('status') == 'SUCCESS':
+                        report += f"   - {format_name.upper()}: ✅ ({format_result.get('size_kb')} KB)\n"
+                    elif format_result.get('status') == 'SKIPPED':
+                        report += f"   - {format_name.upper()}: ⚠{format_result.get('reason', 'Skipped')}\n"
+                    else:
+                        report += f"   - {format_name.upper()}: âŒ Error\n"
+            
+            elif test_name == 'database_integration' and result.get('status') == 'SUCCESS':
+                report += f"   Quiz Generations: {result.get('quiz_generations')}\n"
+                report += f"   Exam Generations: {result.get('exam_generations')}\n"
+                report += f"   Total Questions: {result.get('total_questions')}\n"
+                report += f"   Uploaded Files: {result.get('uploaded_files')}\n"
+        
+        report += f"\n{'='*80}\n"
+        
+        # Quality assessment
+        if success_rate >= 90:
+            quality_status = "🌟 EXCELLENT"
+            quality_message = "All core functionality working perfectly!"
+        elif success_rate >= 80:
+            quality_status = "ðŸŸ¢ GOOD"
+            quality_message = "Most functionality working well with minor issues."
+        elif success_rate >= 60:
+            quality_status = "ðŸŸ¡ FAIR"
+            quality_message = "Basic functionality working but needs improvement."
+        else:
+            quality_status = "ðŸ”´ POOR"
+            quality_message = "Significant issues found. Requires attention."
+        
+        report += f"OVERALL QUALITY: {quality_status}\n"
+        report += f"Assessment: {quality_message}\n"
+        report += f"{'='*80}\n"
+        
+        # Save report to file
+        report_filename = f"quiz_exam_test_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
+        with open(report_filename, 'w', encoding='utf-8') as f:
+            f.write(report)
+        
+        # Print report
+        print(report)
+        logger.info(f"ðŸ“„ Test report saved to: {report_filename}")
+        
+        # Summary log
+        logger.info(f"ðŸ Testing completed: {success_rate:.1f}% success rate ({successful_tests}/{total_tests} tests passed)")
+        
+        return {
+            'success_rate': success_rate,
+            'total_tests': total_tests,
+            'successful_tests': successful_tests,
+            'failed_tests': failed_tests,
+            'report_file': report_filename
+        }
+
+def main():
+    """Main function"""
+    print("🍎“ DidactAI Quiz and Exam Functionality Tester")
+    print("=" * 50)
+    
+    tester = QuizExamTester()
+    results = tester.run_all_tests()
+    
+    print(f"\n🍎¯ Final Results:")
+    print(f"   Success Rate: {results['success_rate']:.1f}%")
+    print(f"   Tests Passed: {results['successful_tests']}/{results['total_tests']}")
+    print(f"   Report File: {results['report_file']}")
+    
+    if results['success_rate'] >= 80:
+        print("🎉 Quiz and Exam system is working well!")
+    else:
+        print("⚠ Quiz and Exam system needs attention.")
+
+if __name__ == '__main__':
+    main()

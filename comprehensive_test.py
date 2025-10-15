@@ -50,13 +50,13 @@ def test_database_connectivity():
                 print(f"✅ {name}: {count} records")
                 results[name] = {'status': 'success', 'count': count}
             except Exception as e:
-                print(f"âŒ {name}: Error - {str(e)}")
+                print(f"✓Œ {name}: Error - {str(e)}")
                 results[name] = {'status': 'error', 'error': str(e)}
         
         return results
         
     except Exception as e:
-        print(f"âŒ Database connectivity test failed: {e}")
+        print(f"✓Œ Database connectivity test failed: {e}")
         return {'status': 'failed', 'error': str(e)}
 
 def test_ai_generation():
@@ -112,14 +112,14 @@ def test_ai_generation():
                 print(f"✅ Turkish quiz generated: {len(turkish_questions)} questions")
                 return {'status': 'success', 'english_questions': len(questions), 'turkish_questions': len(turkish_questions)}
             else:
-                print(f"âŒ Turkish generation failed: {turkish_result.get('error', 'Unknown error')}")
+                print(f"✓Œ Turkish generation failed: {turkish_result.get('error', 'Unknown error')}")
                 return {'status': 'partial', 'english_questions': len(questions), 'turkish_error': turkish_result.get('error')}
         else:
-            print(f"âŒ English generation failed: {result.get('error', 'Unknown error')}")
+            print(f"✓Œ English generation failed: {result.get('error', 'Unknown error')}")
             return {'status': 'failed', 'error': result.get('error', 'Unknown error')}
             
     except Exception as e:
-        print(f"âŒ AI Generation test failed: {str(e)}")
+        print(f"✓Œ AI Generation test failed: {str(e)}")
         traceback.print_exc()
         return {'status': 'error', 'error': str(e)}
 
@@ -173,7 +173,7 @@ def test_export_system():
             print(f"✅ PDF Export: {pdf_size:,} bytes generated")
             results['pdf'] = {'status': 'success', 'size': pdf_size}
         except Exception as e:
-            print(f"âŒ PDF Export failed: {str(e)}")
+            print(f"✓Œ PDF Export failed: {str(e)}")
             results['pdf'] = {'status': 'error', 'error': str(e)}
         
         # Test DOCX export
@@ -184,7 +184,7 @@ def test_export_system():
             print(f"✅ DOCX Export: {docx_size:,} bytes generated")
             results['docx'] = {'status': 'success', 'size': docx_size}
         except Exception as e:
-            print(f"âŒ DOCX Export failed: {str(e)}")
+            print(f"✓Œ DOCX Export failed: {str(e)}")
             results['docx'] = {'status': 'error', 'error': str(e)}
         
         # Test HTML export
@@ -195,13 +195,13 @@ def test_export_system():
             print(f"✅ HTML Export: {html_size:,} characters generated")
             results['html'] = {'status': 'success', 'size': html_size}
         except Exception as e:
-            print(f"âŒ HTML Export failed: {str(e)}")
+            print(f"✓Œ HTML Export failed: {str(e)}")
             results['html'] = {'status': 'error', 'error': str(e)}
         
         return results
         
     except Exception as e:
-        print(f"âŒ Export system test failed: {str(e)}")
+        print(f"✓Œ Export system test failed: {str(e)}")
         return {'status': 'error', 'error': str(e)}
 
 def test_file_processing():
@@ -223,7 +223,7 @@ def test_file_processing():
             detected_lang = detect(sample_text)
             print(f"✅ Language detection: {detected_lang}")
         except Exception as e:
-            print(f"âŒ Language detection failed: {e}")
+            print(f"✓Œ Language detection failed: {e}")
         
         # Test text extraction simulation
         print("✅ Text processing: Functional")
@@ -231,7 +231,7 @@ def test_file_processing():
         return {'status': 'success', 'language_detection': True, 'text_processing': True}
         
     except Exception as e:
-        print(f"âŒ File processing test failed: {str(e)}")
+        print(f"✓Œ File processing test failed: {str(e)}")
         return {'status': 'error', 'error': str(e)}
 
 def test_security_features():
@@ -250,7 +250,7 @@ def test_security_features():
     }
     
     for check, passed in security_checks.items():
-        status = "✅" if passed else "âš"
+        status = "✅" if passed else "✓š"
         print(f"{status} {check}: {'Passed' if passed else 'Needs attention'}")
     
     return security_checks
@@ -278,13 +278,13 @@ def test_template_rendering():
                 print(f"✅ {template_name}: Found and loadable")
                 results[template_name] = 'success'
             except Exception as e:
-                print(f"âŒ {template_name}: Error - {str(e)}")
+                print(f"✓Œ {template_name}: Error - {str(e)}")
                 results[template_name] = 'error'
         
         return results
         
     except Exception as e:
-        print(f"âŒ Template rendering test failed: {str(e)}")
+        print(f"✓Œ Template rendering test failed: {str(e)}")
         return {'status': 'error', 'error': str(e)}
 
 def run_comprehensive_tests():
@@ -320,7 +320,7 @@ def run_comprehensive_tests():
             elif results.get('status') == 'partial':
                 print(f"⚠{test_category.title()}: PARTIAL")
             else:
-                print(f"âŒ {test_category.title()}: FAILED")
+                print(f"✓Œ {test_category.title()}: FAILED")
         else:
             print(f"✅ {test_category.title()}: COMPLETED")
             passed_tests += 1

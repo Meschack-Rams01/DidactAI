@@ -1,0 +1,92 @@
+﻿#!/usr/bin/env python
+"""
+Test script to verify the clean PDF export functionality
+"""
+import os
+import django
+
+# Setup Django
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'DidactAI_Template.settings')
+django.setup()
+
+from exports.services import PDFExporter
+
+# Sample test data
+test_quiz_data = {
+    'title': 'Cloud Computing Fundamentals and Computing Paradigms',
+    'description': 'A comprehensive examination covering cloud computing principles and paradigms',
+    'estimated_duration': '120 minutes',
+    'total_points': 100,
+    'questions': [
+        {
+            'type': 'multiple_choice',
+            'question': 'What is the primary benefit of cloud computing scalability?',
+            'options': [
+                'Reduced hardware costs',
+                'Automatic resource adjustment based on demand',
+                'Faster network speeds',
+                'Better security protocols'
+            ],
+            'correct_answer': 'B',
+            'points': 5
+        },
+        {
+            'type': 'true_false', 
+            'question': 'Infrastructure as a Service (IaaS) provides the highest level of control over computing resources.',
+            'correct_answer': 'True',
+            'points': 3
+        },
+        {
+            'type': 'short_answer',
+            'question': 'Explain the difference between public and private cloud deployments.',
+            'points': 10
+        },
+        {
+            'type': 'essay',
+            'question': 'Discuss the advantages and disadvantages of adopting a hybrid cloud strategy for an enterprise organization.',
+            'points': 15
+        }
+    ]
+}
+
+# Test branding
+test_branding = {
+    'university_name': 'Technical University',
+    'department': 'Computer Science Department',
+    'course': 'CS 4800 - Cloud Computing',
+    'semester': 'Fall 2024',
+    'instructor': 'Dr. Smith'
+}
+
+def test_clean_pdf_export():
+    """Test that PDF export produces clean output without question type labels"""
+    try:
+        # Create PDF exporter
+        pdf_exporter = PDFExporter()
+        
+        # Generate PDF
+        pdf_buffer = pdf_exporter.export_quiz(test_quiz_data, test_branding)
+        
+        # Save test file
+        with open('test_clean_export.pdf', 'wb') as f:
+            f.write(pdf_buffer.getvalue())
+        
+        print("✅ SUCCESS: Clean PDF export generated successfully!")
+        print("ðŸ“„ File saved as: test_clean_export.pdf") 
+        print("ðŸ“‹ The PDF should contain:")
+        print("   - NO question type labels like [Multiple Choice], [True/False], etc.")
+        print("   - Clean professional formatting")
+        print("   - University branding")
+        print("   - Proper question numbering")
+        print("   - Clean option formatting (A., B., C., D.)")
+        
+    except Exception as e:
+        print(f"âŒ ERROR: {str(e)}")
+        return False
+    
+    return True
+
+if __name__ == '__main__':
+    print("🐧ª Testing Clean PDF Export (No Question Types)")
+    print("=" * 50)
+    test_clean_pdf_export()

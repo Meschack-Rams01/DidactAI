@@ -35,9 +35,9 @@ def fix_all_corruptions(content):
     # Dictionary of specific character replacements
     replacements = {
         # Arrow corruptions
-        'â†': '←',           # Left arrow corruption
+        '✓†': '←',           # Left arrow corruption
         'à¤': '←',           # Another left arrow variant
-        'â†'': '→',          # Right arrow corruption
+        '✓†'': '→',          # Right arrow corruption
         
         # Bullet point corruptions  
         '"¢': '•',          # Bullet point corruption
@@ -69,15 +69,15 @@ def fix_all_corruptions(content):
         '"¦': '…',          # Ellipsis
         '': '',             # Non-breaking space corruption
         'ö': 'ö',          # o with umlaut
-        'Ã¢': 'â',          # a with circumflex
+        'Ã¢': '✓',          # a with circumflex
         'é': 'é',          # e with acute
         'Ã ': 'à',          # a with grave
         'ü': 'ü',          # u with umlaut
         
         # Remove corrupted sequences before common words
         'Ã': '',            # Double encoding corruption
-        'Ã¢â‚¬': '',         # Complex corruption pattern
-        'â‚¬': '',           # Euro symbol corruption
+        'Ã¢✓‚¬': '',         # Complex corruption pattern
+        '✓‚¬': '',           # Euro symbol corruption
     }
     
     # Apply specific replacements

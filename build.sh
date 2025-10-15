@@ -17,5 +17,5 @@ python manage.py collectstatic --noinput
 echo "ðŸ—„ï¸ Applying database migrations..."
 python manage.py migrate
 
-echo "âœ… Build process completed successfully!"
+echo "✓œ… Build process completed successfully!"
 echo "ðŸŽ‰ DidactAI is ready for deployment!"

@@ -7,7 +7,7 @@ echo "=================================="
 
 # Check if Python 3 is installed
 if ! command -v python3 &> /dev/null; then
-    echo "âŒ Python 3 not found. Installing via Homebrew..."
+    echo "✓Œ Python 3 not found. Installing via Homebrew..."
     
     # Check if Homebrew is installed
     if ! command -v brew &> /dev/null; then
@@ -18,7 +18,7 @@ if ! command -v python3 &> /dev/null; then
     # Install Python
     brew install python
 else
-    echo "âœ… Python 3 found: $(python3 --version)"
+    echo "✓œ… Python 3 found: $(python3 --version)"
 fi
 
 # Create virtual environment
@@ -41,9 +41,9 @@ pip install -r requirements.txt
 echo "ðŸ“ Setting up environment file..."
 if [ ! -f .env ]; then
     cp .env.example .env
-    echo "âœ… .env file created from template"
+    echo "✓œ… .env file created from template"
 else
-    echo "âš ï¸  .env file already exists, skipping..."
+    echo "✓š ï¸  .env file already exists, skipping..."
 fi
 
 echo ""
@@ -70,4 +70,4 @@ echo "ðŸ”‘ Don't forget to add your API keys to .env:"
 echo "   - GEMINI_API_KEY=your-gemini-api-key"
 echo "   - HUGGINGFACE_API_TOKEN=your-huggingface-token"
 echo ""
-echo "âœ¨ Happy coding! Your DidactAI AI platform is ready!"
+echo "✓œ¨ Happy coding! Your DidactAI AI platform is ready!"

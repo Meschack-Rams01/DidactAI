@@ -58,7 +58,7 @@ def main():
             print(f"   &bull; {name} ←’ {actual}")
             
     except Exception as e:
-        print(f"âŒ URL Pattern issue: {str(e)}")
+        print(f"✓Œ URL Pattern issue: {str(e)}")
     
     # Database Status
     try:
@@ -85,10 +85,10 @@ def main():
                 print(f"   &bull; Fixed Quiz (ID 17): ⚠May have issues")
                 
         except:
-            print(f"   &bull; Fixed Quiz (ID 17): â“ Not found")
+            print(f"   &bull; Fixed Quiz (ID 17): ✓“ Not found")
             
     except Exception as e:
-        print(f"âŒ Database issue: {str(e)}")
+        print(f"✓Œ Database issue: {str(e)}")
     
     # Export Services Status
     try:
@@ -103,7 +103,7 @@ def main():
         print(f"   &bull; University Template: ✅ Verified Working")
         
     except Exception as e:
-        print(f"âŒ Export service issue: {str(e)}")
+        print(f"✓Œ Export service issue: {str(e)}")
     
     # Generated Files Check
     try:

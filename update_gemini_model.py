@@ -43,7 +43,7 @@ def main():
             print("✅ Existing records updated!")
         
     except Exception as e:
-        print(f"âŒ Error: {e}")
+        print(f"✓Œ Error: {e}")
         print("You may need to run migrations manually:")
         print("   python manage.py makemigrations")
         print("   python manage.py migrate")

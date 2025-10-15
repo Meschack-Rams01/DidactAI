@@ -1,0 +1,349 @@
+﻿#!/usr/bin/env python
+"""
+Test script for export enhancements including:
+- University branding
+- Student information fields
+- Multiple versions (A/B/C)
+- Analytics tracking
+"""
+
+import os
+import sys
+import django
+
+# Setup Django environment
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'DidactAI_project.settings')
+django.setup()
+
+from exports.services import ExportService, PDFExporter, HTMLExporter, DOCXExporter
+from exports.analytics import ExportAnalytics, get_quick_stats
+import json
+from datetime import datetime
+
+def test_enhanced_branding():
+    """Test enhanced university branding functionality"""
+    print("=== Testing Enhanced University Branding ===")
+    
+    # Comprehensive branding data
+    branding_data = {
+        'university_name': 'Harvard University',
+        'faculty': 'Faculty of Arts and Sciences',
+        'department': 'Computer Science Department',
+        'course': 'CS 50 - Introduction to Computer Science',
+        'academic_year': '2024-2025',
+        'semester': 'Fall Semester',
+        'instructor': 'Dr. David Malan',
+        'exam_date': '2024-12-15',
+        'additional_notes': 'This is a comprehensive test of the enhanced branding system.',
+        'student_info': {
+            'include_student_name': True,
+            'include_student_id': True,
+            'include_signature': True,
+            'include_date_field': True
+        }
+    }
+    
+    # Sample quiz data
+    quiz_data = {
+        'title': 'Final Examination - Computer Science Fundamentals',
+        'description': 'A comprehensive examination covering all major topics from the course.',
+        'content_type': 'exam',
+        'estimated_duration': '3 hours',
+        'total_points': 100,
+        'questions': [
+            {
+                'type': 'multiple_choice',
+                'question': 'What is the primary purpose of an algorithm?',
+                'options': [
+                    'To solve problems systematically',
+                    'To write code faster',
+                    'To debug programs',
+                    'To optimize memory usage'
+                ],
+                'correct_answer': 'A',
+                'points': 5,
+                'difficulty': 'medium'
+            },
+            {
+                'type': 'true_false',
+                'question': 'Python is a compiled programming language.',
+                'correct_answer': 'False',
+                'points': 3,
+                'difficulty': 'easy'
+            },
+            {
+                'type': 'short_answer',
+                'question': 'Explain the difference between a list and a tuple in Python.',
+                'correct_answer': 'Lists are mutable while tuples are immutable data structures.',
+                'points': 10,
+                'difficulty': 'medium'
+            },
+            {
+                'type': 'essay',
+                'question': 'Discuss the importance of data structures in computer science and provide examples of when you would use different types.',
+                'correct_answer': 'Data structures are fundamental for organizing and storing data efficiently...',
+                'points': 25,
+                'difficulty': 'hard'
+            }
+        ]
+    }
+    
+    # Test PDF export with enhanced branding
+    try:
+        pdf_exporter = PDFExporter()
+        pdf_buffer = pdf_exporter.export_quiz(quiz_data, branding_data)
+        
+        # Save test PDF
+        with open('test_enhanced_branding.pdf', 'wb') as f:
+            f.write(pdf_buffer.getvalue())
+        
+        print("âœ“ PDF export with enhanced branding successful")
+        print(f"âœ“ File size: {len(pdf_buffer.getvalue())} bytes")
+        
+    except Exception as e:
+        print(f"âœ— PDF export failed: {str(e)}")
+    
+    # Test HTML export
+    try:
+        html_exporter = HTMLExporter()
+        html_content = html_exporter.export_quiz(quiz_data, branding_data)
+        
+        # Save test HTML
+        with open('test_enhanced_branding.html', 'w', encoding='utf-8') as f:
+            f.write(html_content)
+        
+        print("âœ“ HTML export with enhanced branding successful")
+        print(f"âœ“ Content length: {len(html_content)} characters")
+        
+    except Exception as e:
+        print(f"âœ— HTML export failed: {str(e)}")
+    
+    # Test DOCX export (if available)
+    try:
+        docx_exporter = DOCXExporter()
+        docx_buffer = docx_exporter.export_quiz(quiz_data, branding_data)
+        
+        # Save test DOCX
+        with open('test_enhanced_branding.docx', 'wb') as f:
+            f.write(docx_buffer.getvalue())
+        
+        print("âœ“ DOCX export with enhanced branding successful")
+        print(f"âœ“ File size: {len(docx_buffer.getvalue())} bytes")
+        
+    except Exception as e:
+        print(f"âœ— DOCX export failed: {str(e)}")
+
+
+def test_multiple_versions():
+    """Test multiple versions (A/B/C) functionality"""
+    print("\n=== Testing Multiple Versions Functionality ===")
+    
+    # Sample data for version testing
+    quiz_data = {
+        'title': 'Mathematics Quiz - Version Testing',
+        'content_type': 'quiz',
+        'questions': [
+            {
+                'type': 'multiple_choice',
+                'question': 'What is 2 + 2?',
+                'options': ['3', '4', '5', '6'],
+                'correct_answer': 'B',
+                'points': 2
+            },
+            {
+                'type': 'multiple_choice',
+                'question': 'What is the square root of 16?',
+                'options': ['2', '3', '4', '5'],
+                'correct_answer': 'C',
+                'points': 3
+            },
+            {
+                'type': 'true_false',
+                'question': 'Ï€ (pi) is approximately equal to 3.14159.',
+                'correct_answer': 'True',
+                'points': 2
+            },
+            {
+                'type': 'short_answer',
+                'question': 'What is the Pythagorean theorem?',
+                'correct_answer': 'a² + b² = c²',
+                'points': 5
+            }
+        ]
+    }
+    
+    branding_data = {
+        'university_name': 'Test University',
+        'department': 'Mathematics Department',
+        'course': 'MATH 101',
+        'semester': 'Test Semester',
+        'academic_year': '2024-2025'
+    }
+    
+    try:
+        export_service = ExportService()
+        
+        # Test ZIP export with multiple versions
+        result = export_service.export_content(
+            content_data=quiz_data,
+            export_format='zip',
+            branding=branding_data,
+            versions=['A', 'B', 'C']
+        )
+        
+        if result['success']:
+            # Save the ZIP file
+            with open('test_multiple_versions.zip', 'wb') as f:
+                f.write(result['file_data'])
+            
+            print("âœ“ Multiple versions ZIP export successful")
+            print(f"âœ“ ZIP file size: {len(result['file_data'])} bytes")
+            print(f"âœ“ Filename: {result['filename']}")
+            
+        else:
+            print(f"âœ— Multiple versions export failed: {result.get('error')}")
+            
+    except Exception as e:
+        print(f"âœ— Multiple versions test failed: {str(e)}")
+
+
+def test_analytics():
+    """Test analytics functionality"""
+    print("\n=== Testing Analytics Functionality ===")
+    
+    try:
+        # Test basic analytics
+        analytics = ExportAnalytics()
+        
+        # Get quick stats (this will work even with empty database)
+        stats = get_quick_stats()
+        print(f"âœ“ Analytics module loaded successfully")
+        print(f"âœ“ Quick stats generated: {len(stats)} metrics")
+        
+        # Test performance metrics
+        performance = analytics.get_system_performance_metrics()
+        print(f"âœ“ Performance metrics generated: {len(performance)} metrics")
+        
+        # Test report generation
+        report = analytics.generate_export_report()
+        print(f"âœ“ Analytics report generated")
+        print(f"âœ“ Report contains recommendations: {len(report.get('recommendations', []))}")
+        
+        # Save analytics report
+        with open('test_analytics_report.json', 'w') as f:
+            json.dump(report, f, indent=2, default=str)
+        
+        print("âœ“ Analytics report saved to test_analytics_report.json")
+        
+    except Exception as e:
+        print(f"âœ— Analytics test failed: {str(e)}")
+
+
+def test_student_information_fields():
+    """Test student information fields in different formats"""
+    print("\n=== Testing Student Information Fields ===")
+    
+    # Test data with various student info configurations
+    configurations = [
+        {
+            'name': 'All Fields Enabled',
+            'student_info': {
+                'include_student_name': True,
+                'include_student_id': True,
+                'include_signature': True,
+                'include_date_field': True
+            }
+        },
+        {
+            'name': 'Minimal Fields',
+            'student_info': {
+                'include_student_name': True,
+                'include_student_id': False,
+                'include_signature': True,
+                'include_date_field': False
+            }
+        },
+        {
+            'name': 'No Student Fields',
+            'student_info': {
+                'include_student_name': False,
+                'include_student_id': False,
+                'include_signature': False,
+                'include_date_field': False
+            }
+        }
+    ]
+    
+    quiz_data = {
+        'title': 'Student Information Fields Test',
+        'questions': [
+            {
+                'type': 'multiple_choice',
+                'question': 'Test question for student info fields.',
+                'options': ['A', 'B', 'C', 'D'],
+                'correct_answer': 'A',
+                'points': 1
+            }
+        ]
+    }
+    
+    for i, config in enumerate(configurations):
+        try:
+            branding_data = {
+                'university_name': 'Test University',
+                'department': 'Test Department',
+                'course': 'TEST 101',
+                'student_info': config['student_info']
+            }
+            
+            # Test with HTML exporter
+            html_exporter = HTMLExporter()
+            html_content = html_exporter.export_quiz(quiz_data, branding_data)
+            
+            # Save test file
+            filename = f'test_student_fields_{i+1}_{config["name"].replace(" ", "_").lower()}.html'
+            with open(filename, 'w', encoding='utf-8') as f:
+                f.write(html_content)
+            
+            print(f"âœ“ {config['name']} configuration tested successfully")
+            
+        except Exception as e:
+            print(f"âœ— {config['name']} configuration failed: {str(e)}")
+
+
+def run_comprehensive_test():
+    """Run all tests"""
+    print("🚀 Starting Comprehensive Export Enhancement Tests")
+    print(f"ðŸ“… Test started at: {datetime.now()}")
+    print("=" * 60)
+    
+    try:
+        test_enhanced_branding()
+        test_multiple_versions()
+        test_student_information_fields()
+        test_analytics()
+        
+        print("\n" + "=" * 60)
+        print("✅ All export enhancement tests completed!")
+        print("\nðŸ“ Test files generated:")
+        print("- test_enhanced_branding.pdf")
+        print("- test_enhanced_branding.html") 
+        print("- test_enhanced_branding.docx")
+        print("- test_multiple_versions.zip")
+        print("- test_student_fields_*.html")
+        print("- test_analytics_report.json")
+        
+        print("\n🍎¯ Features tested:")
+        print("âœ“ Enhanced university branding (logo, faculty, department, etc.)")
+        print("âœ“ Student information fields (name, ID, signature, date)")
+        print("âœ“ Multiple versions generation (A/B/C)")
+        print("âœ“ Comprehensive analytics tracking")
+        print("âœ“ PDF/HTML/DOCX export compatibility")
+        print("âœ“ Academic year and semester in footer")
+        
+    except Exception as e:
+        print(f"\nâŒ Test suite failed with error: {str(e)}")
+
+
+if __name__ == '__main__':
+    run_comprehensive_test()

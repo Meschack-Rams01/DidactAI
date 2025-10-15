@@ -78,7 +78,7 @@ def fix_courses_final():
                     created_courses.append(course)
                     print(f"✅ Created: {course.title} ({course.course_code})")
                 except Exception as e:
-                    print(f"âŒ Error creating {course_data['title']}: {e}")
+                    print(f"✓Œ Error creating {course_data['title']}: {e}")
             
             print(f"\n🎉 Successfully created {len(created_courses)} courses!")
             print(f"   User {user_to_fix.get_full_name() or user_to_fix.username} now has {Course.objects.filter(instructor=user_to_fix).count()} courses")
@@ -106,7 +106,7 @@ def fix_courses_final():
         print(f"   Please refresh the page: http://127.0.0.1:8000/ai-generator/exam/")
         
     except Exception as e:
-        print(f"âŒ Error: {e}")
+        print(f"✓Œ Error: {e}")
         import traceback
         traceback.print_exc()
         return False

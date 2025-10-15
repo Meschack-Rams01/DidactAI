@@ -71,11 +71,11 @@ def debug_ai_response():
                 if first_q.get('options'):
                     print(f"   Options: {len(first_q.get('options', []))} choices")
         except Exception as e:
-            print(f"âŒ Parsing failed: {str(e)}")
+            print(f"✓Œ Parsing failed: {str(e)}")
             print("ðŸ”§ This explains why fallback questions are being used.")
             
     else:
-        print(f"âŒ AI request failed: {result.get('error', 'Unknown error')}")
+        print(f"✓Œ AI request failed: {result.get('error', 'Unknown error')}")
 
 if __name__ == "__main__":
     debug_ai_response()

@@ -175,10 +175,10 @@ def create_enhanced_demo_export():
     
     print(f"\nðŸ“‹ Student information fields:")
     student_info = enhanced_branding['student_info']
-    print(f"   &bull; Student Name: {'âœ“' if student_info['include_student_name'] else 'âœ—'}")
-    print(f"   &bull; Student ID: {'âœ“' if student_info['include_student_id'] else 'âœ—'}")
-    print(f"   &bull; Signature: {'âœ“' if student_info['include_signature'] else 'âœ—'}")
-    print(f"   &bull; Date Field: {'âœ“' if student_info['include_date_field'] else 'âœ—'}")
+    print(f"   &bull; Student Name: {'✓“' if student_info['include_student_name'] else '✗'}")
+    print(f"   &bull; Student ID: {'✓“' if student_info['include_student_id'] else '✗'}")
+    print(f"   &bull; Signature: {'✓“' if student_info['include_signature'] else '✗'}")
+    print(f"   &bull; Date Field: {'✓“' if student_info['include_date_field'] else '✗'}")
     
     # Generate exports in all formats
     formats_to_test = ['pdf', 'html', 'docx']
@@ -222,7 +222,7 @@ def create_enhanced_demo_export():
                 print(f"   ðŸ“„ File: {filename} ({len(result_buffer.getvalue())} bytes)")
                 
         except Exception as e:
-            print(f"   âŒ {export_format.upper()} export failed: {str(e)}")
+            print(f"   ✓Œ {export_format.upper()} export failed: {str(e)}")
     
     # Test multiple versions
     print(f"\nðŸ“š Generating multiple versions (A/B/C)...")
@@ -243,10 +243,10 @@ def create_enhanced_demo_export():
             print(f"   ✅ Multiple versions created successfully")
             print(f"   ðŸ“¦ File: {zip_filename} ({len(zip_result['file_data'])} bytes)")
         else:
-            print(f"   âŒ Multiple versions failed: {zip_result.get('error')}")
+            print(f"   ✓Œ Multiple versions failed: {zip_result.get('error')}")
             
     except Exception as e:
-        print(f"   âŒ Multiple versions failed: {str(e)}")
+        print(f"   ✓Œ Multiple versions failed: {str(e)}")
     
     print(f"\n" + "=" * 50)
     print("🎉 Enhanced Export Demo Complete!")
@@ -256,7 +256,7 @@ def create_enhanced_demo_export():
     print("   &bull; enhanced_demo_harvard_exam.docx")
     print("   &bull; enhanced_demo_harvard_versions.zip")
     
-    print(f"\nâœ¨ Features demonstrated:")
+    print(f"\n✓¨ Features demonstrated:")
     print("   ðŸ« Complete university branding hierarchy")
     print("   ðŸ‘¤ Student information fields")
     print("   ðŸ“Š Professional exam formatting")

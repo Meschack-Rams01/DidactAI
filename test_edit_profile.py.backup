@@ -1,0 +1,114 @@
+﻿#!/usr/bin/env python
+"""
+Test script to verify edit profile functionality
+"""
+
+import os
+import sys
+import django
+
+# Setup Django
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'DidactAI_project.settings')
+django.setup()
+
+from django.contrib.auth import get_user_model
+from accounts.forms import ExtendedProfileForm
+from accounts.models import UserProfile
+
+User = get_user_model()
+
+def test_edit_profile():
+    print("🐧ª Testing Edit Profile Functionality")
+    print("=" * 50)
+    
+    # Create or get a test user
+    try:
+        user = User.objects.get(email='test@example.com')
+    except User.DoesNotExist:
+        user = User.objects.create_user(
+            username='testuser',
+            email='test@example.com',
+            password='testpass123',
+            first_name='Test',
+            last_name='User'
+        )
+        print("✅ Test user created")
+    
+    # Ensure user has a profile
+    try:
+        profile = user.profile
+    except UserProfile.DoesNotExist:
+        profile = UserProfile.objects.create(
+            user=user,
+            timezone='UTC'
+        )
+        print("✅ User profile created")
+    
+    # Test form initialization
+    form = ExtendedProfileForm(instance=user)
+    print(f"✅ Form initialized successfully")
+    print(f"   Form fields: {list(form.fields.keys())}")
+    
+    # Test form data
+    test_data = {
+        'first_name': 'John',
+        'last_name': 'Doe',
+        'institution': 'Test University',
+        'department': 'Computer Science',
+        'preferred_language': 'en',
+        'phone_number': '+1234567890',
+        'bio': 'Test bio for the user profile'
+    }
+    
+    # Test form validation
+    form = ExtendedProfileForm(test_data, instance=user)
+    if form.is_valid():
+        print("✅ Form validation passed")
+        
+        # Test form save
+        try:
+            saved_user = form.save()
+            print("✅ Form saved successfully")
+            print(f"   Updated user: {saved_user.get_full_name()}")
+            print(f"   Institution: {saved_user.institution}")
+            print(f"   Department: {saved_user.department}")
+            print(f"   Language: {saved_user.preferred_language}")
+            print(f"   Phone: {saved_user.phone_number}")
+            print(f"   Bio: {saved_user.bio[:50]}...")
+            
+        except Exception as e:
+            print(f"âŒ Error saving form: {e}")
+            return False
+    else:
+        print(f"âŒ Form validation failed: {form.errors}")
+        return False
+    
+    # Test profile access
+    try:
+        updated_user = User.objects.get(email='test@example.com')
+        print("✅ User retrieved after update")
+        print(f"   Full name: {updated_user.get_full_name()}")
+        print(f"   Institution: {updated_user.institution}")
+        print(f"   Language choices: {dict(User.LANGUAGE_CHOICES)}")
+        
+    except Exception as e:
+        print(f"âŒ Error retrieving updated user: {e}")
+        return False
+    
+    print("\n🎉 Edit Profile functionality test completed successfully!")
+    return True
+
+if __name__ == "__main__":
+    try:
+        success = test_edit_profile()
+        if success:
+            print("\n✅ All tests passed!")
+            sys.exit(0)
+        else:
+            print("\nâŒ Some tests failed!")
+            sys.exit(1)
+    except Exception as e:
+        print(f"\nðŸ’¥ Test failed with exception: {e}")
+        import traceback
+        traceback.print_exc()
+        sys.exit(1)

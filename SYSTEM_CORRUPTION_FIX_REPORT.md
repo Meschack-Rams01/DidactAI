@@ -17,7 +17,7 @@ A comprehensive system-wide scan and repair operation was conducted on the Didac
   - Corrupted emojis (🎓 showed as ðŸŽ")
   - Broken special characters (→ showed as &larr;)
   - Turkish character problems (ğ, ş, ç, ü, ö, ı)
-  - Quote mark corruption (' showed as â€™)
+  - Quote mark corruption (' showed as ✓€™)
 
 ### 2. BOM (Byte Order Mark) Issues
 - **Files Affected:** 2 HTML templates

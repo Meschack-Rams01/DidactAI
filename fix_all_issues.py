@@ -75,7 +75,7 @@ SECURE_CONTENT_TYPE_NOSNIFF=True
         return True
         
     except Exception as e:
-        print(f"âŒ Error fixing security issues: {e}")
+        print(f"✓Œ Error fixing security issues: {e}")
         return False
 
 def fix_dependency_issues():
@@ -159,7 +159,7 @@ social-auth-app-django==5.4.1
         return True
         
     except Exception as e:
-        print(f"âŒ Error fixing dependencies: {e}")
+        print(f"✓Œ Error fixing dependencies: {e}")
         return False
 
 def fix_missing_services():
@@ -434,12 +434,12 @@ class HTMLExporter:
         return True
         
     except Exception as e:
-        print(f"âŒ Error fixing missing services: {e}")
+        print(f"✓Œ Error fixing missing services: {e}")
         return False
 
 def create_production_settings():
     """Create production-ready settings file"""
-    print("\nâš™ Creating Production Settings")
+    print("\n✓š™ Creating Production Settings")
     print("=" * 40)
     
     try:
@@ -555,7 +555,7 @@ CACHES = {
         return True
         
     except Exception as e:
-        print(f"âŒ Error creating production settings: {e}")
+        print(f"✓Œ Error creating production settings: {e}")
         return False
 
 def create_deployment_scripts():
@@ -695,7 +695,7 @@ if __name__ == "__main__":
         return True
         
     except Exception as e:
-        print(f"âŒ Error creating deployment scripts: {e}")
+        print(f"✓Œ Error creating deployment scripts: {e}")
         return False
 
 def run_comprehensive_fixes():
@@ -723,7 +723,7 @@ def run_comprehensive_fixes():
     successful_fixes = sum(1 for result in fixes_results.values() if result)
     
     for fix_name, success in fixes_results.items():
-        status = "✅" if success else "âŒ"
+        status = "✅" if success else "✓Œ"
         print(f"{status} {fix_name.title()}: {'FIXED' if success else 'FAILED'}")
     
     success_rate = (successful_fixes / total_fixes) * 100

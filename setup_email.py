@@ -75,7 +75,7 @@ def setup_email_configuration():
             if email_user and email_pass:
                 test_email_configuration(email_user, email_pass)
             else:
-                print("âŒ EMAIL_HOST_USER or EMAIL_HOST_PASSWORD not configured")
+                print("✓Œ EMAIL_HOST_USER or EMAIL_HOST_PASSWORD not configured")
 
 def test_email_configuration(email_user, email_pass):
     """Test email configuration"""
@@ -104,7 +104,7 @@ def test_email_configuration(email_user, email_pass):
         server.quit()
         
     except Exception as e:
-        print(f"âŒ Email test failed: {str(e)}")
+        print(f"✓Œ Email test failed: {str(e)}")
         print("\nCommon issues:")
         print("- Make sure 2-Factor Authentication is enabled on Gmail")
         print("- Use App Password, not your regular Gmail password")
@@ -145,4 +145,4 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print("\n\nðŸ‘‹ Setup cancelled by user")
     except Exception as e:
-        print(f"\nâŒ Setup error: {str(e)}")
+        print(f"\n✓Œ Setup error: {str(e)}")

@@ -28,10 +28,10 @@ def fix_emoji_corruption(content):
         '🚀': '🚀',       # Rocket emoji
         '🍎¯': '🎯',       # Target emoji
         '✅': '✅',       # Check mark
-        'â¤ï¸': '❤️',      # Heart
+        '✓¤ï¸': '❤️',      # Heart
         '📈¥': '🔥',       # Fire emoji
         'ðŸ'¡': '💡',       # Light bulb
-        'â›½': '⛽',       # Fuel emoji
+        '✓›½': '⛽',       # Fuel emoji
         '📈': '🔧',        # Wrench
         'ðŸ› ï¸': '🛠️',      # Hammer and wrench
         

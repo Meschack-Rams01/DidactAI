@@ -1,0 +1,433 @@
+﻿#!/usr/bin/env python
+"""
+Test Multiple Version Creation Functionality
+
+This script tests the creation of multiple versions (A, B, C, D, E) for quizzes and exams
+"""
+
+import os
+import sys
+import django
+
+# Setup Django environment
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'DidactAI_project.settings')
+django.setup()
+
+from django.contrib.auth import get_user_model
+from django.core.files.uploadedfile import SimpleUploadedFile
+from courses.models import Course
+from ai_generator.models import AIGeneration, GenerationVersion, QuizQuestion
+from ai_generator.services import QuizGenerator, ExamGenerator
+from uploads.models import UploadedFile
+
+User = get_user_model()
+
+def test_version_creation():
+    """Test creating multiple versions of quizzes and exams"""
+    print("Testing Multiple Version Creation Functionality")
+    print("=" * 50)
+    
+    # Setup test data
+    print("1. Setting up test data...")
+    
+    # Get or create test user
+    test_user, created = User.objects.get_or_create(
+        username='version_test_user',
+        defaults={'email': 'version_test@example.com', 'first_name': 'Version', 'last_name': 'Tester'}
+    )
+    
+    # Get or create test course
+    test_course, created = Course.objects.get_or_create(
+        title='Version Test Course',
+        defaults={'instructor': test_user, 'course_code': 'VTC-101'}
+    )
+    
+    # Create test content
+    test_content = """
+    Software Engineering Principles
+    
+    Software engineering is the systematic application of engineering approaches to the 
+    development of software. It involves the design, development, testing, and maintenance 
+    of software applications.
+    
+    Key Principles:
+    1. Modularity - Breaking software into smaller, manageable components
+    2. Abstraction - Hiding complex implementation details
+    3. Encapsulation - Bundling data and methods together
+    4. Inheritance - Creating new classes based on existing ones
+    5. Polymorphism - Allowing objects to take multiple forms
+    
+    Development Methodologies:
+    - Agile development
+    - Waterfall model
+    - DevOps practices
+    - Test-driven development
+    
+    Quality Assurance:
+    - Unit testing
+    - Integration testing
+    - System testing
+    - User acceptance testing
+    """
+    
+    # Create test file
+    test_file = SimpleUploadedFile(
+        "software_engineering.txt",
+        test_content.encode('utf-8'),
+        content_type="text/plain"
+    )
+    
+    # Create uploaded file record
+    uploaded_file, created = UploadedFile.objects.get_or_create(
+        course=test_course,
+        original_filename='software_engineering.txt',
+        defaults={
+            'file_type': 'txt',
+            'file_size': len(test_content),
+            'file': test_file,
+            'is_processed': True,
+            'extracted_text': test_content,
+            'status': 'ready'
+        }
+    )
+    
+    print(f"   - Test user: {test_user.username}")
+    print(f"   - Test course: {test_course.title}")
+    print(f"   - Test file: {uploaded_file.original_filename}")
+    
+    # Test 1: Create original quiz
+    print("\n2. Creating original quiz...")
+    
+    quiz_generator = QuizGenerator()
+    quiz_result = quiz_generator.generate_quiz(
+        content=test_content,
+        language='en',
+        num_questions=5,
+        difficulty='medium',
+        question_types=['multiple_choice', 'true_false']
+    )
+    
+    if not quiz_result.get('success'):
+        print("   ERROR: Failed to create original quiz")
+        return False
+    
+    # Save original quiz generation
+    original_quiz = AIGeneration.objects.create(
+        course=test_course,
+        content_type='quiz',
+        title='Original Software Engineering Quiz',
+        input_prompt='Test quiz generation',
+        input_parameters={
+            'num_questions': 5,
+            'difficulty': 'medium',
+            'question_types': ['multiple_choice', 'true_false'],
+            'language': 'en'
+        },
+        generated_content=quiz_result,
+        status='completed'
+    )
+    original_quiz.source_files.add(uploaded_file)
+    
+    # Create questions in database
+    questions_data = quiz_result.get('questions', [])
+    for i, q_data in enumerate(questions_data):
+        QuizQuestion.objects.create(
+            generation=original_quiz,
+            question_type=q_data.get('type', 'multiple_choice'),
+            question_text=q_data.get('question', ''),
+            options=q_data.get('options', []),
+            correct_answer=q_data.get('correct_answer', ''),
+            explanation=q_data.get('explanation', ''),
+            difficulty=q_data.get('difficulty', 'medium'),
+            points=q_data.get('points', 1),
+            order=i + 1
+        )
+    
+    print(f"   - Original quiz created: {original_quiz.title}")
+    print(f"   - Questions generated: {len(questions_data)}")
+    
+    # Test 2: Create multiple versions (A, B, C, D, E)
+    print("\n3. Creating multiple versions...")
+    
+    version_letters = ['A', 'B', 'C', 'D', 'E']
+    created_versions = []
+    
+    for version_letter in version_letters:
+        print(f"   Creating Version {version_letter}...")
+        
+        try:
+            # Check if version already exists
+            if GenerationVersion.objects.filter(
+                original_generation=original_quiz,
+                version_letter=version_letter
+            ).exists():
+                print(f"   - Version {version_letter} already exists, skipping")
+                continue
+            
+            # Generate new version using same parameters
+            version_result = quiz_generator.generate_quiz(
+                content=test_content,
+                language=original_quiz.input_parameters.get('language', 'en'),
+                num_questions=original_quiz.input_parameters.get('num_questions', 5),
+                difficulty=original_quiz.input_parameters.get('difficulty', 'medium'),
+                question_types=original_quiz.input_parameters.get('question_types', ['multiple_choice'])
+            )
+            
+            if version_result.get('success'):
+                # Create version record
+                version = GenerationVersion.objects.create(
+                    original_generation=original_quiz,
+                    version_letter=version_letter,
+                    generated_content=version_result,
+                    variations={'shuffled': True, 'version': version_letter}
+                )
+                created_versions.append(version)
+                
+                version_questions = version_result.get('questions', [])
+                print(f"   - Version {version_letter} created successfully ({len(version_questions)} questions)")
+                
+            else:
+                print(f"   - ERROR: Failed to create Version {version_letter}: {version_result.get('error', 'Unknown error')}")
+                
+        except Exception as e:
+            print(f"   - ERROR: Exception creating Version {version_letter}: {str(e)}")
+    
+    # Test 3: Create original exam
+    print("\n4. Creating original exam...")
+    
+    exam_generator = ExamGenerator()
+    exam_result = exam_generator.generate_exam(
+        content=test_content,
+        language='en',
+        num_questions=8,
+        duration=90,
+        question_types=['multiple_choice', 'short_answer']
+    )
+    
+    if not exam_result.get('success'):
+        print("   ERROR: Failed to create original exam")
+        return False
+    
+    # Save original exam generation
+    original_exam = AIGeneration.objects.create(
+        course=test_course,
+        content_type='exam',
+        title='Original Software Engineering Exam',
+        input_prompt='Test exam generation',
+        input_parameters={
+            'num_questions': 8,
+            'duration': 90,
+            'question_types': ['multiple_choice', 'short_answer'],
+            'language': 'en'
+        },
+        generated_content=exam_result,
+        status='completed'
+    )
+    original_exam.source_files.add(uploaded_file)
+    
+    # Extract questions from exam sections
+    exam_questions_data = []
+    if 'sections' in exam_result:
+        for section in exam_result['sections']:
+            exam_questions_data.extend(section.get('questions', []))
+    else:
+        exam_questions_data = exam_result.get('questions', [])
+    
+    # Create exam questions in database
+    for i, q_data in enumerate(exam_questions_data):
+        QuizQuestion.objects.create(
+            generation=original_exam,
+            question_type=q_data.get('type', 'multiple_choice'),
+            question_text=q_data.get('question', ''),
+            options=q_data.get('options', []),
+            correct_answer=q_data.get('correct_answer', ''),
+            explanation=q_data.get('explanation', ''),
+            difficulty=q_data.get('difficulty', 'medium'),
+            points=q_data.get('points', 1),
+            order=i + 1
+        )
+    
+    print(f"   - Original exam created: {original_exam.title}")
+    print(f"   - Questions generated: {len(exam_questions_data)}")
+    
+    # Test 4: Create exam versions
+    print("\n5. Creating exam versions...")
+    
+    exam_versions_created = []
+    
+    for version_letter in version_letters[:3]:  # Create A, B, C versions for exam
+        print(f"   Creating Exam Version {version_letter}...")
+        
+        try:
+            # Check if version already exists
+            if GenerationVersion.objects.filter(
+                original_generation=original_exam,
+                version_letter=version_letter
+            ).exists():
+                print(f"   - Exam Version {version_letter} already exists, skipping")
+                continue
+            
+            # Generate new exam version
+            exam_version_result = exam_generator.generate_exam(
+                content=test_content,
+                language=original_exam.input_parameters.get('language', 'en'),
+                num_questions=original_exam.input_parameters.get('num_questions', 8),
+                duration=original_exam.input_parameters.get('duration', 90),
+                question_types=original_exam.input_parameters.get('question_types', ['multiple_choice'])
+            )
+            
+            if exam_version_result.get('success'):
+                # Create version record
+                exam_version = GenerationVersion.objects.create(
+                    original_generation=original_exam,
+                    version_letter=version_letter,
+                    generated_content=exam_version_result,
+                    variations={'shuffled': True, 'version': version_letter}
+                )
+                exam_versions_created.append(exam_version)
+                
+                # Count questions in exam version
+                exam_version_questions = []
+                if 'sections' in exam_version_result:
+                    for section in exam_version_result['sections']:
+                        exam_version_questions.extend(section.get('questions', []))
+                else:
+                    exam_version_questions = exam_version_result.get('questions', [])
+                
+                print(f"   - Exam Version {version_letter} created successfully ({len(exam_version_questions)} questions)")
+                
+            else:
+                print(f"   - ERROR: Failed to create Exam Version {version_letter}: {exam_version_result.get('error', 'Unknown error')}")
+                
+        except Exception as e:
+            print(f"   - ERROR: Exception creating Exam Version {version_letter}: {str(e)}")
+    
+    # Test 5: Verify database entries
+    print("\n6. Verifying database entries...")
+    
+    # Count versions
+    quiz_versions = GenerationVersion.objects.filter(original_generation=original_quiz)
+    exam_versions = GenerationVersion.objects.filter(original_generation=original_exam)
+    
+    print(f"   - Quiz versions created: {quiz_versions.count()}")
+    for version in quiz_versions:
+        print(f"     * Version {version.version_letter} (created: {version.created_at.strftime('%Y-%m-%d %H:%M')})")
+    
+    print(f"   - Exam versions created: {exam_versions.count()}")
+    for version in exam_versions:
+        print(f"     * Version {version.version_letter} (created: {version.created_at.strftime('%Y-%m-%d %H:%M')})")
+    
+    # Test 6: Test version content differences
+    print("\n7. Testing version content differences...")
+    
+    if quiz_versions.count() >= 2:
+        version_a = quiz_versions.filter(version_letter='A').first()
+        version_b = quiz_versions.filter(version_letter='B').first()
+        
+        if version_a and version_b:
+            questions_a = version_a.generated_content.get('questions', [])
+            questions_b = version_b.generated_content.get('questions', [])
+            
+            # Check if questions are different
+            same_questions = True
+            if len(questions_a) == len(questions_b):
+                for i, (q_a, q_b) in enumerate(zip(questions_a, questions_b)):
+                    if q_a.get('question', '') != q_b.get('question', ''):
+                        same_questions = False
+                        break
+            else:
+                same_questions = False
+            
+            print(f"   - Version A vs Version B: {'Same questions' if same_questions else 'Different questions'}")
+            print(f"   - Version A questions: {len(questions_a)}")
+            print(f"   - Version B questions: {len(questions_b)}")
+        else:
+            print("   - Could not compare versions (missing A or B)")
+    else:
+        print("   - Not enough versions to compare")
+    
+    # Summary
+    print("\n" + "=" * 50)
+    print("TEST SUMMARY:")
+    print(f"Original Quiz Created: {'✅' if original_quiz else 'âŒ'}")
+    print(f"Original Exam Created: {'✅' if original_exam else 'âŒ'}")
+    print(f"Quiz Versions Created: {quiz_versions.count()}/{len(version_letters)}")
+    print(f"Exam Versions Created: {exam_versions.count()}/3")
+    
+    total_versions = quiz_versions.count() + exam_versions.count()
+    success_rate = (total_versions / 8) * 100  # 5 quiz versions + 3 exam versions expected
+    
+    print(f"Total Versions Created: {total_versions}")
+    print(f"Success Rate: {success_rate:.1f}%")
+    
+    if success_rate >= 75:
+        print("Status: ✅ EXCELLENT - Version creation working well")
+    elif success_rate >= 50:
+        print("Status: ⚠GOOD - Most versions created successfully")
+    else:
+        print("Status: âŒ NEEDS ATTENTION - Version creation issues")
+    
+    return success_rate >= 50
+
+def test_version_export():
+    """Test exporting different versions"""
+    print("\n8. Testing version export functionality...")
+    
+    try:
+        from exports.services import HTMLExporter
+        
+        # Get a version to test export
+        version = GenerationVersion.objects.first()
+        if not version:
+            print("   - No versions available for export test")
+            return False
+        
+        html_exporter = HTMLExporter()
+        
+        # Test branding for version export
+        branding = {
+            'university_name': 'Test University',
+            'department': 'Software Engineering',
+            'course': f'Version {version.version_letter} Test',
+            'instructor': 'Version Test Instructor'
+        }
+        
+        # Export version
+        html_content = html_exporter.export_quiz(
+            version.generated_content,
+            branding,
+            show_answers=False
+        )
+        
+        # Save to file
+        filename = f"version_{version.version_letter}_test.html"
+        with open(filename, 'w', encoding='utf-8') as f:
+            f.write(html_content)
+        
+        file_size = len(html_content)
+        print(f"   - Version {version.version_letter} exported successfully")
+        print(f"   - Export file: {filename}")
+        print(f"   - File size: {file_size} chars")
+        
+        return True
+        
+    except Exception as e:
+        print(f"   - Export test failed: {str(e)}")
+        return False
+
+if __name__ == '__main__':
+    print("ðŸ”„ Testing Multiple Version Creation Functionality")
+    print("=" * 60)
+    
+    success = test_version_creation()
+    test_version_export()
+    
+    print("\n🍎¯ Final Result:")
+    if success:
+        print("✅ Multiple version creation is WORKING")
+    else:
+        print("âŒ Multiple version creation needs ATTENTION")
+    
+    print("\nNote: Individual AI generation results may vary, but the version")
+    print("creation system should be able to handle all requested versions.")

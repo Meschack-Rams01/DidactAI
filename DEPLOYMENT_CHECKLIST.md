@@ -83,7 +83,7 @@ railway up
 
 ---
 
-## âš™ Environment Variables Setup
+## ✓š™ Environment Variables Setup
 
 ### Essential Variables (Required)
 ```bash

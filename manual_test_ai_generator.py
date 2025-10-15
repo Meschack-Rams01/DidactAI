@@ -69,7 +69,7 @@ def test_quiz_generation():
         print("⚠ Form returned to same page - check for validation errors")
         return False
     else:
-        print(f"âŒ Unexpected status code: {response.status_code}")
+        print(f"✓Œ Unexpected status code: {response.status_code}")
         return False
 
 def test_exam_generation():
@@ -116,7 +116,7 @@ def test_exam_generation():
         print("⚠ Form returned to same page - check for validation errors")
         return False
     else:
-        print(f"âŒ Unexpected status code: {response.status_code}")
+        print(f"✓Œ Unexpected status code: {response.status_code}")
         return False
 
 def test_generation_history():
@@ -163,7 +163,7 @@ def main():
     
     passed = 0
     for test_name, result in results:
-        status = "✅ PASSED" if result else "âŒ FAILED"
+        status = "✅ PASSED" if result else "✓Œ FAILED"
         print(f"{test_name:<20} {status}")
         if result:
             passed += 1

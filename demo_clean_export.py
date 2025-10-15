@@ -160,7 +160,7 @@ def test_complete_export_system():
         
     except Exception as e:
         export_results['pdf'] = {'status': 'FAILED', 'error': str(e)}
-        print(f"   âŒ PDF Export: FAILED - {e}")
+        print(f"   ✓Œ PDF Export: FAILED - {e}")
     
     # 2. Test DOCX Export
     print("\nðŸ“ TESTING DOCX EXPORT...")
@@ -182,7 +182,7 @@ def test_complete_export_system():
         
     except Exception as e:
         export_results['docx'] = {'status': 'FAILED', 'error': str(e)}
-        print(f"   âŒ DOCX Export: FAILED - {e}")
+        print(f"   ✓Œ DOCX Export: FAILED - {e}")
     
     # 3. Test HTML Export
     print("\nðŸŒ TESTING HTML EXPORT...")
@@ -215,7 +215,7 @@ def test_complete_export_system():
         
     except Exception as e:
         export_results['html'] = {'status': 'FAILED', 'error': str(e)}
-        print(f"   âŒ HTML Export: FAILED - {e}")
+        print(f"   ✓Œ HTML Export: FAILED - {e}")
     
     # 4. Test Main Export Service
     print("\n🍎¯ TESTING MAIN EXPORT SERVICE...")
@@ -234,11 +234,11 @@ def test_complete_export_system():
             print("   ðŸ“‹ Main service coordination working")
         else:
             export_results['service'] = {'status': 'FAILED', 'error': result.get('error')}
-            print(f"   âŒ Export Service: FAILED - {result.get('error')}")
+            print(f"   ✓Œ Export Service: FAILED - {result.get('error')}")
             
     except Exception as e:
         export_results['service'] = {'status': 'FAILED', 'error': str(e)}
-        print(f"   âŒ Export Service: FAILED - {e}")
+        print(f"   ✓Œ Export Service: FAILED - {e}")
     
     # Print final results
     print("\n" + "=" * 60)
@@ -249,7 +249,7 @@ def test_complete_export_system():
     total_count = len(export_results)
     
     for format_name, result in export_results.items():
-        status_icon = "✅" if result['status'] == 'SUCCESS' else "âŒ"
+        status_icon = "✅" if result['status'] == 'SUCCESS' else "✓Œ"
         print(f"{status_icon} {format_name.upper()}: {result['status']}")
         
         if 'file' in result:
@@ -257,14 +257,14 @@ def test_complete_export_system():
         if 'size' in result:
             print(f"   ðŸ“Š Size: {result['size']:,} bytes")
         if result['status'] == 'FAILED':
-            print(f"   âŒ Error: {result.get('error', 'Unknown error')}")
+            print(f"   ✓Œ Error: {result.get('error', 'Unknown error')}")
     
     print(f"\nðŸ“Š SUCCESS RATE: {success_count}/{total_count} ({success_count/total_count*100:.0f}%)")
     
     if success_count == total_count:
         print("\n🎉 PERFECT! ALL EXPORT FORMATS WORKING")
         print("ðŸ“‹ Your Cloud Computing exam will export PERFECTLY CLEAN")
-        print("âœ¨ NO question type labels anywhere!")
+        print("✓¨ NO question type labels anywhere!")
         print("🍎“ Professional university formatting ready!")
         
         print("\nðŸ“ GENERATED FILES:")
