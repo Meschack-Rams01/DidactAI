@@ -1,0 +1,172 @@
+# RAUF DENKTAS UNIVERSITY
+## Software Engineering | Cloud Computing
+### Quiz
+
+**Examination on Computing Paradigms and Modern Computing Systems**
+
+Duration: 30-45 minutes | Total Points: 22
+
+---
+
+**INSTRUCTIONS:**
+• Read each question carefully and completely before answering
+• For multiple choice questions, select the best answer  
+• Write clearly and legibly for all written responses
+• Show all work for calculation problems where applicable
+• Review your answers before submitting
+• Ask the instructor if you have any questions
+
+**Student Information:**
+
+Student Full Name: ___________________________________
+
+Student ID/Number: ___________________________________
+
+Date: ____________________
+
+Signature: ________________________________________
+
+---
+
+## QUESTIONS
+
+**Question 1. (2 points)**
+
+What is a key distinguishing feature of cloud computing compared to grid computing, as described in the text?
+
+A. Cloud computing supports leveraging multiple resources, including computing resources, to deliver a unified service to the end user.
+
+B. Cloud computing primarily focuses on leveraging several computers in parallel to solve a particular application.
+
+C. Cloud computing's core concept is to make use of non-utilized computing power by needy organizations to increase return on investment.
+
+D. Cloud computing relies on a network of machines managed with middleware to access resources remotely.
+
+E. Cloud computing ensures that processor machines are mostly of homogeneous type for cooperative problem-solving.
+
+---
+
+**Question 2. (2 points)**
+
+Which of the following best describes High-Performance Computing (HPC) according to the provided text?
+
+A. A system using networked processors and resources to solve scientific problems, ranging from small clusters of PCs to the fastest supercomputers.
+
+B. Computing systems exclusively limited to supercomputers for complex data processing.
+
+C. A system where a single processor machine executes instructions one after another sequentially.
+
+D. Handheld devices communicating wirelessly for basic data transmission.
+
+E. The use of photons in visible light or infrared beams for digital computations.
+
+---
+
+**Question 3. (2 points)**
+
+According to the text, which pair of characteristic features are advantages of distributed computing systems over centralized systems?
+
+A. Scalability and redundancy.
+
+B. Homogeneity and sequential execution.
+
+C. Centralized control and single point of failure.
+
+D. Dedicated network infrastructure and homogeneous processor types.
+
+E. Quantum information processing and subatomic world rules.
+
+---
+
+**Question 4. (2 points)**
+
+What are the primary challenges or issues currently faced in the successful realization of nanocomputers, as mentioned in the text?
+
+A. The scale of components (few nanometers) and the integration challenges (manufacturing complex patterns, massive device quantities).
+
+B. The reliance on quantum information and subatomic rules for processing.
+
+C. The use of biologically derived molecules to perform computational processes.
+
+D. The limitation of cramming more transistors into integrated circuits.
+
+E. The ability to run programs across all nodes simultaneously using a message passing interface.
+
+---
+
+**Question 5. (2 points)**
+
+In parallel computing, a problem is broken down into discrete parts that can be solved concurrently, with instructions from each part executed simultaneously on different processors.
+
+A. True
+
+B. False
+
+---
+
+**Question 6. (2 points)**
+
+Cluster computing systems primarily consist of processor machines of heterogeneous types and are widely deployed in commercial applications.
+
+A. True
+
+B. False
+
+---
+
+**Question 7. (2 points)**
+
+The text suggests that even newly invented computing paradigms in the future would likely be based on a networked architecture.
+
+A. True
+
+B. False
+
+---
+
+**Question 8. (3 points)**
+
+What is the primary aim or utility of biocomputing scientists, as described in the text?
+
+**Answer:**
+
+________________________________________________________________________________
+
+________________________________________________________________________________
+
+________________________________________________________________________________
+
+________________________________________________________________________________
+
+________________________________________________________________________________
+
+---
+
+**Question 9. (3 points)**
+
+How does grid computing contribute to an increased return on investment (ROI) on computing investments for organizations?
+
+**Answer:**
+
+________________________________________________________________________________
+
+________________________________________________________________________________
+
+________________________________________________________________________________
+
+________________________________________________________________________________
+
+________________________________________________________________________________
+
+---
+
+**Question 10. (2 points)**
+
+The managing activity of grid resources through middleware is referred to as _______________, which provides access control, security, and access to data and storage facilities.
+
+**Answer:** ____________________________________________________________
+
+---
+
+**Footer Information:**
+Academic Year: 2025-2026 | Fall Semester | Instructor: RAMS | Date: 2025-11-08 | Page 1 of 1
