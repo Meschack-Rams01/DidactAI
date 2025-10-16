@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'corsheaders', 
     'crispy_forms',
     'crispy_tailwind',
-    'rosetta',  # For translations
+    # 'rosetta',  # For translations
     
     # Local apps
     'accounts',
