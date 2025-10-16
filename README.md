@@ -1,63 +1,89 @@
-# Didacta - Educational Assessment Platform
+# DidactAI - Intelligent Educational Assessment Platform
 
-[![Django](https://img.shields.io/badge/Django-4.2.24-092e20?logo=django&logoColor=white)](https://djangoproject.com/)
-[![Python](https://img.shields.io/badge/Python-3.13+-3776ab?logo=python&logoColor=white)](https://python.org/)
-[![License](https://img.shields.io/badge/License-MIT-blue.svg?logo=opensourceinitiative&logoColor=white)](LICENSE)
-[![Build Status](https://img.shields.io/badge/Build-Passing-success?logo=github&logoColor=white)](#)
-[![Code Quality](https://img.shields.io/badge/Code%20Quality-A-success?logo=codeclimate&logoColor=white)](#)
-[![Coverage](https://img.shields.io/badge/Coverage-95%25-success?logo=codecov&logoColor=white)](#)
-[![Docker](https://img.shields.io/badge/Docker-Ready-2496ed?logo=docker&logoColor=white)](#)
-[![Kubernetes](https://img.shields.io/badge/K8s-Compatible-326ce5?logo=kubernetes&logoColor=white)](#)
+<div align="center">
 
-**Production Status: Operational**
+![DidactAI](https://img.shields.io/badge/DidactAI-Educational%20Platform-0066cc?style=for-the-badge&logo=graduationcap&logoColor=white)
 
-Didacta is a comprehensive educational assessment platform designed for academic institutions and educators. Built with Django and modern web technologies, it streamlines the creation, management, and distribution of educational content and assessments through intelligent automation and advanced content processing capabilities.
+[![Django](https://img.shields.io/badge/Django-4.2.7-092e20?style=flat-square&logo=django&logoColor=white)](https://djangoproject.com/)
+[![Python](https://img.shields.io/badge/Python-3.13+-3776ab?style=flat-square&logo=python&logoColor=white)](https://python.org/)
+[![AI Powered](https://img.shields.io/badge/AI-Google%20Gemini-4285f4?style=flat-square&logo=google&logoColor=white)](https://ai.google.dev/)
+[![License](https://img.shields.io/badge/License-MIT-green?style=flat-square&logo=opensourceinitiative&logoColor=white)](LICENSE)
+[![Deployment](https://img.shields.io/badge/Deploy-Ready-success?style=flat-square&logo=render&logoColor=white)](#deployment)
+[![Build Status](https://img.shields.io/badge/Build-Passing-brightgreen?style=flat-square&logo=github&logoColor=white)](#)
+[![Code Quality](https://img.shields.io/badge/Code%20Quality-A-success?style=flat-square&logo=codeclimate&logoColor=white)](#)
 
-**Architecture:** Microservices • **Processing Engine:** Advanced NLP • **Database:** PostgreSQL/SQLite • **Deployment:** Docker/Kubernetes Ready
+![Production Ready](https://img.shields.io/badge/Production-Ready-success?style=flat&logo=checkmarx&logoColor=white)
+![AI Powered](https://img.shields.io/badge/AI-Powered-blue?style=flat&logo=brain&logoColor=white)
+![Analytics](https://img.shields.io/badge/Analytics-Enabled-purple?style=flat&logo=chartdotjs&logoColor=white)
+![Multi Language](https://img.shields.io/badge/Multi-Language-orange?style=flat&logo=translate&logoColor=white)
+![Responsive](https://img.shields.io/badge/Mobile-Responsive-teal?style=flat&logo=responsive&logoColor=white)
 
-## Core Features
+[Features](#features) • [Quick Start](#quick-start) • [Documentation](#documentation) • [Demo](#demo) • [Contributing](#contributing)
 
-### Content Management
+</div>
 
-- **Course Organization**: Hierarchical course and module management system
-- **File Processing Pipeline**: Multi-format document processing (PDF, DOCX, PPTX, Images)
-- **Content Versioning**: Track changes and maintain version history
-- **Bulk Operations**: Batch processing capabilities for large datasets
+## <img src="https://img.icons8.com/fluency/24/book.png" alt="Overview" width="24" height="24"/> Overview
 
-### Intelligent Assessment Creation
+DidactAI is a cutting-edge educational assessment platform that revolutionizes how educators create, manage, and distribute academic content. Built with Django and powered by Google Gemini AI, it offers intelligent content generation, multi-format export capabilities, and comprehensive analytics.
 
-- **Content Analysis Engine**: Advanced text processing for educational material analysis
-- **Question Bank Generation**: Automated creation of multiple choice, true/false, short answer, and essay questions
-- **Adaptive Difficulty Scaling**: Dynamic assessment of question complexity and educational level
-- **Multi-Language Support**: Content processing and generation in 14 languages including Arabic, Chinese, Japanese, Korean, Hindi, Turkish, and Greek
+**Perfect for:** Universities, Schools, Training Centers, Corporate Learning, Online Education
+
+### <img src="https://img.icons8.com/fluency/20/target.png" alt="Highlights" width="20" height="20"/> Key Highlights
+
+- <img src="https://img.icons8.com/fluency/16/artificial-intelligence.png" alt="AI" width="16" height="16"/> **AI-Powered Content Generation** using Google Gemini
+- <img src="https://img.icons8.com/fluency/16/documents.png" alt="Documents" width="16" height="16"/> **Multi-Format Document Processing** (PDF, DOCX, PPTX)
+- <img src="https://img.icons8.com/fluency/16/globe.png" alt="Global" width="16" height="16"/> **14+ Language Support** including RTL languages
+- <img src="https://img.icons8.com/fluency/16/analytics.png" alt="Analytics" width="16" height="16"/> **Advanced Analytics Dashboard**
+- <img src="https://img.icons8.com/fluency/16/security-checked.png" alt="Security" width="16" height="16"/> **Enterprise-Grade Security**
+- <img src="https://img.icons8.com/fluency/16/responsive.png" alt="Responsive" width="16" height="16"/> **Responsive Design** for all devices
+- <img src="https://img.icons8.com/fluency/16/cloud.png" alt="Cloud" width="16" height="16"/> **Cloud-Ready** deployment options
+
+
+## <img src="https://img.icons8.com/fluency/24/star.png" alt="Features" width="24" height="24"/> Features
+
+### <img src="https://img.icons8.com/fluency/20/content-management.png" alt="Content" width="20" height="20"/> Intelligent Content Management
+
+- **Hierarchical Course Organization**: Structured course and module management
+- **Multi-Format File Processing**: Advanced PDF, DOCX, PPTX document analysis
+- **Content Versioning**: Track changes and maintain comprehensive history
+- **Bulk Operations**: Efficient batch processing for large datasets
+- **Smart Content Analysis**: AI-powered educational material evaluation
+
+### <img src="https://img.icons8.com/fluency/20/artificial-intelligence.png" alt="AI Assessment" width="20" height="20"/> AI-Powered Assessment Creation
+
+- **Automated Question Generation**: Multiple choice, true/false, short answer, and essay questions
+- **Adaptive Difficulty Scaling**: Dynamic complexity assessment and educational level matching
 - **Quality Control Systems**: Automated validation and review workflows
-- **Scalable Processing**: High-performance question bank creation and management
+- **Multi-Language Support**: Content processing in 14+ languages including Arabic, Chinese, Japanese, Korean, Hindi, Turkish, and Greek
+- **Context-Aware Generation**: Intelligent content analysis for relevant question creation
 
-### Export and Distribution
+### <img src="https://img.icons8.com/fluency/20/export.png" alt="Export" width="20" height="20"/> Professional Export & Distribution
 
-- **Multi-Format Export**: PDF, DOCX, HTML output with customizable templates
+- **Multi-Format Export**: PDF, DOCX, HTML with customizable professional templates
 - **Version Management**: A/B/C test variants with automated answer key generation
-- **Brand Customization**: Institution-specific branding and styling
+- **Brand Customization**: Institution-specific branding and styling options
 - **Batch Export**: Simultaneous generation of multiple document formats
+- **Professional Formatting**: Publication-ready document layouts
 
-### Security and Administration
+### <img src="https://img.icons8.com/fluency/20/security-shield.png" alt="Security" width="20" height="20"/> Security & Administration
 
 - **Role-Based Access Control**: Granular permissions for instructors, administrators, and students
-- **Audit Logging**: Comprehensive activity tracking and monitoring
+- **Comprehensive Audit Logging**: Complete activity tracking and monitoring
 - **Secure File Handling**: Encrypted storage and transmission of sensitive content
-- **Session Management**: Advanced authentication with configurable security policies
-- **Data Retention**: Automated cleanup policies with compliance support
+- **Advanced Session Management**: Configurable security policies and authentication
+- **Data Retention Policies**: Automated cleanup with compliance support
 
-### Analytics and Reporting
+### <img src="https://img.icons8.com/fluency/20/bar-chart.png" alt="Analytics" width="20" height="20"/> Analytics & Reporting
 
-- **Real-Time Dashboard**: Live metrics and performance indicators
-- **Usage Analytics**: Detailed tracking of system utilization
+- **Real-Time Dashboard**: Live metrics and key performance indicators
+- **Usage Analytics**: Detailed system utilization tracking
 - **Performance Monitoring**: Application health and resource usage metrics
-- **Export Analytics**: Document generation and distribution statistics
+- **Export Statistics**: Document generation and distribution analytics
+- **User Engagement Metrics**: Comprehensive user activity insights
 
-## System Architecture
+## <img src="https://img.icons8.com/fluency/24/architecture.png" alt="Architecture" width="24" height="24"/> System Architecture
 
-### Technology Stack
+### <img src="https://img.icons8.com/fluency/20/technology.png" alt="Tech Stack" width="20" height="20"/> Technology Stack
 
 ```
 ┌────────────────────────────────────────────────────────────┐
@@ -79,21 +105,21 @@ Didacta is a comprehensive educational assessment platform designed for academic
 └────────────────────────────────────────────────────────────┘
 ```
 
-### Application Modules
+### <img src="https://img.icons8.com/fluency/20/module.png" alt="Modules" width="20" height="20"/> Application Modules
 
 | Module | Responsibility |
 |--------|----------------|
 | `accounts` | User authentication, authorization, and profile management |
 | `courses` | Course hierarchy, module organization, and content structure |
 | `uploads` | File processing pipeline, format conversion, and storage |
-| `content_generator` | Automated content creation, assessment generation, and quality control |
+| `ai_generator` | AI-powered content creation and assessment generation |
 | `exports` | Document generation, templating, and distribution |
 | `analytics` | Metrics collection, reporting, and performance monitoring |
 | `core` | Shared utilities, common functionality, and system configuration |
 
-## Installation and Setup
+## <img src="https://img.icons8.com/fluency/24/rocket.png" alt="Quick Start" width="24" height="24"/> Quick Start
 
-### Prerequisites
+### <img src="https://img.icons8.com/fluency/20/checklist.png" alt="Prerequisites" width="20" height="20"/> Prerequisites
 
 | Component | Version | Status |
 |-----------|---------|--------|
@@ -105,12 +131,12 @@ Didacta is a comprehensive educational assessment platform designed for academic
 
 ### Development Environment Setup
 
-#### Windows
+#### <img src="https://img.icons8.com/fluency/20/windows-10.png" alt="Windows" width="20" height="20"/> Windows Installation
 
 ```powershell
 # Clone repository
-git clone https://github.com/Meschack-Rams01/DidactAI-2025.git
-cd DidactAI-2025
+git clone https://github.com/meschack-rams01/DidactAI.git
+cd DidactAI
 
 # Create and activate virtual environment
 python -m venv venv
@@ -132,15 +158,12 @@ python manage.py createsuperuser
 python manage.py runserver
 ```
 
-#### macOS/Linux
+#### <img src="https://img.icons8.com/fluency/20/mac-os.png" alt="macOS" width="20" height="20"/> macOS/Linux Installation
 
 ```bash
-# Install Homebrew (macOS only, if not already installed)
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
 # Clone repository
-git clone https://github.com/Meschack-Rams01/DidactAI-2025.git
-cd DidactAI-2025
+git clone https://github.com/meschack-rams01/DidactAI.git
+cd DidactAI
 
 # Create and activate virtual environment
 python3 -m venv venv
@@ -162,9 +185,9 @@ python3 manage.py createsuperuser
 python3 manage.py runserver
 ```
 
-### Application Access
+### <img src="https://img.icons8.com/fluency/20/link.png" alt="Access" width="20" height="20"/> Application Access
 
-Once the development server is running, access the application at:
+Once the development server is running:
 
 | Component | URL | Description |
 |-----------|-----|-------------|
@@ -546,9 +569,11 @@ volumes:
   postgres_data:
 ```
 
-## Contributing
+## <img src="https://img.icons8.com/fluency/24/contributing.png" alt="Contributing" width="24" height="24"/> Contributing
 
-### Development Workflow
+We welcome contributions! Here's how you can help:
+
+### <img src="https://img.icons8.com/fluency/20/workflow.png" alt="Workflow" width="20" height="20"/> Development Workflow
 
 1. Fork the repository and create a feature branch
 2. Implement changes following established patterns
@@ -556,14 +581,15 @@ volumes:
 4. Update documentation as necessary
 5. Submit a pull request with detailed description
 
-### Code Standards
+### <img src="https://img.icons8.com/fluency/20/code.png" alt="Standards" width="20" height="20"/> Code Standards
 
 - **Python**: Follow PEP 8 guidelines
 - **Documentation**: Include docstrings for all public methods
 - **Testing**: Maintain >90% code coverage
 - **Git**: Use conventional commit messages
+- **Security**: Follow OWASP guidelines
 
-### Commit Message Format
+### <img src="https://img.icons8.com/fluency/20/commit.png" alt="Commits" width="20" height="20"/> Commit Message Format
 
 ```
 <type>(<scope>): <subject>
@@ -575,9 +601,9 @@ volumes:
 
 Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
 
-## Performance and Scalability
+## <img src="https://img.icons8.com/fluency/24/performance.png" alt="Performance" width="24" height="24"/> Performance & Scalability
 
-### System Requirements
+### <img src="https://img.icons8.com/fluency/20/requirements.png" alt="Requirements" width="20" height="20"/> System Requirements
 
 **Minimum:**
 - CPU: 2 cores, 2.0 GHz
@@ -591,31 +617,43 @@ Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
 - Storage: SSD with 50 GB available space
 - Network: High-speed internet connection
 
-### Scaling Considerations
+### <img src="https://img.icons8.com/fluency/20/scaling.png" alt="Scaling" width="20" height="20"/> Scaling Considerations
 
 - **Database**: PostgreSQL recommended for production workloads
 - **Caching**: Redis implementation for improved response times
 - **Load Balancing**: Multiple application instances with reverse proxy
-- **Background Processing**: Celery workers for content generation tasks
+- **Background Processing**: Celery workers for AI generation tasks
+- **CDN**: Content delivery network for static file serving
 
-## License
+## <img src="https://img.icons8.com/fluency/24/license.png" alt="License" width="24" height="24"/> License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
-## Support and Documentation
+## <img src="https://img.icons8.com/fluency/24/support.png" alt="Support" width="24" height="24"/> Support & Documentation
 
-- **Issue Tracking**: [GitHub Issues](https://github.com/Meschack-Rams01/DidactAI-2025/issues)
+- **Issue Tracking**: [GitHub Issues](https://github.com/meschack-rams01/DidactAI/issues)
 - **Documentation**: Available in the `docs/` directory
-- **Community**: [GitHub Discussions](https://github.com/Meschack-Rams01/DidactAI-2025/discussions)
+- **Community**: [GitHub Discussions](https://github.com/meschack-rams01/DidactAI/discussions)
+- **Email**: support@didactai.com
 
-## Acknowledgments
+## <img src="https://img.icons8.com/fluency/24/thanks.png" alt="Acknowledgments" width="24" height="24"/> Acknowledgments
 
 - Django community for the robust web framework
+- Google for Gemini AI technology
 - Open source contributors and maintainers
 - Educational technology community
+- Icons by [Icons8](https://icons8.com)
 
 ---
 
-**Didacta** - Educational Assessment Platform  
-Built with modern web technologies for educational institutions.#   D i d a c t A I  
- 
+<div align="center">
+
+**DidactAI** - Intelligent Educational Assessment Platform  
+Built with ❤️ for the education community
+
+![Made with Django](https://img.shields.io/badge/Made%20with-Django-092e20?style=flat&logo=django&logoColor=white)
+![Powered by AI](https://img.shields.io/badge/Powered%20by-Google%20Gemini-4285f4?style=flat&logo=google&logoColor=white)
+
+[⭐ Star this project](https://github.com/meschack-rams01/DidactAI) if you find it helpful!
+
+</div>
