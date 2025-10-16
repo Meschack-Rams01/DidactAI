@@ -6,7 +6,6 @@ Runs migrations on first request if needed
 import os
 import sys
 import subprocess
-from django.db import connection
 
 _migration_done = False
 
@@ -19,64 +18,61 @@ def ensure_migrations_applied():
         return
     
     try:
-        # Check if accounts_customuser table exists
-        try:
-            with connection.cursor() as cursor:
-                cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='accounts_customuser';")
-                table_exists = cursor.fetchone() is not None
-        except Exception as e:
-            print(f"[INIT] Error checking database: {e}")
-            table_exists = False
+        # Try to run migrations - this is idempotent
+        # If already applied, Django will skip them
+        print("\n" + "="*80)
+        print("[INIT] Running database migrations...")
+        print("="*80)
         
-        if not table_exists:
-            print("\n" + "="*80)
-            print("[INIT] DATABASE INITIALIZATION REQUIRED")
-            print("="*80)
+        try:
+            result = subprocess.run(
+                [sys.executable, 'manage.py', 'migrate', '--noinput', '--run-syncdb'],
+                cwd=os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                capture_output=True,
+                text=True,
+                timeout=120
+            )
             
-            try:
-                print("[INIT] Running migrations...")
-                result = subprocess.run(
-                    [sys.executable, 'manage.py', 'migrate', '--noinput', '--run-syncdb'],
-                    cwd=os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-                    capture_output=True,
-                    text=True,
-                    timeout=60
-                )
-                if result.returncode != 0:
-                    print(f"[INIT] Migration stderr: {result.stderr}")
-                else:
-                    print("[INIT] Migrations completed successfully")
-                
-                print("[INIT] Running setup_site...")
-                result = subprocess.run(
-                    [sys.executable, 'manage.py', 'setup_site'],
-                    cwd=os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-                    capture_output=True,
-                    text=True,
-                    timeout=60
-                )
-                if result.returncode != 0:
-                    print(f"[INIT] Setup site stderr: {result.stderr}")
-                else:
-                    print("[INIT] Site setup completed successfully")
-                
-            except subprocess.TimeoutExpired:
-                print("[INIT] WARNING: Migration timeout - continuing anyway")
-            except Exception as e:
-                print(f"[INIT] Error running migrations: {e}")
-                import traceback
-                traceback.print_exc()
+            if result.stdout:
+                print(f"[INIT] Migration output:\n{result.stdout}")
+            
+            if result.returncode != 0:
+                print(f"[INIT] Migration completed with warnings/errors:")
+                if result.stderr:
+                    print(f"[INIT] {result.stderr}")
+            else:
+                print("[INIT] Migrations applied successfully")
+            
+            # Always try to setup site after migrations
+            print("[INIT] Ensuring site record exists...")
+            result = subprocess.run(
+                [sys.executable, 'manage.py', 'setup_site'],
+                cwd=os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                capture_output=True,
+                text=True,
+                timeout=60
+            )
+            
+            if result.stdout:
+                print(f"[INIT] {result.stdout.strip()}")
+            
+            if result.returncode != 0 and result.stderr:
+                print(f"[INIT] Setup site note: {result.stderr}")
             
             print("[INIT] Database initialization complete!")
             print("="*80 + "\n")
-        else:
-            print("[INIT] Database already initialized, skipping migrations")
+            
+        except subprocess.TimeoutExpired:
+            print("[INIT] WARNING: Database initialization timeout - continuing anyway")
+        except Exception as e:
+            print(f"[INIT] Error running database setup: {e}")
+            import traceback
+            traceback.print_exc()
         
         _migration_done = True
         
     except Exception as e:
-        print(f"[INIT] Unexpected error during initialization: {e}", file=sys.stderr)
+        print(f"[INIT] Unexpected error: {e}", file=sys.stderr)
         import traceback
         traceback.print_exc()
-        # Mark as done to prevent retry
         _migration_done = True
