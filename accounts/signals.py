@@ -17,46 +17,29 @@ logger = logging.getLogger(__name__)
 @receiver(user_logged_in)
 def send_login_notification(sender, user, request, **kwargs):
     """
-    Send email notification when user logs in
+    Send email notification when user logs in (disabled for now to prevent timeouts)
     """
     try:
-        # Only send email if user has an email and email backend is configured
-        if not user.email or not hasattr(settings, 'EMAIL_HOST_USER') or not settings.EMAIL_HOST_USER:
-            return
+        # TEMPORARILY DISABLED: Email notifications cause timeouts on Render
+        # Skip email sending until proper email backend is configured
         
-        # Get user's IP address and user agent for security info
+        # Log the login for security purposes instead
         ip_address = get_client_ip(request)
-        user_agent = request.META.get('HTTP_USER_AGENT', 'Unknown')
+        user_agent = request.META.get('HTTP_USER_AGENT', 'Unknown')[:100]  # Truncate user agent
         login_time = timezone.now()
         
-        # Prepare context for email template
-        context = {
-            'user': user,
-            'login_time': login_time,
-            'ip_address': ip_address,
-            'user_agent': user_agent,
-            'site_name': 'DidactAI',
-            'site_url': request.build_absolute_uri('/'),
-        }
-        
-        # Render email templates
-        html_message = render_to_string('emails/login_notification.html', context)
-        plain_message = strip_tags(html_message)
-        
-        # Send email
-        send_mail(
-            subject='New Sign-in to Your DidactAI Account',
-            message=plain_message,
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[user.email],
-            html_message=html_message,
-            fail_silently=True,  # Don't break login if email fails
+        logger.info(
+            f"User login: {user.username} ({user.email}) from {ip_address} "
+            f"at {login_time} using {user_agent}"
         )
         
-        logger.info(f"Login notification sent to {user.email}")
+        # TODO: Re-enable email notifications when proper email backend is set up
+        # For now, just return without sending email
+        return
         
     except Exception as e:
-        logger.error(f"Failed to send login notification to {user.email}: {str(e)}")
+        logger.error(f"Error in login notification handler: {str(e)}")
+        # Don't re-raise - this should never break the login process
 
 
 def get_client_ip(request):
