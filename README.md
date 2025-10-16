@@ -634,7 +634,7 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 - **Issue Tracking**: [GitHub Issues](https://github.com/meschack-rams01/DidactAI/issues)
 - **Documentation**: Available in the `docs/` directory
 - **Community**: [GitHub Discussions](https://github.com/meschack-rams01/DidactAI/discussions)
-- **Email**: support@didactai.com
+- **Email**: bergermeschack@gmail.com
 
 ## <img src="https://img.icons8.com/fluency/24/thanks.png" alt="Acknowledgments" width="24" height="24"/> Acknowledgments
 
@@ -642,6 +642,9 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 - Google for Gemini AI technology
 - Open source contributors and maintainers
 - Educational technology community
+- my heartfelt thanks go to my supervisor, Mr. Clif, whose guidance, encouragement,
+and honest feedback kept me on tract and pushed me to do better. His support made a real difference,
+both technically and academically.
 - Icons by [Icons8](https://icons8.com)
 
 ---

@@ -6,8 +6,52 @@ Runs migrations on first request if needed
 import os
 import sys
 import subprocess
+from decouple import config
 
 _migration_done = False
+
+
+def setup_admin_user():
+    """Create or update admin user from environment variables"""
+    try:
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        
+        admin_email = config('ADMIN_EMAIL', default='admin@didactia.com')
+        admin_password = config('ADMIN_PASSWORD', default='')
+        admin_username = config('ADMIN_USERNAME', default='admin')
+        
+        if admin_password:  # Only create/update if password is set
+            print(f"[INIT] Setting up admin user: {admin_email}")
+            
+            user, created = User.objects.get_or_create(
+                email=admin_email,
+                defaults={
+                    'username': admin_username,
+                    'is_staff': True,
+                    'is_superuser': True,
+                    'first_name': 'Admin',
+                    'last_name': 'User',
+                    'role': 'admin'
+                }
+            )
+            
+            # Always update password and ensure superuser status
+            user.set_password(admin_password)
+            user.is_staff = True
+            user.is_superuser = True
+            user.username = admin_username
+            user.save()
+            
+            status = 'created' if created else 'updated'
+            print(f"[INIT] Admin user {status} successfully")
+        else:
+            print("[INIT] No ADMIN_PASSWORD set, skipping admin user setup")
+            
+    except Exception as e:
+        print(f"[INIT] Error setting up admin user: {e}")
+        import traceback
+        traceback.print_exc()
 
 
 def ensure_migrations_applied():
@@ -58,6 +102,9 @@ def ensure_migrations_applied():
             
             if result.returncode != 0 and result.stderr:
                 print(f"[INIT] Setup site note: {result.stderr}")
+            
+            # Setup admin user if needed
+            setup_admin_user()
             
             print("[INIT] Database initialization complete!")
             print("="*80 + "\n")
