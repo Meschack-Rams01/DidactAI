@@ -64,25 +64,44 @@ class CustomUserCreationForm(UserCreationForm):
         model = User
         fields = ('username', 'first_name', 'last_name', 'email', 'password1', 'password2')
 
+    def clean_email(self):
+        """Validate email is unique"""
+        try:
+            email = self.cleaned_data.get('email')
+            if email and User.objects.filter(email=email).exists():
+                raise forms.ValidationError(_("This email address is already in use."))
+            return email
+        except Exception as e:
+            print(f"[REGISTER] Email validation error: {e}")
+            raise
+    
     def save(self, commit=True):
-        user = super().save(commit=False)
-        user.email = self.cleaned_data['email']
-        user.first_name = self.cleaned_data['first_name']
-        user.last_name = self.cleaned_data['last_name']
-        
-        if commit:
-            user.save()
-            # Create user profile
-            try:
-                from .models import UserProfile
-                UserProfile.objects.create(
-                    user=user,
-                    timezone='UTC'  # Default timezone
-                )
-            except Exception as e:
-                print(f"Error creating user profile: {e}")
-        
-        return user
+        try:
+            user = super().save(commit=False)
+            user.email = self.cleaned_data['email']
+            user.first_name = self.cleaned_data['first_name']
+            user.last_name = self.cleaned_data['last_name']
+            
+            if commit:
+                user.save()
+                # Create user profile
+                try:
+                    from .models import UserProfile
+                    UserProfile.objects.create(
+                        user=user,
+                        timezone='UTC'  # Default timezone
+                    )
+                except Exception as e:
+                    print(f"[REGISTER] Error creating user profile: {e}")
+                    import traceback
+                    traceback.print_exc()
+            
+            return user
+        except Exception as e:
+            print(f"[REGISTER] Error saving user: {e}")
+            import traceback
+            traceback.print_exc()
+            raise
 
 
 class CustomAuthenticationForm(AuthenticationForm):

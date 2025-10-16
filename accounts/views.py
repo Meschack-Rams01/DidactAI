@@ -25,19 +25,27 @@ class RegisterView(CreateView):
 
     def form_valid(self, form):
         try:
+            print("[REGISTER] Form is valid, saving user...")
             response = super().form_valid(form)
+            print("[REGISTER] User saved successfully")
+            
             # Log the user in after successful registration
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password1')
+            print(f"[REGISTER] Attempting to authenticate user: {username}")
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(self.request, user)
                 messages.success(self.request, _('Welcome to DidactAI! Your account has been created successfully.'))
+                print(f"[REGISTER] User {username} logged in successfully")
+            else:
+                print(f"[REGISTER] Authentication failed for user: {username}")
             return response
         except Exception as e:
-            messages.error(self.request, _('An error occurred during registration. Please try again.'))
+            print(f"[REGISTER] Form valid error: {e}")
             import traceback
             traceback.print_exc()
+            messages.error(self.request, _('An error occurred during registration. Please try again.'))
             return self.form_invalid(form)
 
     def get_context_data(self, **kwargs):
