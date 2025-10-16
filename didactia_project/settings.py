@@ -248,8 +248,8 @@ LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/dashboard/'
 LOGOUT_REDIRECT_URL = '/'
 
-# Email Configuration - Use console backend to prevent SMTP timeouts
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # Always use console for now
+# Email Configuration - Use SMTP backend for password reset to work
+# Use console for development, SMTP for production or when email is configured
 EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')
 EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
 EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
@@ -259,6 +259,15 @@ EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='DidactAI <noreply@didactai.com>')
 SERVER_EMAIL = config('SERVER_EMAIL', default='DidactAI <noreply@didactai.com>')
 SERVER_NAME = config('SERVER_NAME', default='localhost:8000')
+
+# Choose email backend based on configuration
+if EMAIL_HOST_USER and EMAIL_HOST_PASSWORD:
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    print("✓ SMTP email backend configured for password reset functionality")
+else:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+    print("⚠ Using console email backend - password reset emails will appear in console")
+    print("  Configure EMAIL_HOST_USER and EMAIL_HOST_PASSWORD for actual email delivery")
 
 # Security Settings for Production
 if not DEBUG:

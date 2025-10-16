@@ -178,13 +178,13 @@ class PDFExporter:
             name='Question',
             parent=self.styles['Normal'],
             fontSize=11,
-            spaceBefore=12,  # Reduced from 20
-            spaceAfter=8,    # Reduced from 12
+            spaceBefore=15,  # Adequate space before question
+            spaceAfter=8,    # Compact space after
             leftIndent=0,
             fontName=getattr(self, 'unicode_font_normal', 'Helvetica'),
             alignment=TA_JUSTIFY,
-            leading=14,  # Reduced from 16
-            keepWithNext=1  # Try to keep question with its options
+            leading=14,  # Line height
+            keepWithNext=1  # Keep question with its content
         ))
         
         # Question number style
@@ -192,9 +192,10 @@ class PDFExporter:
             name='QuestionNumber',
             parent=self.styles['Normal'],
             fontSize=11,
-            spaceBefore=15,  # Reduced from 18
-            spaceAfter=5,    # Reduced from 8
-            fontName=getattr(self, 'unicode_font_bold', 'Helvetica-Bold')
+            spaceBefore=18,  # Adequate space before question number
+            spaceAfter=6,    # Space after question number
+            fontName=getattr(self, 'unicode_font_bold', 'Helvetica-Bold'),
+            keepWithNext=1  # Keep question number with question text
         ))
         
         # Option style for multiple choice - properly indented with compact spacing
@@ -202,11 +203,13 @@ class PDFExporter:
             name='Option',
             parent=self.styles['Normal'],
             fontSize=11,
-            spaceBefore=2,  # Reduced from 4
-            spaceAfter=2,   # Reduced from 4
-            leftIndent=25,
+            spaceBefore=3,  # Minimal space between options
+            spaceAfter=3,   # Minimal space between options
+            leftIndent=25,  # Indent options
             fontName=getattr(self, 'unicode_font_normal', 'Helvetica'),
-            alignment=TA_JUSTIFY
+            alignment=TA_JUSTIFY,
+            leading=13,  # Compact line height
+            keepTogether=1  # Keep all options together if possible
         ))
         
         # Answer lines style
@@ -261,28 +264,31 @@ class PDFExporter:
             question_type = question.get('type', 'multiple_choice')
             points = question.get('points', 1)
             
-            # Question header with RDUU style
+            # Question header with RDUU style - improved page break control
             q_header = f"<b>Question {i}. ({points} point{'s' if points != 1 else ''})</b>"
             q_header_style = ParagraphStyle(
                 name='RDUUQuestionHeader',
                 parent=self.styles['Normal'],
                 fontSize=11,
-                spaceBefore=15,
+                spaceBefore=20,  # More space before question
                 spaceAfter=8,
-                fontName='Helvetica-Bold'
+                fontName='Helvetica-Bold',
+                keepWithNext=1  # Keep header with question text
             )
             story.append(Paragraph(q_header, q_header_style))
             
-            # Question text 
+            # Question text with better formatting
             question_text = question.get('question', '')
             q_text_style = ParagraphStyle(
                 name='RDUUQuestionText',
                 parent=self.styles['Normal'],
                 fontSize=11,
-                spaceBefore=5,
-                spaceAfter=8,
+                spaceBefore=6,
+                spaceAfter=10,
                 fontName='Helvetica',
-                alignment=TA_JUSTIFY
+                alignment=TA_JUSTIFY,
+                leading=14,  # Better line spacing
+                keepWithNext=1  # Keep question text with its options
             )
             story.append(Paragraph(question_text, q_text_style))
             
@@ -295,15 +301,21 @@ class PDFExporter:
                     name='RDUUOption',
                     parent=self.styles['Normal'],
                     fontSize=11,
-                    spaceBefore=3,
-                    spaceAfter=3,
-                    leftIndent=25,
-                    fontName='Helvetica'
+                    spaceBefore=4,  # Small space between options
+                    spaceAfter=4,   # Small space between options
+                    leftIndent=30,  # Better indentation
+                    fontName='Helvetica',
+                    alignment=TA_JUSTIFY,
+                    leading=13,  # Compact line spacing
+                    keepTogether=1  # Prevent option from splitting across pages
                 )
+                
+                # Add all options with proper page break control
                 for j, option in enumerate(unique_options[:5]):  # Limit to 5 options max (A-E)
                     option_letter = chr(65 + j)  # A, B, C, D, E
                     option_text = f"{option_letter}. {option}"
-                    story.append(Paragraph(option_text, option_style))
+                    option_para = Paragraph(option_text, option_style)
+                    story.append(option_para)
             
             elif question_type == 'true_false':
                 option_style = ParagraphStyle(
@@ -375,8 +387,8 @@ class PDFExporter:
                 for _ in range(12):  # More lines for essay questions
                     story.append(Paragraph("_" * 85, line_style))
             
-            # Add compact space between questions
-            story.append(Spacer(1, 10))  # Reduced from 20
+            # Add appropriate space between questions to prevent crowding
+            story.append(Spacer(1, 16))  # Balanced space between questions
         
         # Build PDF with RDUU template
         doc.build(story, onFirstPage=self._add_rduu_header_footer, onLaterPages=self._add_rduu_header_footer)
@@ -985,42 +997,86 @@ class PDFExporter:
             # Add logo if provided
             if branding.get('logo_path') or branding.get('has_logo'):
                 try:
-                    # Try to load actual logo image
-                    logo_path = branding.get('logo_path')
+                    # Try to load actual logo image - check multiple path sources
+                    logo_path = None
+                    
+                    # Check different logo path sources
+                    if branding.get('logo_path') and os.path.exists(branding['logo_path']):
+                        logo_path = branding['logo_path']
+                    elif branding.get('logo_url'):
+                        # Convert URL to file path if it's a local file
+                        import urllib.parse
+                        from django.conf import settings
+                        logo_url = branding['logo_url']
+                        if logo_url.startswith('/media/'):
+                            logo_path = os.path.join(settings.MEDIA_ROOT, logo_url.replace('/media/', ''))
+                            if not os.path.exists(logo_path):
+                                logo_path = None
+                    
                     if logo_path and os.path.exists(logo_path):
                         # Load and display actual logo image
                         from reportlab.platypus import Image as ReportLabImage
                         from reportlab.lib.utils import ImageReader
                         
-                        # Create logo image with proper sizing
-                        logo_img = ReportLabImage(logo_path, width=60, height=60)
-                        elements.append(logo_img)
-                        elements.append(Spacer(1, 10))
-                        logger.info(f"Added university logo from: {logo_path}")
+                        # Create logo image with proper sizing and positioning
+                        try:
+                            # Center the logo
+                            logo_style = ParagraphStyle(
+                                name='LogoContainer',
+                                parent=self.styles['Normal'],
+                                alignment=TA_CENTER,
+                                spaceAfter=15
+                            )
+                            
+                            # Create image with appropriate size
+                            logo_img = ReportLabImage(logo_path, width=80, height=80)
+                            
+                            # Create a table to center the logo properly
+                            logo_table = Table([[logo_img]], colWidths=[6*inch])
+                            logo_table.setStyle(TableStyle([
+                                ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                                ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                            ]))
+                            
+                            elements.append(logo_table)
+                            elements.append(Spacer(1, 15))
+                            logger.info(f"Successfully added university logo from: {logo_path}")
+                        except Exception as img_error:
+                            logger.error(f"Error creating logo image: {img_error}")
+                            # Fallback to placeholder
+                            logo_placeholder = Paragraph(
+                                '''<para align="center">
+                                <font size="12" color="gray">[UNIVERSITY LOGO]</font><br/>
+                                <font size="8" color="gray">Image loading error</font>
+                                </para>''',
+                                self.styles['Normal']
+                            )
+                            elements.append(logo_placeholder)
+                            elements.append(Spacer(1, 15))
                     else:
                         # Fallback to placeholder if logo file not found
                         logo_placeholder = Paragraph(
                             '''<para align="center">
-                            <font size="10" color="gray">[UNIVERSITY LOGO]</font><br/>
-                            <font size="8" color="gray">Logo file not found</font>
+                            <font size="12" color="gray">[UNIVERSITY LOGO]</font><br/>
+                            <font size="8" color="gray">Upload logo in export form</font>
                             </para>''',
                             self.styles['Normal']
                         )
                         elements.append(logo_placeholder)
-                        elements.append(Spacer(1, 10))
-                        logger.warning(f"Logo file not found: {logo_path}")
+                        elements.append(Spacer(1, 15))
+                        logger.info("Logo placeholder added - no valid logo path found")
                 except Exception as e:
-                    logger.warning(f"Could not add logo: {e}")
+                    logger.error(f"Could not add logo: {e}")
                     # Fallback to text placeholder
                     logo_placeholder = Paragraph(
                         '''<para align="center">
-                        <font size="10" color="gray">[UNIVERSITY LOGO]</font><br/>
-                        <font size="8" color="gray">Logo loading error</font>
+                        <font size="12" color="gray">[UNIVERSITY LOGO]</font><br/>
+                        <font size="8" color="gray">Logo processing error</font>
                         </para>''',
                         self.styles['Normal']
                     )
                     elements.append(logo_placeholder)
-                    elements.append(Spacer(1, 10))
+                    elements.append(Spacer(1, 15))
             
             # Comprehensive university info with full hierarchy
             uni_info = f"<b>{institution.upper()}</b>"
@@ -1619,20 +1675,33 @@ class DOCXExporter:
             
             # Try to add actual logo image
             logo_added = False
-            if branding.get('logo_path'):
+            logo_path = None
+            
+            # Check different logo path sources
+            if branding.get('logo_path') and os.path.exists(branding['logo_path']):
+                logo_path = branding['logo_path']
+            elif branding.get('logo_url'):
+                # Convert URL to file path if it's a local file
+                import urllib.parse
+                from django.conf import settings
+                logo_url = branding['logo_url']
+                if logo_url.startswith('/media/'):
+                    logo_path = os.path.join(settings.MEDIA_ROOT, logo_url.replace('/media/', ''))
+                    if not os.path.exists(logo_path):
+                        logo_path = None
+                        
+            if logo_path and os.path.exists(logo_path):
                 try:
-                    logo_path = branding.get('logo_path')
-                    if os.path.exists(logo_path):
-                        # Clear the placeholder text
-                        logo_para.clear()
-                        # Add the actual logo image
-                        run = logo_para.add_run()
-                        run.add_picture(logo_path, width=Inches(1.0))
-                        logo_para.alignment = WD_ALIGN_PARAGRAPH.CENTER
-                        logo_added = True
-                        logger.info(f"Added logo to DOCX: {logo_path}")
+                    # Clear the placeholder text
+                    logo_para.clear()
+                    # Add the actual logo image
+                    run = logo_para.add_run()
+                    run.add_picture(logo_path, width=Inches(1.2))
+                    logo_para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+                    logo_added = True
+                    logger.info(f"Successfully added logo to DOCX: {logo_path}")
                 except Exception as e:
-                    logger.warning(f"Could not add logo to DOCX: {e}")
+                    logger.error(f"Could not add logo to DOCX: {e}")
             
             # Fallback to placeholder text if logo wasn't added
             if not logo_added:
