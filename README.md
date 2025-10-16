@@ -643,7 +643,7 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 - Open source contributors and maintainers
 - Educational technology community
 - my heartfelt thanks go to my supervisor, Mr. Clif, whose guidance, encouragement,
-and honest feedback kept me on tract and pushed, e to do better. His support made a real difference,
+and honest feedback kept me on tract and pushed me to do better. His support made a real difference,
 both technically and academically.
 - Icons by [Icons8](https://icons8.com)
 
